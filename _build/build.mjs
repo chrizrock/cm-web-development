@@ -75,7 +75,7 @@ const PAGES = [
     page: "about.html",
     title: "About",
     description:
-      "Chris Dave Magahis: front-end developer and WordPress specialist with 20+ years building for e-commerce, agency, and consultancy clients across the Philippines, the UAE, and the US — skills, experience, and the AI-augmented delivery system behind the builds.",
+      "Front-end developer and WordPress specialist with 20+ years building for e-commerce, agency, and consultancy clients across the Philippines, the UAE, and the US — skills, background, and the AI-augmented delivery system behind the builds.",
     render: aboutPage,
   },
   {

@@ -58,9 +58,10 @@ test("home stat band's project-count stat reads 'Projects shown', not 'Rebuilds 
 
 // --- Rebrand: "CM Web Development" chrome (rev2 Change 1) -------------------
 // The studio brand replaces the personal name in page-hero eyebrows, <title>,
-// og:site_name, and og/twitter titles across all 5 pages. The About page is
-// the deliberate exception for body copy: its bio/summary, portrait alt, and
-// CV filename stay personal — only ITS eyebrow/title/meta rebrand too.
+// og:site_name, and og/twitter titles across all 5 pages. The About page's
+// bio/summary text stays personal (its wording already carries no proper
+// name). As of rev3, the portrait photo, its alt text, and the CV download
+// (and its filename) are removed entirely — see the About page tests below.
 
 test("every page-hero eyebrow reads 'CM Web Development · <Page>'", () => {
   const expectations = [
@@ -85,10 +86,11 @@ test("site brand in <title>/og:site_name/og:title/twitter:title is CM Web Develo
   }
 });
 
-test("About page body stays personal: bio summary, portrait alt, and CV filename keep Chris Dave Magahis", () => {
+test("About page (rev3): no portrait photo and no CV download button", () => {
   const h = read("about.html");
-  assert.match(h, /Chris_Dave_Magahis_CV\.pdf/);
-  assert.match(h, /alt="Chris Dave Magahis"/);
+  assert.doesNotMatch(h, /Chris_Dave_Magahis_CV\.pdf/);
+  assert.doesNotMatch(h, /<img[^>]*portrait\.jpg/);
+  assert.doesNotMatch(h, /Download CV/);
 });
 
 // --- Entity-decode: pre-encoded HTML entities in source JSON must decode
@@ -199,14 +201,15 @@ test("services page CTA links to contact.html", () => {
   assert.match(h, /class="[^"]*cta-panel[^"]*"[\s\S]*?href="contact\.html"/);
 });
 
-// --- About page (Task 10) --------------------------------------------------
+// --- About page (Task 10; rev3 revised) -------------------------------------
 
-test("about page renders summary, portrait, and CV download", () => {
+test("about page renders the real summary and the code/terminal motif (no portrait/CV)", () => {
   const h = read("about.html");
-  assert.match(h, /Chris_Dave_Magahis_CV\.pdf/);
-  assert.match(h, /portrait\.jpg/);
   const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
   assert.ok(h.includes(cv.summary.slice(0, 30)));
+  assert.match(h, /class="code-motif"/);
+  assert.doesNotMatch(h, /Chris_Dave_Magahis_CV\.pdf/);
+  assert.doesNotMatch(h, /portrait\.jpg/);
 });
 
 test("about page has exactly one h1", () => {
@@ -214,19 +217,42 @@ test("about page has exactly one h1", () => {
   assert.equal((h.match(/<h1[\s>]/g) || []).length, 1);
 });
 
-test("about page renders every skills group and every experience role", () => {
+test("about page renders every skills group", () => {
   const h = read("about.html");
   const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
   // esc() renders "&" as the literal entity "&amp;" in output HTML (see the
   // services-page test above for the same note).
   for (const group of cv.skills) assert.ok(h.includes(group.group.replace(/&/g, "&amp;")), group.group);
-  for (const role of cv.experience) assert.ok(h.includes(role.company.replace(/&/g, "&amp;")), role.company);
-  for (const role of cv.earlierExperience) assert.ok(h.includes(role.company.replace(/&/g, "&amp;")), role.company);
 });
 
-test("about page portrait has explicit width/height and real alt text", () => {
+// rev3 owner feedback: a list of past EMPLOYERS reads like a résumé on a
+// site promoting the owner's own studio, so the experience timeline was
+// reframed into a de-identified "background" band (years + region +
+// capability copy, no company names). Assert both halves of that: the
+// background section itself renders, AND none of the former employer
+// names leak onto the page.
+test("about page's background section renders (reframed, no past-employer names)", () => {
   const h = read("about.html");
-  assert.match(h, /<img class="about-portrait-img" src="assets\/img\/portrait\.jpg" alt="Chris Dave Magahis"\s+width="560" height="560"/);
+  assert.match(h, /id="background"/);
+  assert.match(h, /class="experience-timeline"/);
+  assert.match(h, /20\+ years, condensed\./);
+  const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
+  const employers = [...cv.experience, ...cv.earlierExperience].map((r) => r.company);
+  for (const company of employers) {
+    assert.doesNotMatch(h, new RegExp(company.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${company} should not appear on about.html`);
+  }
+});
+
+test("about page code motif is a decorative window-chrome card (aria-hidden, dots, filename, real token snippet)", () => {
+  const h = read("about.html");
+  assert.match(h, /<div class="code-motif" aria-hidden="true">/);
+  assert.match(h, /class="code-motif-bar"/);
+  assert.equal((h.match(/class="code-motif-dot"/g) || []).length, 3);
+  assert.match(h, /class="code-motif-file"/);
+  assert.match(h, /class="code-motif-body"/);
+  // The snippet quotes this project's own real tokens, not fabricated ones.
+  assert.match(h, /--radius-lg/);
+  assert.match(h, /--fs-md/);
 });
 
 test("about page CTA links to contact.html", () => {
