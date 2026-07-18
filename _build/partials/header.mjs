@@ -27,7 +27,7 @@ export default function header({ page }) {
     return html`<li><a href="${link.href}" ${raw(isActive ? 'aria-current="page"' : "")}>${link.label}</a></li>`;
   });
 
-  return html`<header class="site-header glass">
+  return html`<header class="site-header">
   <div class="container header-inner">
     <a class="logo"${raw(attr({ href: "index.html", "aria-label": `${site.meta.siteName} home` }))}>${raw(logoSvg)}</a>
     <nav class="site-nav" aria-label="Primary">

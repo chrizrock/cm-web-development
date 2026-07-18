@@ -351,6 +351,9 @@
     transition: opacity 0.3s ease, transform 0.45s ease;
   }
   /* sun — shown in light */
+  /* Intentional decorative icon geometry: the 8 ray offsets below are
+     one-off pixel values tuned by eye for this specific 18px icon glyph,
+     not reusable design tokens. Left as magic numbers on purpose. */
   .theme-toggle-icon::after {
     content: ""; position: absolute; inset: 4px; border-radius: 50%;
     background: currentColor;
@@ -421,17 +424,17 @@
   .logo--footer svg { height: 34px; width: auto; }
   .footer-tagline { color: var(--muted); font-size: var(--fs-sm); max-width: none; }
 
-  .footer-nav ul { display: flex; flex-direction: column; gap: var(--space-2); }
+  .footer-nav ul { display: flex; flex-direction: column; gap: var(--space-1); }
   .footer-nav a {
-    display: inline-flex; min-height: 32px; align-items: center;
+    display: inline-flex; min-height: 44px; align-items: center;
     color: var(--muted); font-size: var(--fs-sm);
     transition: color 0.2s ease;
   }
   .footer-nav a:hover { color: var(--accent-ink); }
   .footer-nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-sm); }
 
-  .footer-contact { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--fs-sm); }
-  .footer-contact a, .footer-contact span { color: var(--muted); min-height: 32px; display: inline-flex; align-items: center; }
+  .footer-contact { display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--fs-sm); }
+  .footer-contact a, .footer-contact span { color: var(--muted); min-height: 44px; display: inline-flex; align-items: center; }
   .footer-contact a { transition: color 0.2s ease; }
   .footer-contact a:hover { color: var(--accent-ink); }
   .footer-contact a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-sm); }
