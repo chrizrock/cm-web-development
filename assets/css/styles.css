@@ -771,8 +771,25 @@
   .hero-inner {
     display: flex;
     flex-direction: column;
+    /* stretch so .hero-columns spans the container; the scroll cue re-centers
+       itself via align-self below. */
+    align-items: stretch;
+    gap: var(--space-7);
+  }
+  /* text | pipeline. Single column (text then pipeline) until there's room
+     for the two-up layout at 900px+ (see the home responsive block). */
+  .hero-columns {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+    width: 100%;
+  }
+  .hero-content {
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
     gap: var(--space-5);
+    min-width: 0;
   }
   .hero .eyebrow { margin-bottom: var(--space-1); }
 
@@ -867,6 +884,191 @@
     0%   { transform: translateY(-12px); opacity: 0; }
     40%  { opacity: 1; }
     100% { transform: translateY(44px); opacity: 0; }
+  }
+
+  /* -- 1b. Hero pipeline (flagship visual) ---------------------------------
+     A vertical stepper of the studio's real 5-step process (data/process.mjs):
+     numbered nodes 01→05 threaded down a glowing teal→violet track, with the
+     final Launch node accented as the "shipped" payoff. Purely presentational
+     (no interactive targets, so no focus/44px concerns). Token-driven, both
+     themes. Sits in the hero's right column at desktop (see the home
+     responsive block); stacks below the hero text on mobile — always a
+     vertical pipeline, so it can never overflow horizontally.
+
+     It intentionally carries NO glow of its own beyond the single accented
+     Launch badge — the hero's section-anchor atmosphere is the only ambient
+     glow, so the two never compete. */
+  .hero-pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+    padding: clamp(var(--space-5), 1.5vw + var(--space-4), var(--space-7));
+    /* Slightly translucent surface so the anchor glow reads faintly through
+       the panel instead of being boxed out. */
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2);
+  }
+  .hero-pipeline-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-pipeline-kicker {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .hero-pipeline-sub {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-md);
+    color: var(--text);
+  }
+
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Each node: a fixed rail cell (numbered badge + the connector that bridges
+     to the next badge) beside the text cell. No gap between nodes — the
+     connector spans the space instead, so the track reads as one continuous
+     line even when a descriptor wraps. */
+  .pipeline-node {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    column-gap: var(--space-4);
+  }
+  .pipeline-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* stretch to the row height (grid default) so the connector can reach the
+       next node's badge across a taller, wrapped descriptor. */
+  }
+  .pipeline-node-num {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-md);
+    color: var(--accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .pipeline-connector {
+    flex: 1 1 auto;
+    width: 2px;
+    min-height: var(--space-6);
+    margin-block: var(--space-2);
+    border-radius: 2px;
+    /* teal→violet progression across the four segments (color-mix, token
+       colors only — no hardcoded hex) so the whole track fades from the teal
+       audit end to the violet launch end. */
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  }
+  .pipeline-node:nth-child(1) .pipeline-connector {
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--accent-2)));
+  }
+  .pipeline-node:nth-child(2) .pipeline-connector {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, var(--accent-2)), color-mix(in srgb, var(--accent) 45%, var(--accent-2)));
+  }
+  .pipeline-node:nth-child(3) .pipeline-connector {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, var(--accent-2)), color-mix(in srgb, var(--accent) 20%, var(--accent-2)));
+  }
+  .pipeline-node:nth-child(4) .pipeline-connector {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 20%, var(--accent-2)), var(--accent-2));
+  }
+  .pipeline-node-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-block: var(--space-1) var(--space-6);
+    min-width: 0;
+  }
+  .pipeline-node:last-child .pipeline-node-text { padding-bottom: 0; }
+  .pipeline-node-label {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-lg);
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .pipeline-node-desc {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+    max-width: 40ch;
+  }
+
+  /* The Launch node is the payoff: a filled teal badge with the signature
+     glow (the pipeline's only glow), and a "Shipped" state pill. */
+  .pipeline-node--launch .pipeline-node-num {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    box-shadow: var(--glow);
+  }
+  .pipeline-node--launch .pipeline-node-label { color: var(--text); }
+  .pipeline-shipped {
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    padding: 0.15rem var(--space-3);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* Entrance: nodes rise/fade and the connectors fill downward, in sequence.
+     Gated entirely behind no-preference so reduced-motion users never see the
+     hidden start state — the pipeline is simply complete and static for them,
+     with no animation and no delayed-empty flash. transform/opacity only. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-pipeline .pipeline-node {
+      opacity: 0;
+      animation: pipeline-node-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-pipeline .pipeline-node:nth-child(1) { animation-delay: 0.10s; }
+    .hero-pipeline .pipeline-node:nth-child(2) { animation-delay: 0.22s; }
+    .hero-pipeline .pipeline-node:nth-child(3) { animation-delay: 0.34s; }
+    .hero-pipeline .pipeline-node:nth-child(4) { animation-delay: 0.46s; }
+    .hero-pipeline .pipeline-node:nth-child(5) { animation-delay: 0.58s; }
+
+    .hero-pipeline .pipeline-connector {
+      transform: scaleY(0);
+      transform-origin: top center;
+      animation: pipeline-fill 0.4s ease-out forwards;
+    }
+    .hero-pipeline .pipeline-node:nth-child(1) .pipeline-connector { animation-delay: 0.28s; }
+    .hero-pipeline .pipeline-node:nth-child(2) .pipeline-connector { animation-delay: 0.40s; }
+    .hero-pipeline .pipeline-node:nth-child(3) .pipeline-connector { animation-delay: 0.52s; }
+    .hero-pipeline .pipeline-node:nth-child(4) .pipeline-connector { animation-delay: 0.64s; }
+  }
+  @keyframes pipeline-node-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes pipeline-fill {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
   }
 
   /* -- 2. Stat band ------------------------------------------------------- */
@@ -1107,6 +1309,16 @@
   /* -- Home responsive ---------------------------------------------------- */
   @media (min-width: 721px) {
     .stat-band { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (min-width: 900px) {
+    /* Two-up hero: thesis/CTAs left, the 5-step pipeline right. */
+    .hero-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: clamp(var(--space-6), 4vw, var(--space-9));
+      align-items: center;
+    }
+    .hero-pipeline { align-self: center; }
   }
   @media (min-width: 761px) {
     .differentiator-inner { grid-template-columns: 1.15fr 0.85fr; }
@@ -1498,7 +1710,12 @@
   }
   .code-motif {
     width: 100%;
-    max-width: 420px;
+    /* rev5: bumped a step larger so the terminal card reads bigger and more
+       present next to the intro. Still width:100% on mobile (the cap only
+       kicks in with room), and .code-motif-body keeps its own overflow-x:auto
+       so a longer line scrolls inside the card rather than widening the page —
+       no overflow at 390. */
+    max-width: 500px;
     min-width: 0;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1535,10 +1752,12 @@
   }
   .code-motif-body {
     margin: 0;
-    padding: var(--space-5);
+    /* rev5: a step more padding + a larger type size so the enlarged card
+       reads with more presence. Fluid so it stays sensible on small screens. */
+    padding: clamp(var(--space-5), 1vw + var(--space-4), var(--space-6));
     font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    line-height: 1.75;
+    font-size: clamp(var(--fs-xs), 0.72rem + 0.2vw, var(--fs-sm));
+    line-height: 1.8;
     color: var(--muted);
     overflow-x: auto;
     white-space: pre;

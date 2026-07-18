@@ -9,35 +9,13 @@
 // nothing fabricated.
 import { html } from "../lib/render.mjs";
 import { section, button } from "../partials/components.mjs";
+// The 5-step process is shared with the Home hero pipeline — single source of
+// truth in data/process.mjs so the two surfaces can never drift.
+import { PROCESS_STEPS } from "../data/process.mjs";
 
 // Render order — rebuilds leads per the brief; matches every deep link
 // Home already points at (services.html#<id>).
 const SERVICE_ORDER = ["rebuilds", "new-builds", "ecommerce", "wordpress-care", "ai-delivery"];
-
-// One real, on-brand line per step (cross-browser + pixel-parity QA are
-// real practices from cv.json, not invented).
-const PROCESS_STEPS = [
-  {
-    name: "Audit",
-    copy: "Review the live site (or the mockup) and flag exactly what's costing conversions — cluttered navigation, a hero that isn't selling, a layout that breaks on a phone.",
-  },
-  {
-    name: "Design",
-    copy: "Rebuild the hierarchy around the brand and content that's already there — real product photography and copy, not stock filler stacked on top.",
-  },
-  {
-    name: "Build",
-    copy: "Hand-code semantic, responsive HTML/CSS — or work inside WordPress, PinnacleCart, or Shopify — with no page-builder bloat and no framework overhead.",
-  },
-  {
-    name: "QA",
-    copy: "Cross-browser, multi-resolution testing, checked against pixel-parity so what ships matches the design exactly, not approximately.",
-  },
-  {
-    name: "Launch",
-    copy: "Hosting, domains, DNS, and email set up as part of the build; live stores migrated without losing catalog, customers, or traffic.",
-  },
-];
 
 // Real platforms he works in day to day (cv.json / site.json — not a
 // generic tech-stack list).

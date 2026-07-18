@@ -9,6 +9,10 @@
 // projects.json); nothing here is fabricated.
 import { html, raw } from "../lib/render.mjs";
 import { section, statTile, serviceCard, projectCard, button } from "../partials/components.mjs";
+// The real 5-step process — shared with the Services "Five steps, every
+// project" band (single source of truth) so the hero pipeline below can never
+// drift from it. See data/process.mjs.
+import { PROCESS_STEPS } from "../data/process.mjs";
 
 // First real sentence of a service summary, used verbatim as a card teaser
 // (truncation of real copy — never a paraphrase). Falls back to the whole
@@ -26,29 +30,70 @@ export default function home({ site, projects }) {
   // and the page's single <h1>. The second sentence is wrapped as one contiguous
   // span so the teal marker underline lands on the rebuild thesis without
   // splitting the phrase.
+  //
+  // The hero is a two-column composition: the thesis/CTAs on the left, and the
+  // flagship visual on the right — a vertical PIPELINE of the studio's real
+  // 5-step process (data/process.mjs, the same steps + wording the Services
+  // "Five steps, every project" band renders). Nodes are numbered 01→05 down a
+  // glowing teal→violet track; the final Launch node is accented as the
+  // "shipped" payoff. Purely presentational (no interactive targets): an <ol>
+  // carries the real sequence + labels + terse descriptors to assistive tech,
+  // the decorative rail/numbers are aria-hidden, and the labels are plain
+  // <span>s (not headings) so the page keeps its single <h1> and a sane
+  // heading order. On mobile it stacks below the text (see styles.css). The
+  // centered scroll cue stays a full-width row beneath both columns.
+  const pipeline = html`<aside class="hero-pipeline" aria-label="How I work — my real five-step process, from audit to launch">
+    <div class="hero-pipeline-head">
+      <span class="hero-pipeline-kicker">How I work</span>
+      <span class="hero-pipeline-sub">Five steps, every project</span>
+    </div>
+    <ol class="pipeline">
+      ${PROCESS_STEPS.map((step, i) => {
+        const num = String(i + 1).padStart(2, "0");
+        const isLast = i === PROCESS_STEPS.length - 1;
+        const nodeClass = isLast ? "pipeline-node pipeline-node--launch" : "pipeline-node";
+        return html`<li class="${nodeClass}">
+        <span class="pipeline-rail" aria-hidden="true">
+          <span class="pipeline-node-num">${num}</span>
+          ${isLast ? "" : html`<span class="pipeline-connector"></span>`}
+        </span>
+        <span class="pipeline-node-text">
+          <span class="pipeline-node-label">${step.name}${isLast ? html`<span class="pipeline-shipped">Shipped</span>` : ""}</span>
+          <span class="pipeline-node-desc">${step.node}</span>
+        </span>
+      </li>`;
+      })}
+    </ol>
+  </aside>`;
+
   const hero = html`<section class="section section--anchor hero" data-reveal>
   <div class="container hero-inner">
-    <p class="eyebrow">${site.meta.siteName} &middot; Rebuild specialist</p>
-    <h1 class="hero-title">
-      <span class="hero-title-line">I build websites that convert.</span>
-      <span class="hero-title-line hero-title-mark">And rebuild the ones that don't.</span>
-    </h1>
-    <p class="hero-lede">
-      Most of what I do is rebuilds &mdash; taking a dated, cluttered, or
-      barely-usable site and rebuilding it around real hierarchy, the content
-      that's already there, and a layout that finally works on a phone.
-      Hand-coded, 20+ years in, across WordPress, PinnacleCart, and plain
-      HTML/CSS.
-    </p>
-    <div class="hero-cta">
-      ${button({ label: "See the before & after", href: "work.html", variant: "primary" })}
-      ${button({ label: "Start a project", href: "contact.html", variant: "ghost" })}
+    <div class="hero-columns">
+      <div class="hero-content">
+        <p class="eyebrow">${site.meta.siteName} &middot; Rebuild specialist</p>
+        <h1 class="hero-title">
+          <span class="hero-title-line">I build websites that convert.</span>
+          <span class="hero-title-line hero-title-mark">And rebuild the ones that don't.</span>
+        </h1>
+        <p class="hero-lede">
+          Most of what I do is rebuilds &mdash; taking a dated, cluttered, or
+          barely-usable site and rebuilding it around real hierarchy, the content
+          that's already there, and a layout that finally works on a phone.
+          Hand-coded, 20+ years in, across WordPress, PinnacleCart, and plain
+          HTML/CSS.
+        </p>
+        <div class="hero-cta">
+          ${button({ label: "See the before & after", href: "work.html", variant: "primary" })}
+          ${button({ label: "Start a project", href: "contact.html", variant: "ghost" })}
+        </div>
+        <ul class="hero-meta">
+          <li>Hand-coded</li>
+          <li>Zero frameworks</li>
+          <li>WordPress &middot; PinnacleCart &middot; HTML/CSS</li>
+        </ul>
+      </div>
+      ${pipeline}
     </div>
-    <ul class="hero-meta">
-      <li>Hand-coded</li>
-      <li>Zero frameworks</li>
-      <li>WordPress &middot; PinnacleCart &middot; HTML/CSS</li>
-    </ul>
     <a class="hero-scroll" href="#work" aria-label="Scroll to see the work">
       <span>Scroll</span>
       <span class="hero-scroll-line" aria-hidden="true"></span>

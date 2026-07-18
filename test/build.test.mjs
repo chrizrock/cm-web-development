@@ -54,6 +54,44 @@ test("home hero uses the signature line", () => {
   assert.match(read("index.html"), /rebuild the ones that don.?t/i);
 });
 
+// rev5 Change A: the hero's right column is a 5-step pipeline of the real
+// process (Audit → Design → Build → QA → Launch), with the final Launch node
+// visually accented as the "shipped" payoff.
+test("home hero renders the 5-step pipeline with every real step label", () => {
+  const h = read("index.html");
+  const start = h.indexOf('class="hero-pipeline"');
+  const end = h.indexOf("</section>", start);
+  assert.ok(start > -1, "hero-pipeline present in the hero");
+  const pipeline = h.slice(start, end);
+  for (const step of ["Audit", "Design", "Build", "QA", "Launch"]) {
+    assert.match(pipeline, new RegExp(`class="pipeline-node-label">${step}`), `pipeline step ${step}`);
+  }
+  // Launch is the accented payoff node.
+  assert.match(pipeline, /pipeline-node--launch/, "Launch node accented");
+  assert.match(pipeline, /class="pipeline-shipped">Shipped/, "Launch shows the shipped state");
+  // Numbered 01..05 stepper.
+  for (const num of ["01", "02", "03", "04", "05"])
+    assert.match(pipeline, new RegExp(`class="pipeline-node-num">${num}`), `node ${num}`);
+});
+
+// The hero pipeline must reuse the REAL, shared process copy (data/process.mjs)
+// — not fabricate its own — so it can never drift from the Services page.
+test("home hero pipeline descriptors are the real shared process text (no drift, not fabricated)", async () => {
+  const { PROCESS_STEPS } = await import("../_build/data/process.mjs");
+  const h = read("index.html");
+  for (const step of PROCESS_STEPS) {
+    // Each `node` descriptor is a verbatim leading clause of that step's real
+    // Services `copy`.
+    assert.ok(step.copy.toLowerCase().includes(step.node.replace(/\.$/, "").toLowerCase()),
+      `${step.name}: node descriptor is a real clause of its Services copy`);
+    assert.ok(h.includes(esc(step.node)), `${step.name} node descriptor rendered in the hero`);
+  }
+});
+
+test("home still has exactly one h1 after adding the pipeline", () => {
+  assert.equal((read("index.html").match(/<h1[\s>]/g) || []).length, 1);
+});
+
 test("home shows the 3 featured projects", () => {
   const h = read("index.html");
   for (const slug of ["princess-purse", "madrona-recovery", "component-supply"])
