@@ -371,6 +371,45 @@ function initMobileNav() {
   }
 }
 
+/** Work-page filters (Task 8): clicking a pill narrows the full project
+ * grid to that data-type, updates aria-pressed across the button group, and
+ * updates the live "Showing N of total" counter ([data-count]). Guarded on
+ * [data-work-filters]/[data-work-grid] so every page but work.html is a
+ * no-op — main.js stays error-free everywhere. Real <button>s get Enter/
+ * Space for free, so no extra keyboard wiring is needed. Toggling a
+ * .hidden (display:none) class is intentional, not a motion violation:
+ * this is user-initiated show/hide from a click, not scroll-driven motion,
+ * and it never touches the before/after widgets living inside each still-
+ * visible card (initBeforeAfter already wired those independently). */
+function initWorkFilters() {
+  const bar = document.querySelector("[data-work-filters]");
+  const grid = document.querySelector("[data-work-grid]");
+  if (!bar || !grid) return;
+
+  const buttons = Array.from(bar.querySelectorAll("[data-filter]"));
+  const counter = bar.querySelector("[data-count]");
+  const cards = Array.from(grid.querySelectorAll("[data-type]"));
+  const total = cards.length;
+
+  const applyFilter = (type) => {
+    let shown = 0;
+    cards.forEach((card) => {
+      const match = type === "all" || card.dataset.type === type;
+      card.classList.toggle("hidden", !match);
+      if (match) shown += 1;
+    });
+    if (counter) counter.textContent = `Showing ${shown} of ${total}`;
+  };
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (btn.getAttribute("aria-pressed") === "true") return; // already active
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      applyFilter(btn.dataset.filter);
+    });
+  });
+}
+
 function init() {
   initThemeToggle();
   initScrollState();
@@ -379,6 +418,7 @@ function init() {
   initMagnetic();
   initMobileNav();
   initBeforeAfter();
+  initWorkFilters();
 }
 
 if (document.readyState === "loading") {

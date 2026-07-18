@@ -1086,6 +1086,107 @@
     .hero-title { max-width: none; }
   }
 
+  /* ======================================================================
+     WORK PAGE (Task 8)
+     Intro, a featured tier (elevated/larger before-after treatment + a
+     "Featured" badge), a filter bar with a live counter, and the full
+     17-project grid. Token-driven; reuses .featured-work/.project-card/
+     .before-after (Home, Task 7) and components.mjs — only what's genuinely
+     new for filtering + the grid + the featured badge lives here.
+     ====================================================================== */
+
+  /* -- 1. Intro ------------------------------------------------------------ */
+  .work-intro-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .work-intro-title { max-width: 22ch; }
+  .work-intro-lede { font-size: var(--fs-lg); }
+
+  /* -- 2. Featured tier: larger before-after + a "Featured" badge --------- */
+  /* .before-after--featured is the size variant beforeAfter() already emits
+     for featured=true; giving it real distinguishing style (vs. plain
+     .before-after) is what makes the featured tier's before-after
+     genuinely larger, on top of the width it already gets from the wider
+     1.25fr column in .project-card--featured. */
+  .before-after--featured { gap: var(--space-5); }
+  .before-after--featured .before-after-frame--mobile {
+    width: clamp(100px, 26%, 184px);
+  }
+  /* Scoped to the work page's featured grid only (.work-featured-grid) so
+     Home's featured tier is untouched: a pill badge anchored to each card's
+     own top-left corner, plus a stronger shadow+glow on the desktop frame
+     for extra visual weight. */
+  .work-featured-grid .project-card--featured { position: relative; }
+  .work-featured-grid .project-card--featured::before {
+    content: "Featured";
+    position: absolute; top: var(--space-3); left: var(--space-3); z-index: 5;
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--accent); color: var(--on-accent);
+    font-size: var(--fs-xs); font-weight: 700;
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    box-shadow: var(--shadow-2);
+  }
+  .work-featured-grid .before-after-frame--desktop {
+    box-shadow: var(--shadow-3), var(--glow);
+  }
+
+  /* -- 3. Filter bar -------------------------------------------------------- */
+  .work-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .work-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .work-filter-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 var(--space-5);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--muted);
+    font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .work-filter-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .work-filter-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .work-filter-btn[aria-pressed="true"] {
+    background: var(--accent); border-color: var(--accent); color: var(--on-accent);
+  }
+  .work-filter-count {
+    font-size: var(--fs-sm); font-weight: 500; color: var(--muted);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* -- 4. Full grid ---------------------------------------------------------
+     Single column on narrow/mid viewports (each card's before-after is
+     already a two-frame laptop+phone composition, wide enough on its own);
+     two columns once there's room for a pair of them side by side. */
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    margin-top: var(--space-7);
+  }
+
+  @media (min-width: 861px) {
+    .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .work-filter-bar { flex-direction: column; align-items: flex-start; }
+  }
+
   /* -- Footer ------------------------------------------------------------- */
   .site-footer {
     margin-top: var(--space-9);
@@ -1126,6 +1227,12 @@
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
+  /* Filter show/hide (work.html): a plain display:none toggle, not
+     transform/opacity — this is user-initiated show/hide from clicking a
+     filter pill, not scroll-driven motion, so it's exempt from the
+     motion-property constraint. Lives in the utilities layer so it always
+     wins over .project-card's display:block regardless of specificity. */
+  .hidden { display: none; }
   .text-accent { color: var(--accent-ink); }
   .text-muted  { color: var(--muted); }
   .display     { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-display); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); }

@@ -74,3 +74,29 @@ test("decodeData recursively decodes real projects.json data (oxman-and-oxman)",
   assert.equal(oxman.name, "Oxman & Oxman");
   assert.equal(esc(oxman.name), "Oxman &amp; Oxman");
 });
+
+// --- Work page (Task 8) ---------------------------------------------------
+
+test("work page lists all 17 projects", () => {
+  const h = read("work.html");
+  const P = JSON.parse(readFileSync("_build/data/projects.json", "utf8"));
+  for (const p of P) assert.match(h, new RegExp(`data-slug="${p.slug}"`), p.slug);
+});
+
+test("work page has the 4 filters", () => {
+  const h = read("work.html");
+  for (const f of ["all", "Redesign", "Cart", "New Build"]) assert.ok(h.includes(f), f);
+});
+
+test("work page has a live counter", () => {
+  const h = read("work.html");
+  assert.match(h, /data-count/);
+  assert.match(h, /Showing 17 of 17/);
+});
+
+test("work page featured tier includes bevel-heaven plus the 3 home-featured projects", () => {
+  const h = read("work.html");
+  for (const slug of ["princess-purse", "madrona-recovery", "component-supply", "bevel-heaven"])
+    assert.match(h, new RegExp(`data-slug="${slug}"`), slug);
+  assert.match(h, /Featured/);
+});
