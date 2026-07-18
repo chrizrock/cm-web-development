@@ -410,6 +410,151 @@ function initWorkFilters() {
   });
 }
 
+/** Contact form (Task 11): client-side validation + an async Formspree
+ * submit with inline success/error states, honoring the honeypot — all as
+ * an enhancement layered on top of the plain action=…/method=POST form
+ * contact.mjs already renders. Guarded on [data-contact-form] so this is a
+ * total no-op on every page but contact.html.
+ *
+ * Progressive enhancement contract: nothing here runs until this function
+ * executes, so a no-JS visitor gets the native fallback — real HTML5
+ * required/type=email validation (novalidate is added below, not in the
+ * static markup, precisely so it's absent when JS never runs) and a normal
+ * synchronous POST straight to Formspree, which redirects to Formspree's
+ * own hosted confirmation page. Once JS *does* run, novalidate suppresses
+ * those native browser bubbles so the custom inline errors below are the
+ * only validation UI a visitor sees, and preventDefault() swaps the
+ * synchronous POST for the async fetch + inline success/error states.
+ */
+function initContactForm() {
+  const form = document.querySelector("[data-contact-form]");
+  if (!form) return;
+
+  const submitBtn = form.querySelector("[data-form-submit]");
+  const status = form.querySelector("[data-form-status]");
+  const honeypot = form.elements["_gotcha"];
+
+  form.setAttribute("novalidate", "");
+
+  // One rule per required field; keyed by `name` so it lines up with
+  // form.elements lookups below. `pattern`/`invalidMessage` are only
+  // present on email (empty vs. malformed get distinct copy).
+  const FIELD_RULES = {
+    name: { message: "Please enter your name." },
+    email: {
+      message: "Please enter your email address.",
+      invalidMessage: "Please enter a valid email address.",
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    },
+    project_type: { message: "Please choose a project type." },
+    message: { message: "Please enter a message." },
+  };
+
+  const errorFor = (field) => form.querySelector(`#${field.id}-error`);
+
+  const setFieldError = (field, message) => {
+    field.setAttribute("aria-invalid", message ? "true" : "false");
+    const errorEl = errorFor(field);
+    if (errorEl) errorEl.textContent = message || "";
+  };
+
+  const validateField = (name) => {
+    const field = form.elements[name];
+    const rule = FIELD_RULES[name];
+    if (!field || !rule) return true;
+    const value = field.value.trim();
+    if (!value) {
+      setFieldError(field, rule.message);
+      return false;
+    }
+    if (rule.pattern && !rule.pattern.test(value)) {
+      setFieldError(field, rule.invalidMessage);
+      return false;
+    }
+    setFieldError(field, "");
+    return true;
+  };
+
+  const validateAll = () => {
+    let valid = true;
+    let firstInvalid = null;
+    for (const name of Object.keys(FIELD_RULES)) {
+      const ok = validateField(name);
+      if (!ok) {
+        valid = false;
+        if (!firstInvalid) firstInvalid = form.elements[name];
+      }
+    }
+    return { valid, firstInvalid };
+  };
+
+  // Re-validate a field on blur so an error clears the moment it's fixed,
+  // rather than only ever being checked at submit time.
+  Object.keys(FIELD_RULES).forEach((name) => {
+    const field = form.elements[name];
+    if (field) field.addEventListener("blur", () => validateField(name));
+  });
+
+  const setStatus = (kind, message) => {
+    if (!status) return;
+    status.textContent = message;
+    status.classList.remove("form-status--success", "form-status--error");
+    if (kind) status.classList.add(`form-status--${kind}`);
+  };
+
+  const setSending = (isSending) => {
+    if (!submitBtn) return;
+    submitBtn.disabled = isSending;
+    submitBtn.setAttribute("aria-busy", String(isSending));
+    submitBtn.textContent = isSending ? "Sending…" : "Send message";
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Honeypot: a real visitor never fills this (it's aria-hidden and out
+    // of tab order); a filled value means something auto-filled every
+    // input on the page. Report success without sending anything, so
+    // there's no observable difference for the bot to learn from.
+    if (honeypot && honeypot.value) {
+      form.reset();
+      setStatus("success", "Thanks — your message is on its way.");
+      return;
+    }
+
+    const { valid, firstInvalid } = validateAll();
+    if (!valid) {
+      setStatus("error", "Please fix the highlighted fields and try again.");
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    setSending(true);
+    setStatus(null, "");
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+
+      if (response.ok) {
+        form.reset();
+        setStatus("success", "Thanks — your message is on its way. I usually reply within a day.");
+      } else {
+        setStatus("error", "Something went wrong sending that. Please try again, or email directly.");
+      }
+    } catch (err) {
+      // Network failure (offline, blocked request, etc.) — same inline
+      // error path as a non-OK response.
+      setStatus("error", "Something went wrong sending that. Please try again, or email directly.");
+    } finally {
+      setSending(false);
+    }
+  });
+}
+
 function init() {
   initThemeToggle();
   initScrollState();
@@ -419,6 +564,7 @@ function init() {
   initMobileNav();
   initBeforeAfter();
   initWorkFilters();
+  initContactForm();
 }
 
 if (document.readyState === "loading") {

@@ -131,6 +131,9 @@
     --border:      #243043;
     --border-strong: #30425C;
     --on-accent:   #04140F;  /* ink that sits on a teal fill */
+    --error:       #FF6B6B;  /* form validation error — red, clears 4.5:1 on dark surfaces */
+    --error-ink:   #FFB4B4;  /* brighter red for error TEXT on dark, mirrors --accent-ink */
+    --success:     var(--accent-ink);  /* success reuses the signature teal — same color, semantic name */
 
     /* Glass nav */
     --glass-bg:      rgba(11, 16, 24, 0.55);
@@ -168,6 +171,8 @@
     --border:      #DED7C7;
     --border-strong: #CDC4B0;
     --on-accent:   #FFFFFF;
+    --error:       #C23B3B;  /* deeper red so it clears 4.5:1 on warm paper */
+    --error-ink:   #A72E2E;
 
     --glass-bg:      rgba(246, 243, 236, 0.62);
     --glass-bg-scrolled: rgba(246, 243, 236, 0.88);
@@ -1529,6 +1534,177 @@
   }
   @media (max-width: 640px) {
     .about-intro-title { max-width: none; }
+  }
+
+  /* ======================================================================
+     CONTACT PAGE (Task 11)
+     Open-to-work hero + availability/response note, the Formspree form
+     (labeled fields, inline errors, honeypot, success/error status), a
+     direct-channels grid sourced from site.json.contact, and a short
+     closing line. Token-driven — the two new tokens are --error/--error-ink
+     (validation) and --success (reuses --accent-ink; see the tokens block).
+     ====================================================================== */
+
+  /* -- 1. Intro / hero ------------------------------------------------------ */
+  .contact-intro-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .contact-intro-title { max-width: 16ch; }
+  .contact-intro-lede { font-size: var(--fs-md); }
+  .contact-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .contact-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding-inline: var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .contact-status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 22%, transparent);
+    flex-shrink: 0;
+  }
+
+  /* -- 2. The form ------------------------------------------------------------ */
+  .contact-form-section .container { display: flex; justify-content: center; }
+  .contact-form-card {
+    width: 100%;
+    max-width: 46rem;
+    padding: clamp(var(--space-6), 3vw + var(--space-4), var(--space-8));
+  }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .form-label {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text);
+    max-width: none;
+  }
+  .form-required { color: var(--error-ink); }
+
+  .form-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.65rem var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .form-input::placeholder { color: var(--faint); }
+  .form-input:hover { border-color: var(--faint); }
+  .form-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+  .form-input[aria-invalid="true"] { border-color: var(--error); }
+  .form-input[aria-invalid="true"]:focus-visible { outline-color: var(--error); }
+  .form-textarea {
+    min-height: 148px;
+    padding-block: var(--space-3);
+    resize: vertical;
+    line-height: var(--lh-body);
+  }
+  .form-select { cursor: pointer; }
+
+  /* Reserves a fixed line of space per field (no CLS when an error
+     appears/clears) — opacity toggles on :not(:empty) instead of the error
+     paragraph's presence changing layout height. */
+  .form-error {
+    min-height: 1.1rem;
+    font-size: var(--fs-xs);
+    color: var(--error-ink);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .form-error:not(:empty) { opacity: 1; }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .form-submit { min-width: 180px; }
+  .form-status {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--muted);
+    min-height: 1.4em;
+    max-width: none;
+  }
+  .form-status--success { color: var(--success); }
+  .form-status--error { color: var(--error-ink); }
+
+  /* -- 3. Direct channels ------------------------------------------------------ */
+  .channels-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  .channel-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .channel-label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .channel-value {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  a.channel-value { display: inline-block; min-height: 44px; transition: color 0.2s ease; }
+  a.channel-value:hover { color: var(--accent-ink); }
+  a.channel-value:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+  /* -- 4. Closing reassurance --------------------------------------------------- */
+  .contact-closing { text-align: center; }
+  .contact-closing-line { margin-inline: auto; text-align: center; font-size: var(--fs-md); }
+
+  /* -- Contact responsive -------------------------------------------------------- */
+  @media (min-width: 641px) {
+    .form-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .channels-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1001px) {
+    .channels-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
 
   /* -- Footer ------------------------------------------------------------- */

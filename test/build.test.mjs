@@ -168,3 +168,48 @@ test("about page CTA links to contact.html", () => {
   const h = read("about.html");
   assert.match(h, /class="[^"]*cta-panel[^"]*"[\s\S]*?href="contact\.html"/);
 });
+
+// --- Contact page (Task 11) -------------------------------------------------
+
+test("contact form posts to formspree and has honeypot + channels", () => {
+  const h = read("contact.html");
+  assert.match(h, /action="https:\/\/formspree\.io\/f\/mnjepezn"/);
+  assert.match(h, /method="POST"/);
+  assert.match(h, /name="_gotcha"/);
+  assert.match(h, /mailto:chriz\.magahis@gmail\.com/);
+  assert.match(h, /wa\.me\/639692821388/);
+  assert.match(h, /chrizmagahis/); // Discord handle
+  assert.match(h, /github\.com\/chrizrock/);
+});
+
+test("contact form has every required field with a label", () => {
+  const h = read("contact.html");
+  for (const [id, name] of [
+    ["cf-name", "name"],
+    ["cf-email", "email"],
+    ["cf-project-type", "project_type"],
+    ["cf-message", "message"],
+  ]) {
+    assert.match(h, new RegExp(`<label class="form-label" for="${id}">`), `${name} label`);
+    assert.match(h, new RegExp(`id="${id}" name="${name}"[\\s\\S]{0,20}required`), `${name} required`);
+    assert.match(h, new RegExp(`aria-describedby="${id}-error"`), `${name} aria-describedby`);
+  }
+});
+
+test("contact honeypot is accessibly hidden, not just visually", () => {
+  const h = read("contact.html");
+  assert.match(h, /<div class="sr-only" aria-hidden="true">[\s\S]*?name="_gotcha"[\s\S]*?<\/div>/);
+  assert.match(h, /name="_gotcha"[^>]*tabindex="-1"/);
+  assert.match(h, /name="_gotcha"[^>]*autocomplete="off"/);
+});
+
+test("contact page has exactly one h1", () => {
+  const h = read("contact.html");
+  assert.equal((h.match(/<h1[\s>]/g) || []).length, 1);
+});
+
+test("contact form min-height inputs and accessible-required markers present", () => {
+  const h = read("contact.html");
+  assert.match(h, /class="form-input"/);
+  assert.match(h, /aria-required="true"/);
+});
