@@ -100,3 +100,36 @@ test("work page featured tier includes bevel-heaven plus the 3 home-featured pro
     assert.match(h, new RegExp(`data-slug="${slug}"`), slug);
   assert.match(h, /Featured/);
 });
+
+// --- Services page (Task 9) ------------------------------------------------
+
+test("services page renders all service blocks + process", () => {
+  const h = read("services.html");
+  const site = JSON.parse(readFileSync("_build/data/site.json", "utf8"));
+  // esc() renders "&" as the literal entity "&amp;" in output HTML, so the
+  // match pattern escapes regex metachars first, then maps "&" -> "&amp;"
+  // (the brief's simpler replace-& -with-"." regex only matches a single
+  // char, which under-matches the 5-char "&amp;" entity it actually renders).
+  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const s of site.services) {
+    const pattern = escapeRegExp(s.title).replace(/&/g, "&amp;");
+    assert.match(h, new RegExp(pattern), s.title);
+  }
+  for (const step of ["Audit", "Design", "Build", "QA", "Launch"]) assert.ok(h.includes(step));
+});
+
+test("services page has anchors for every service id", () => {
+  const h = read("services.html");
+  const site = JSON.parse(readFileSync("_build/data/site.json", "utf8"));
+  for (const s of site.services) assert.match(h, new RegExp(`id="${s.id}"`), s.id);
+});
+
+test("services page has a real platforms strip", () => {
+  const h = read("services.html");
+  for (const platform of ["WordPress", "PinnacleCart", "Shopify", "WP Engine"]) assert.ok(h.includes(platform), platform);
+});
+
+test("services page CTA links to contact.html", () => {
+  const h = read("services.html");
+  assert.match(h, /class="[^"]*cta-panel[^"]*"[\s\S]*?href="contact\.html"/);
+});
