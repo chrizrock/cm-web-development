@@ -92,8 +92,8 @@
     --fs-lg:   clamp(1.25rem, 1.12rem + 0.65vw, 1.6rem);
     --fs-xl:   clamp(1.55rem, 1.28rem + 1.35vw, 2.35rem);
     --fs-2xl:  clamp(2.1rem, 1.55rem + 2.75vw, 3.6rem);
-    --fs-3xl:  clamp(2.7rem, 1.75rem + 4.75vw, 5.4rem);
-    --fs-display: clamp(3.2rem, 1.7rem + 7.5vw, 7.5rem);
+    --fs-3xl:  clamp(2.7rem, 1.46rem + 3.96vw, 4.5rem);
+    --fs-display: clamp(3.2rem, 1.25rem + 5.5vw, 5.5rem);
 
     --lh-tight: 1.02;
     --lh-snug:  1.12;
@@ -114,7 +114,7 @@
     /* Layout */
     --container: 1200px;
     --gutter: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
-    --section-y: clamp(4rem, 2.5rem + 6vw, 8rem);
+    --section-y: clamp(2.8rem, 1.75rem + 4.2vw, 5.6rem);
     --header-h: 72px;
 
     /* Palette — dark */
@@ -802,6 +802,9 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
+    /* Centers just the scroll cue horizontally within .hero-inner, which is
+       otherwise flex-start-aligned for the rest of the hero content. */
+    align-self: center;
     gap: var(--space-2);
     margin-top: var(--space-6);
     color: var(--muted);
@@ -1084,6 +1087,12 @@
       align-items: center;
     }
     .project-card--featured .project-card-body { margin-top: 0; }
+    /* Mirror the column tracks (not just item order) on alternating rows --
+       swapping only `order` would leave the before-after media sitting in
+       the narrower 0.9fr track on even rows, rendering it visibly smaller
+       than the odd rows' 1.25fr media. Flipping the tracks too keeps every
+       featured before-after the same size while still zigzagging sides. */
+    .project-card--featured:nth-child(even) { grid-template-columns: 0.9fr 1.25fr; }
     .project-card--featured:nth-child(even) > .before-after { order: 2; }
   }
   @media (max-width: 640px) {
