@@ -29,7 +29,7 @@ export default function header({ page }) {
 
   return html`<header class="site-header glass">
   <div class="container header-inner">
-    <a class="logo"${raw(attr({ href: "/", "aria-label": `${site.meta.siteName} home` }))}>${raw(logoSvg)}</a>
+    <a class="logo"${raw(attr({ href: "index.html", "aria-label": `${site.meta.siteName} home` }))}>${raw(logoSvg)}</a>
     <nav class="site-nav" aria-label="Primary">
       <ul>${navLinks}</ul>
     </nav>

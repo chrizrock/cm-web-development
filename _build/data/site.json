@@ -13,11 +13,11 @@
     "appleTouchIcon": "assets/img/logo/png/cm-brand-square-180.png"
   },
   "nav": [
-    { "label": "Home", "href": "/" },
-    { "label": "Services", "href": "/services/" },
-    { "label": "Work", "href": "/work/" },
-    { "label": "About", "href": "/about/" },
-    { "label": "Contact", "href": "/contact/" }
+    { "label": "Home", "href": "index.html" },
+    { "label": "Services", "href": "services.html" },
+    { "label": "Work", "href": "work.html" },
+    { "label": "About", "href": "about.html" },
+    { "label": "Contact", "href": "contact.html" }
   ],
   "contact": {
     "email": "chriz.magahis@gmail.com",

@@ -31,7 +31,9 @@ export default function head({ title, description, page }) {
   const { meta } = site;
   const fullTitle = title ? `${title} — ${meta.siteName}` : `${meta.siteName} — ${meta.tagline}`;
   const desc = description || meta.description;
-  const canonicalPath = page === "/" ? "/" : page;
+  // `page` is the flat filename (e.g. "services.html"); Home's flat file
+  // (index.html) still canonicalizes to the bare domain root.
+  const canonicalPath = page === "index.html" ? "/" : `/${page}`;
   const canonical = `${meta.url}${canonicalPath}`;
   const ogImage = `${meta.url}/${meta.ogImage}`;
 

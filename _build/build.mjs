@@ -4,7 +4,7 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { html } from "./lib/render.mjs";
+import { html, serialize } from "./lib/render.mjs";
 import head from "./partials/head.mjs";
 import header from "./partials/header.mjs";
 import footer from "./partials/footer.mjs";
@@ -31,20 +31,16 @@ ${footer()}
 </html>`;
 }
 
-// `raw()` objects hold their string behind a private module-scoped Symbol
-// (not exported by render.mjs); this is the one place that needs the
-// finished string out, to hand to writeFileSync.
-function unwrap(rawResult) {
-  const [sym] = Object.getOwnPropertySymbols(rawResult);
-  return rawResult[sym];
-}
-
+// `page` is the flat filename identifying the current page — it doubles as
+// the nav-link active-state key (compared against site.json nav[].href in
+// header.mjs) and the canonical/OG-url path segment (in head.mjs), so both
+// partials stay in lockstep with a single identifier per page.
 const PAGES = [
-  { file: "index.html", page: "/", title: null, description: null, render: indexPage },
-  { file: "services.html", page: "/services/", title: "Services", description: null, render: servicesPage },
-  { file: "work.html", page: "/work/", title: "Work", description: null, render: workPage },
-  { file: "about.html", page: "/about/", title: "About", description: null, render: aboutPage },
-  { file: "contact.html", page: "/contact/", title: "Contact", description: null, render: contactPage },
+  { file: "index.html", page: "index.html", title: null, description: null, render: indexPage },
+  { file: "services.html", page: "services.html", title: "Services", description: null, render: servicesPage },
+  { file: "work.html", page: "work.html", title: "Work", description: null, render: workPage },
+  { file: "about.html", page: "about.html", title: "About", description: null, render: aboutPage },
+  { file: "contact.html", page: "contact.html", title: "Contact", description: null, render: contactPage },
 ];
 
 export function build() {
@@ -55,7 +51,7 @@ export function build() {
       description: p.description,
       main: p.render(),
     });
-    writeFileSync(path.join(ROOT, p.file), unwrap(out), "utf8");
+    writeFileSync(path.join(ROOT, p.file), serialize(out), "utf8");
   }
 }
 
