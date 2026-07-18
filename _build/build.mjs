@@ -46,11 +46,46 @@ ${footer()}
 // header.mjs) and the canonical/OG-url path segment (in head.mjs), so both
 // partials stay in lockstep with a single identifier per page.
 const PAGES = [
-  { file: "index.html", page: "index.html", title: null, description: null, render: homePage },
-  { file: "services.html", page: "services.html", title: "Services", description: null, render: servicesPage },
-  { file: "work.html", page: "work.html", title: "Work", description: null, render: workPage },
-  { file: "about.html", page: "about.html", title: "About", description: null, render: aboutPage },
-  { file: "contact.html", page: "contact.html", title: "Contact", description: null, render: contactPage },
+  {
+    file: "index.html",
+    page: "index.html",
+    title: null,
+    description:
+      "Front-end developer and WordPress specialist who rebuilds dated, cluttered, or barely-usable sites into ones that convert. 20+ years hand-coding storefronts and homepages across WordPress, PinnacleCart, and plain HTML/CSS — real before-and-afters, not mockups.",
+    render: homePage,
+  },
+  {
+    file: "services.html",
+    page: "services.html",
+    title: "Services",
+    description:
+      "Website rebuilds, new builds, e-commerce cart & theme upgrades, WordPress care & maintenance, and AI-augmented delivery — hand-coded, from a 20+ year front-end developer and WordPress specialist.",
+    render: servicesPage,
+  },
+  {
+    file: "work.html",
+    page: "work.html",
+    title: "Work",
+    description:
+      "17 real before-and-after rebuilds — full redesigns, cart & theme upgrades, and new builds — hand-coded storefronts and homepages. Filter by kind of work, or drag any slider to see what changed.",
+    render: workPage,
+  },
+  {
+    file: "about.html",
+    page: "about.html",
+    title: "About",
+    description:
+      "Chris Dave Magahis: front-end developer and WordPress specialist with 20+ years building for e-commerce, agency, and consultancy clients across the Philippines, the UAE, and the US — skills, experience, and the AI-augmented delivery system behind the builds.",
+    render: aboutPage,
+  },
+  {
+    file: "contact.html",
+    page: "contact.html",
+    title: "Contact",
+    description:
+      "Get in touch about a website rebuild, new build, e-commerce cart or theme upgrade, or ongoing WordPress care — usually a reply within a day.",
+    render: contactPage,
+  },
 ];
 
 export function build() {
