@@ -3,8 +3,7 @@
 // the form itself (name/email/project type/message + an accessibly-hidden
 // honeypot, posting straight to the real Formspree endpoint below), a
 // direct-channels grid sourced from site.json.contact (email/WhatsApp/
-// Discord/GitHub/location), and a short closing reassurance line. Receives
-// ALREADY entity-decoded data ({ site } — see the data note in
+// Discord/GitHub/location). Receives ALREADY entity-decoded data ({ site } — see the data note in
 // components.mjs). Sections carry data-reveal individually per the brief.
 //
 // Progressive enhancement: the <form> below is a plain
@@ -175,15 +174,5 @@ export default function contact({ site }) {
     children: html`<div class="channels-grid">${channelCards}</div>`,
   });
 
-  // -- 4. CLOSING REASSURANCE ---------------------------------------------------
-  const closing = html`<section class="section contact-closing" data-reveal>
-  <div class="container">
-    <p class="contact-closing-line measure">
-      No pitch deck, no sales call required — just describe the site and
-      what's wrong with it, and you'll get a straight answer back.
-    </p>
-  </div>
-</section>`;
-
-  return html`${intro}${formSection}${channelsSection}${closing}`;
+  return html`${intro}${formSection}${channelsSection}`;
 }

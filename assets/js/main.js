@@ -154,11 +154,12 @@ function initMagnetic() {
  * the `*, *::before, *::after { transition-duration: 0.001ms !important }`
  * rule in styles.css's reduced-motion block, so drag/keyboard/toggle all
  * snap under reduced-motion with no special-casing needed here. */
-function initBeforeAfter() {
-  const widgets = document.querySelectorAll("[data-beforeafter]");
-  if (!widgets.length) return;
-
-  widgets.forEach((widget) => {
+// Wires ONE [data-beforeafter] widget: pointer drag, keyboard range, and the
+// optional snap toggle. Pulled out of initBeforeAfter() so
+// initWorkFeaturedRandom() (below) can wire the same interaction onto a
+// widget it builds after DOMContentLoaded (a randomly-picked project cloned
+// into the work page's featured slot) without duplicating this logic.
+function wireBeforeAfterWidget(widget) {
     const range = widget.querySelector("[data-beforeafter-range]");
     const toggle = widget.querySelector("[data-beforeafter-toggle]");
     const frames = widget.querySelectorAll(".before-after-frame");
@@ -268,7 +269,16 @@ function initBeforeAfter() {
         setWipe(next ? 100 : 0);
       });
     }
-  });
+}
+
+/** Finds every [data-beforeafter] widget currently in the document and wires
+ * each one via wireBeforeAfterWidget(). Runs once at init; the work page's
+ * randomly-cloned featured widget (initWorkFeaturedRandom(), below) is wired
+ * separately at the point it's inserted, since it doesn't exist yet here. */
+function initBeforeAfter() {
+  const widgets = document.querySelectorAll("[data-beforeafter]");
+  if (!widgets.length) return;
+  widgets.forEach(wireBeforeAfterWidget);
 }
 
 /** Accessible mobile nav: hamburger toggle -> slide-in panel with a focus
@@ -408,6 +418,75 @@ function initWorkFilters() {
       applyFilter(btn.dataset.filter);
     });
   });
+}
+
+/** Work-page featured tier: exactly ONE project, picked at random on every
+ * load. Guarded on [data-work-featured] so this is a no-op on every page but
+ * work.html. work.mjs server-renders a sensible default (the first
+ * featured:true project) in that slot for a no-JS visitor; here we replace
+ * it with a random pick from the FULL 17-project pool.
+ *
+ * Performance note: this deliberately does NOT server-render all 17 featured
+ * blocks and hide 16 of them — that would mean shipping 16 extra heavy
+ * before/after image pairs nobody sees. Instead it clones the already-
+ * present, already-lazy-loaded grid card for the chosen project (the full
+ * grid below is unchanged and always renders all 17 at grid size), re-sizes
+ * that clone to the featured treatment (swaps the `--grid` size classes for
+ * `--featured`, which only changes CSS — same image `src`s either way), and
+ * re-wires its before/after wipe via wireBeforeAfterWidget() since the
+ * clone is new DOM initBeforeAfter() never saw. The featured badge
+ * (".work-featured-grid .project-card--featured::before" in styles.css) and
+ * the larger frame styling apply automatically off the swapped classes —
+ * no extra CSS needed. */
+function initWorkFeaturedRandom() {
+  const slot = document.querySelector("[data-work-featured]");
+  const grid = document.querySelector("[data-work-grid]");
+  if (!slot || !grid) return;
+
+  const cards = Array.from(grid.querySelectorAll(".project-card"));
+  if (!cards.length) return;
+
+  const pick = cards[Math.floor(Math.random() * cards.length)];
+  const clone = pick.cloneNode(true);
+
+  // The grid card being cloned lives far down the page, well below the
+  // fold — initReveal()'s IntersectionObserver hasn't seen it intersect yet,
+  // so it (and its own [data-reveal]) never picked up .is-revealed. A plain
+  // cloneNode(true) copies that "not yet revealed" state (opacity:0) as-is,
+  // and since this clone is never itself observed, it would stay invisible
+  // forever. Force it (and any nested [data-reveal]) revealed immediately —
+  // the featured pick must be visible without waiting on scroll.
+  clone.classList.add("is-revealed");
+  clone.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-revealed"));
+
+  // Grid card -> featured card: swap the size classes only (same images).
+  clone.classList.add("project-card--featured");
+  const beforeAfterEl = clone.querySelector(".before-after");
+  if (beforeAfterEl) {
+    beforeAfterEl.classList.remove("before-after--grid");
+    beforeAfterEl.classList.add("before-after--featured");
+  }
+
+  // The clone carries the SAME range id/label-for as the grid card it was
+  // copied from (now duplicated in the document) — rewrite both to a unique
+  // id so the <label for> keeps pointing at its own input rather than the
+  // grid's.
+  const range = clone.querySelector("[data-beforeafter-range]");
+  if (range && range.id) {
+    const uniqueId = `${range.id}-featured-pick`;
+    const label = clone.querySelector(`label[for="${range.id}"]`);
+    range.id = uniqueId;
+    if (label) label.setAttribute("for", uniqueId);
+  }
+
+  slot.replaceChildren(clone);
+
+  // The clone's [data-beforeafter] (if this project has a before/after
+  // wipe — new-build projects don't) was never seen by initBeforeAfter()'s
+  // querySelectorAll, since it didn't exist yet: wire it now so the
+  // featured pick is fully interactive.
+  const widget = clone.querySelector("[data-beforeafter]");
+  if (widget) wireBeforeAfterWidget(widget);
 }
 
 /** Contact form (Task 11): client-side validation + an async Formspree
@@ -563,6 +642,10 @@ function init() {
   initMagnetic();
   initMobileNav();
   initBeforeAfter();
+  // Runs after initBeforeAfter(): it swaps the server-rendered default
+  // featured widget out for a random pick and wires the replacement itself,
+  // so the default is never double-wired first.
+  initWorkFeaturedRandom();
   initWorkFilters();
   initContactForm();
 }

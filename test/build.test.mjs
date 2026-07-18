@@ -50,6 +50,47 @@ test("home stat band renders 4 stats", () => {
   assert.ok((read("index.html").match(/class="[^"]*stat-tile\b/g) || []).length >= 4);
 });
 
+test("home stat band's project-count stat reads 'Projects shown', not 'Rebuilds shown'", () => {
+  const h = read("index.html");
+  assert.match(h, /Projects shown/);
+  assert.doesNotMatch(h, /Rebuilds shown/);
+});
+
+// --- Rebrand: "CM Web Development" chrome (rev2 Change 1) -------------------
+// The studio brand replaces the personal name in page-hero eyebrows, <title>,
+// og:site_name, and og/twitter titles across all 5 pages. The About page is
+// the deliberate exception for body copy: its bio/summary, portrait alt, and
+// CV filename stay personal — only ITS eyebrow/title/meta rebrand too.
+
+test("every page-hero eyebrow reads 'CM Web Development · <Page>'", () => {
+  const expectations = [
+    ["index.html", "CM Web Development &middot; Rebuild specialist"],
+    ["services.html", "CM Web Development &middot; Services"],
+    ["work.html", "CM Web Development &middot; Work"],
+    ["about.html", "CM Web Development &middot; About"],
+    ["contact.html", "CM Web Development &middot; Contact"],
+  ];
+  for (const [file, text] of expectations) {
+    assert.ok(read(file).includes(`<p class="eyebrow">${text}</p>`), `${file} eyebrow`);
+  }
+});
+
+test("site brand in <title>/og:site_name/og:title/twitter:title is CM Web Development on every page", () => {
+  for (const f of PAGES) {
+    const h = read(f);
+    assert.match(h, /<title>[^<]*CM Web Development[^<]*<\/title>/, `${f} <title>`);
+    assert.match(h, /<meta property="og:site_name" content="CM Web Development">/, `${f} og:site_name`);
+    assert.match(h, /<meta property="og:title" content="[^"]*CM Web Development[^"]*">/, `${f} og:title`);
+    assert.match(h, /<meta name="twitter:title" content="[^"]*CM Web Development[^"]*">/, `${f} twitter:title`);
+  }
+});
+
+test("About page body stays personal: bio summary, portrait alt, and CV filename keep Chris Dave Magahis", () => {
+  const h = read("about.html");
+  assert.match(h, /Chris_Dave_Magahis_CV\.pdf/);
+  assert.match(h, /alt="Chris Dave Magahis"/);
+});
+
 // --- Entity-decode: pre-encoded HTML entities in source JSON must decode
 // ONCE at data-load time, so downstream esc()/html() output a single
 // &amp; (which the browser displays as "&"), never a double-escaped
@@ -94,11 +135,35 @@ test("work page has a live counter", () => {
   assert.match(h, /Showing 17 of 17/);
 });
 
-test("work page featured tier includes bevel-heaven plus the 3 home-featured projects", () => {
+// Featured tier now shows exactly ONE project, server-rendered as a sensible
+// default (the first featured:true project) — assets/js/main.js swaps it for
+// a client-side random pick from all 17 on load (rev2 Change 2). The full
+// 17-project grid below is unchanged and still contains every slug,
+// including the ones formerly hardcoded into the featured tier.
+test("work page featured tier server-renders exactly one default featured project", () => {
+  const h = read("work.html");
+  const start = h.indexOf('id="featured"');
+  const end = h.indexOf('id="all-work"');
+  assert.ok(start > -1 && end > start, "featured section renders before the all-work section");
+  const featuredHtml = h.slice(start, end);
+  const featuredCardMatches = featuredHtml.match(/class="project-card project-card--featured"/g) || [];
+  assert.equal(featuredCardMatches.length, 1, "exactly one server-rendered featured project card");
+  assert.match(featuredHtml, /data-work-featured/, "featured slot carries the JS hook");
+  assert.match(featuredHtml, /data-slug="princess-purse"/, "default featured pick is the first featured:true project");
+  assert.match(featuredHtml, /Featured/);
+});
+
+test("work page full grid still contains every formerly-hardcoded featured slug", () => {
   const h = read("work.html");
   for (const slug of ["princess-purse", "madrona-recovery", "component-supply", "bevel-heaven"])
     assert.match(h, new RegExp(`data-slug="${slug}"`), slug);
-  assert.match(h, /Featured/);
+});
+
+test("main.js wires a client-side random featured pick, guarded to the work page", () => {
+  const js = read("assets/js/main.js");
+  assert.match(js, /data-work-featured/, "guards on the work page's featured slot");
+  assert.match(js, /Math\.random/, "picks randomly");
+  assert.match(js, /wireBeforeAfterWidget/, "wires the wipe on the cloned featured pick");
 });
 
 // --- Services page (Task 9) ------------------------------------------------
@@ -212,4 +277,10 @@ test("contact form min-height inputs and accessible-required markers present", (
   const h = read("contact.html");
   assert.match(h, /class="form-input"/);
   assert.match(h, /aria-required="true"/);
+});
+
+test("contact page no longer shows the removed 'no pitch deck' closing line, and the hollow wrapper is gone too", () => {
+  const h = read("contact.html");
+  assert.doesNotMatch(h, /No pitch deck/);
+  assert.doesNotMatch(h, /contact-closing/);
 });

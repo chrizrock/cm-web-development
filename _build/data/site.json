@@ -1,10 +1,10 @@
 {
   "meta": {
-    "siteName": "Chris Dave Magahis",
+    "siteName": "CM Web Development",
     "tagline": "Front-end developer & WordPress specialist — 20+ years hand-coding sites that convert",
     "description": "Hand-coded website rebuilds, new builds, e-commerce cart/theme upgrades, WordPress care, and AI-augmented delivery from a 20+ year front-end developer and WordPress specialist.",
     "url": "https://REPLACE-WITH-YOUR-PAGES-URL",
-    "author": "Chris Dave Magahis",
+    "author": "CM Web Development",
     "locale": "en_US",
     "ogImage": "assets/img/og/og-default.png",
     "ogType": "website",
@@ -29,7 +29,7 @@
   },
   "stats": [
     { "value": "20+", "label": "Years" },
-    { "value": "17", "label": "Rebuilds shown" },
+    { "value": "17", "label": "Projects shown" },
     { "value": "3", "label": "Countries" },
     { "value": "0", "label": "Frameworks" }
   ],

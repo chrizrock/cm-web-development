@@ -1,8 +1,10 @@
 // Work page (Task 8) — the portfolio showcase. Composes section()/
 // projectCard()/beforeAfter() from components.mjs into: an intro, a
-// featured tier (the 3 featured:true projects + bevel-heaven, shown larger),
-// a filter bar with a live counter, and the full 17-project grid. Receives
-// ALREADY entity-decoded data ({ site, projects }, see the data note in
+// featured tier (ONE project, randomly re-picked client-side on every load —
+// see assets/js/main.js's initWorkFeaturedRandom(); the server renders a
+// sensible default here so a no-JS visitor still sees one), a filter bar
+// with a live counter, and the full 17-project grid. Receives ALREADY
+// entity-decoded data ({ site, projects }, see the data note in
 // components.mjs); copy here is grounded in projects.json and matches the
 // home page's (home.mjs) tone — nothing fabricated.
 import { html } from "../lib/render.mjs";
@@ -18,24 +20,13 @@ const FILTERS = [
   { type: "New Build", label: "New Builds" },
 ];
 
-// Featured tier = the 3 projects flagged featured:true in projects.json
-// (princess-purse, madrona-recovery, component-supply) plus bevel-heaven —
-// a cart-and-theme upgrade strong enough to sit alongside the full
-// redesigns, so the tier isn't all one kind of work.
-const FEATURED_SLUGS = new Set([
-  "princess-purse",
-  "madrona-recovery",
-  "component-supply",
-  "bevel-heaven",
-]);
-
-export default function work({ projects }) {
+export default function work({ site, projects }) {
   const total = projects.length;
 
   // -- 1. INTRO -----------------------------------------------------------
   const intro = html`<section class="section section--anchor work-intro" data-reveal>
   <div class="container work-intro-inner">
-    <p class="eyebrow">Work &middot; ${total} projects</p>
+    <p class="eyebrow">${site.meta.siteName} &middot; Work</p>
     <h1 class="work-intro-title">Real before &amp; afters, not mockups.</h1>
     <p class="work-intro-lede measure">
       Every comparison below is a real screenshot &mdash; the site as it runs
@@ -48,17 +39,23 @@ export default function work({ projects }) {
 </section>`;
 
   // -- 2. FEATURED TIER -----------------------------------------------------
-  const featuredProjects = projects.filter((p) => FEATURED_SLUGS.has(p.slug));
-  const featuredCards = featuredProjects.map((project) => projectCard({ project, featured: true }));
+  // Exactly ONE featured project, shown larger. Server-rendered default is
+  // the first project flagged featured:true in projects.json (a sensible,
+  // deterministic pick for a no-JS visitor); assets/js/main.js's
+  // initWorkFeaturedRandom() replaces this slot's content with a randomly
+  // chosen project (cloned + re-sized from the full grid below, its wipe
+  // re-wired) on every page load, so the pool is genuinely all 17.
+  const defaultFeatured = projects.find((p) => p.featured) || projects[0];
+  const featuredCard = projectCard({ project: defaultFeatured, featured: true });
 
   const featuredTier = section({
     id: "featured",
     eyebrow: "Featured",
-    title: "Four of the seventeen, up close.",
+    title: "One of the seventeen — a different one each visit.",
     intro:
-      "Three full redesigns and the cart-and-theme migration that best shows what a re-platform under a live store looks like — shown larger, because these are the ones worth lingering on.",
+      "Picked at random from all 17 projects on load, so reloading this page shows a different rebuild, upgrade, or new build shown larger. Drag its slider like any other.",
     reveal: true,
-    children: html`<div class="featured-work work-featured-grid">${featuredCards}</div>`,
+    children: html`<div class="featured-work work-featured-grid" data-work-featured>${featuredCard}</div>`,
   });
 
   // -- 3. FILTER BAR + FULL GRID --------------------------------------------

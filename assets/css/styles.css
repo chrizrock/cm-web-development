@@ -1703,10 +1703,6 @@
   a.channel-value:hover { color: var(--accent-ink); }
   a.channel-value:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
 
-  /* -- 4. Closing reassurance --------------------------------------------------- */
-  .contact-closing { text-align: center; }
-  .contact-closing-line { margin-inline: auto; text-align: center; font-size: var(--fs-md); }
-
   /* -- Contact responsive -------------------------------------------------------- */
   @media (min-width: 641px) {
     .form-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
