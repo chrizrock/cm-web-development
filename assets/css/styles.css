@@ -1358,6 +1358,179 @@
     .services-intro-title { max-width: none; }
   }
 
+  /* ======================================================================
+     ABOUT PAGE (Task 10)
+     Portrait + the real cv.json summary as the hero, a grouped skills grid,
+     a condensed experience timeline, a "why me" values band, and a closing
+     CTA (reuses .cta-panel from Home). Token-driven; only what's genuinely
+     new for this page lives here.
+     ====================================================================== */
+
+  /* -- 1. Intro / hero: portrait + summary --------------------------------- */
+  .about-intro-inner {
+    display: grid;
+    gap: var(--space-8);
+    align-items: center;
+  }
+  .about-intro-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .about-intro-title { max-width: 18ch; }
+  .about-intro-summary { font-size: var(--fs-md); }
+  .about-intro-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  /* Portrait: assets/img/portrait.jpg is a genuinely square source
+     (560x560) rendered as a circle. Width AND height are both set to the
+     same fixed clamp() value below — not aspect-ratio — so the box stays
+     square even in older in-app WebViews that don't support the
+     aspect-ratio property. The ring is a gradient border (padding +
+     background), echoing the signature teal->violet anchor glow without
+     putting text or meaning on --accent-2. */
+  .about-portrait-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  .about-portrait-ring {
+    width: clamp(200px, 22vw, 300px);
+    height: clamp(200px, 22vw, 300px);
+    padding: 4px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: var(--glow);
+  }
+  .about-portrait-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .about-portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* -- 2. Skills grid -------------------------------------------------------- */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  .skill-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .skill-group-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-md);
+    color: var(--accent-ink);
+  }
+  .skill-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .skill-group-items li {
+    position: relative;
+    padding-left: var(--space-4);
+    color: var(--text);
+    font-size: var(--fs-sm);
+  }
+  .skill-group-items li::before {
+    content: "";
+    position: absolute; left: 0; top: 0.55em;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* -- 3. Experience timeline ------------------------------------------------ */
+  .experience-timeline {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-7);
+  }
+  .experience-item {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .experience-item:last-child { padding-bottom: 0; }
+  .experience-item-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .experience-item-role {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-lg);
+    color: var(--text);
+  }
+  .experience-item-org {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--accent-ink);
+    max-width: none;
+  }
+  .experience-item-dates {
+    margin-top: var(--space-1);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .experience-item-line {
+    margin-top: var(--space-2);
+    color: var(--muted);
+    max-width: 64ch;
+  }
+
+  /* -- 4. Why me / values ------------------------------------------------------ */
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  .value-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .value-card-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-md);
+    color: var(--text);
+  }
+  .value-card-copy { color: var(--muted); font-size: var(--fs-sm); }
+
+  /* -- About responsive -------------------------------------------------------- */
+  @media (min-width: 641px) {
+    .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 761px) {
+    .about-intro-inner { grid-template-columns: 1.3fr 0.7fr; }
+    .about-portrait-wrap { justify-content: flex-end; }
+  }
+  @media (min-width: 1001px) {
+    .skills-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .values-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .about-intro-title { max-width: none; }
+  }
+
   /* -- Footer ------------------------------------------------------------- */
   .site-footer {
     margin-top: var(--space-9);

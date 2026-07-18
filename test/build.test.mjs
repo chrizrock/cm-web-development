@@ -133,3 +133,38 @@ test("services page CTA links to contact.html", () => {
   const h = read("services.html");
   assert.match(h, /class="[^"]*cta-panel[^"]*"[\s\S]*?href="contact\.html"/);
 });
+
+// --- About page (Task 10) --------------------------------------------------
+
+test("about page renders summary, portrait, and CV download", () => {
+  const h = read("about.html");
+  assert.match(h, /Chris_Dave_Magahis_CV\.pdf/);
+  assert.match(h, /portrait\.jpg/);
+  const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
+  assert.ok(h.includes(cv.summary.slice(0, 30)));
+});
+
+test("about page has exactly one h1", () => {
+  const h = read("about.html");
+  assert.equal((h.match(/<h1[\s>]/g) || []).length, 1);
+});
+
+test("about page renders every skills group and every experience role", () => {
+  const h = read("about.html");
+  const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
+  // esc() renders "&" as the literal entity "&amp;" in output HTML (see the
+  // services-page test above for the same note).
+  for (const group of cv.skills) assert.ok(h.includes(group.group.replace(/&/g, "&amp;")), group.group);
+  for (const role of cv.experience) assert.ok(h.includes(role.company.replace(/&/g, "&amp;")), role.company);
+  for (const role of cv.earlierExperience) assert.ok(h.includes(role.company.replace(/&/g, "&amp;")), role.company);
+});
+
+test("about page portrait has explicit width/height and real alt text", () => {
+  const h = read("about.html");
+  assert.match(h, /<img class="about-portrait-img" src="assets\/img\/portrait\.jpg" alt="Chris Dave Magahis"\s+width="560" height="560"/);
+});
+
+test("about page CTA links to contact.html", () => {
+  const h = read("about.html");
+  assert.match(h, /class="[^"]*cta-panel[^"]*"[\s\S]*?href="contact\.html"/);
+});

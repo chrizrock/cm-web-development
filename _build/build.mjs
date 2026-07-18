@@ -25,6 +25,7 @@ const loadJSON = (file) =>
   decodeData(JSON.parse(readFileSync(path.join(__dirname, "data", file), "utf8")));
 const site = loadJSON("site.json");
 const projects = loadJSON("projects.json");
+const cv = loadJSON("cv.json");
 
 export function pageShell({ page, title, description, main }) {
   return html`<!doctype html>
@@ -58,7 +59,7 @@ export function build() {
       page: p.page,
       title: p.title,
       description: p.description,
-      main: p.render({ site, projects }),
+      main: p.render({ site, projects, cv }),
     });
     writeFileSync(path.join(ROOT, p.file), serialize(out), "utf8");
   }
