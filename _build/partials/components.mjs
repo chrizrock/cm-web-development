@@ -142,7 +142,7 @@ export function beforeAfter({ project, size = "grid" }) {
 
   const uid = `beforeafter-${slug}-${size}`;
 
-  return html`<div class="before-after${sizeClass}" data-beforeafter style="--wipe: 50%">
+  return html`<div class="before-after${sizeClass}" data-beforeafter style="--wipe: 50cqi">
   <div class="before-after-frame before-after-frame--desktop">
     <img class="before-after-img before-after-img--before" src="${shotPath(slug, "before", "desktop")}"
       alt="${name} — before" loading="lazy" width="${SHOT.desktop.w}" height="${SHOT.desktop.h}" />

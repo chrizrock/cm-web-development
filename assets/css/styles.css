@@ -526,7 +526,7 @@
      clip-path one below), so reduced-motion snapping needs no extra rule
      here or in JS. */
   .before-after {
-    --wipe: 55%;
+    --wipe: 50cqi;
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -546,6 +546,13 @@
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
+    /* Query container for the wipe handle below: --wipe is stored in `cqi`
+       (a length relative to THIS frame's own inline size) instead of `%` so
+       the handle can be positioned with `transform` (relative to the
+       handle's own tiny box) while still landing at the right fraction of
+       the frame -- a plain `%` translateX can't do that since it resolves
+       against the translated element's own size, not an ancestor's. */
+    container-type: inline-size;
   }
   .before-after-frame--desktop {
     flex: 1 1 260px;
@@ -574,7 +581,7 @@
     -webkit-user-drag: none; user-drag: none;
   }
   .before-after-img--after {
-    clip-path: inset(0 calc(100% - var(--wipe, 55%)) 0 0);
+    clip-path: inset(0 calc(100% - var(--wipe, 50cqi)) 0 0);
     transition: clip-path 0.15s ease;
     will-change: clip-path;
   }
@@ -583,20 +590,29 @@
      decorative (pointer-events: none): it visualizes where the drag/range
      currently sits but never intercepts the drag itself. Scoped to
      [data-beforeafter] frames only -- static new-build frames have nothing
-     to wipe, so they get no handle. */
+     to wipe, so they get no handle.
+
+     Positioned with `transform` (compositor-only), not `left` -- `left` is
+     a layout property, and main.js updates --wipe on every pointermove, so
+     a `left`-driven handle forced a layout recalc per drag frame. Each
+     pseudo-element is anchored at its resting `left: 0` and shifted purely
+     via `translate`/`translateX`; the `- 1px` / `- 50%` terms just fold in
+     the same centering math the old `left`+`margin`/`translate(-50%,-50%)`
+     combo did, resolved against the pseudo's own (fixed) size, while
+     `var(--wipe, 50cqi)` supplies the frame-relative distance. */
   [data-beforeafter] .before-after-frame::before {
     content: "";
-    position: absolute; top: 0; bottom: 0;
-    left: var(--wipe, 55%);
-    width: 2px; margin-inline-start: -1px;
+    position: absolute; top: 0; bottom: 0; left: 0;
+    width: 2px;
     background: var(--accent-ink);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+    transform: translateX(calc(var(--wipe, 50cqi) - 1px));
     z-index: 3;
     pointer-events: none;
   }
   [data-beforeafter] .before-after-frame::after {
     content: "\21D4";
-    position: absolute; top: 50%; left: var(--wipe, 55%);
+    position: absolute; top: 50%; left: 0;
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
@@ -605,7 +621,7 @@
     box-shadow: var(--shadow-2);
     color: var(--accent-ink);
     font-size: 14px; line-height: 1;
-    transform: translate(-50%, -50%);
+    transform: translate(calc(var(--wipe, 50cqi) - 50%), -50%);
     z-index: 3;
     pointer-events: none;
   }

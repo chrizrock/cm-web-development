@@ -166,11 +166,14 @@ function initBeforeAfter() {
 
     /** Clamp to [0,100], write --wipe, and keep the range + its
      * aria-valuetext in sync so keyboard/AT users get the same state as a
-     * pointer drag. */
+     * pointer drag. --wipe is stored in `cqi` (see styles.css) so the wipe
+     * handle can track it with `transform` instead of `left`; cqi and `%`
+     * are numerically equivalent fractions of the frame's own width here,
+     * so this doesn't change what the number means. */
     const setWipe = (pct) => {
       const clamped = Math.max(0, Math.min(100, pct));
       const rounded = Math.round(clamped);
-      widget.style.setProperty("--wipe", `${clamped}%`);
+      widget.style.setProperty("--wipe", `${clamped}cqi`);
       if (range) {
         range.value = String(rounded);
         range.setAttribute("aria-valuetext", `${rounded}% after, ${100 - rounded}% before`);
@@ -178,8 +181,29 @@ function initBeforeAfter() {
       return clamped;
     };
 
-    // Sensible default: both before and after read clearly on load.
-    setWipe(55);
+    /** Read whatever wipe state the widget already carries -- the inline
+     * --wipe components.mjs renders, falling back to the range's own value,
+     * falling back to 50 -- instead of guessing. Used only at init: init
+     * must SYNC from existing state, never FORCE a value, or writing a
+     * different number than what's already showing would move --wipe and
+     * fire the after-layer's clip-path transition as an unrequested wipe
+     * animation on load. */
+    const currentWipe = () => {
+      const inline = widget.style.getPropertyValue("--wipe").trim();
+      const parsed = inline ? parseFloat(inline) : NaN;
+      if (!Number.isNaN(parsed)) return parsed;
+      if (range) {
+        const rangeVal = Number(range.value);
+        if (!Number.isNaN(rangeVal)) return rangeVal;
+      }
+      return 50;
+    };
+
+    // Sync the handle/aria FROM the widget's existing resting state --
+    // components.mjs already rendered --wipe (and the range's value) at
+    // 50, so this is a no-op write (same value in, same value out) rather
+    // than a value change, and no transition fires.
+    setWipe(currentWipe());
 
     // -- Pointer drag (mouse + touch, via the Pointer Events API) ----------
     let activeFrame = null;
@@ -207,6 +231,14 @@ function initBeforeAfter() {
       });
       frame.addEventListener("pointermove", (e) => {
         if (activeFrame !== frame) return; // not the frame currently being dragged
+        if (e.buttons === 0) {
+          // No button is actually held: pointerup was missed (e.g. it fired
+          // outside the frame after setPointerCapture threw above), so this
+          // and every future pointermove would otherwise be misread as a
+          // drag. Self-heal by ending the drag instead of moving --wipe.
+          endDrag(e);
+          return;
+        }
         setWipe(pctFromEvent(e, frame));
       });
       const endDrag = (e) => {
@@ -220,6 +252,7 @@ function initBeforeAfter() {
       };
       frame.addEventListener("pointerup", endDrag);
       frame.addEventListener("pointercancel", endDrag);
+      frame.addEventListener("lostpointercapture", endDrag);
     });
 
     // -- Keyboard-accessible range input ------------------------------------
