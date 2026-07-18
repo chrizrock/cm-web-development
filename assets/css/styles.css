@@ -507,6 +507,182 @@
     backdrop-filter: blur(14px) saturate(140%);
   }
 
+  /* -- Before/After comparison (Task 6) ------------------------------------
+     Markup + data-* hooks come from components.mjs's beforeAfter(): the
+     container carries [data-beforeafter] and an inline `--wipe` starting
+     value; the clipped "after" layer is [data-beforeafter-after]; the
+     keyboard path is [data-beforeafter-range]; an optional snap toggle is
+     [data-beforeafter-toggle]. New-build projects render
+     [data-beforeafter-static] instead -- a single "after" screenshot with no
+     wipe machinery at all, so none of the wipe/clip rules below target it
+     (they key off .before-after-img--before/--after, which the static
+     markup never uses).
+
+     --wipe is a 0-100% custom property; main.js is the only thing that ever
+     changes it (pointer drag, the range input, or the toggle snap). Only
+     clip-path/transform/opacity are animated here -- GPU-friendly, no
+     reflow -- and the sitewide prefers-reduced-motion block at the bottom
+     of this file already zeroes every transition-duration (including the
+     clip-path one below), so reduced-motion snapping needs no extra rule
+     here or in JS. */
+  .before-after {
+    --wipe: 55%;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .before-after-frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
+    box-shadow: var(--shadow-2);
+    cursor: ew-resize;
+    /* The frame IS the drag surface (main.js listens for pointer events on
+       it directly) -- touch-action: none stops the browser from treating a
+       horizontal drag as a page-scroll/refresh gesture on touch. */
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .before-after-frame--desktop {
+    flex: 1 1 260px;
+    aspect-ratio: 2880 / 1800;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+  .before-after-frame--mobile {
+    flex: 0 0 auto;
+    align-self: flex-end;
+    width: clamp(84px, 22%, 148px);
+    aspect-ratio: 780 / 1688;
+    border-radius: var(--radius-xl);
+    border: 4px solid var(--surface-3);
+    margin-inline-start: calc(-1 * var(--space-6));
+    margin-block-end: var(--space-2);
+    box-shadow: var(--shadow-3);
+  }
+
+  .before-after-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    pointer-events: none; /* the frame owns pointer events, not the image */
+    -webkit-user-select: none; user-select: none;
+    -webkit-user-drag: none; user-drag: none;
+  }
+  .before-after-img--after {
+    clip-path: inset(0 calc(100% - var(--wipe, 55%)) 0 0);
+    transition: clip-path 0.15s ease;
+    will-change: clip-path;
+  }
+
+  /* Wipe handle -- a vertical line + circular grip tracking --wipe. Purely
+     decorative (pointer-events: none): it visualizes where the drag/range
+     currently sits but never intercepts the drag itself. Scoped to
+     [data-beforeafter] frames only -- static new-build frames have nothing
+     to wipe, so they get no handle. */
+  [data-beforeafter] .before-after-frame::before {
+    content: "";
+    position: absolute; top: 0; bottom: 0;
+    left: var(--wipe, 55%);
+    width: 2px; margin-inline-start: -1px;
+    background: var(--accent-ink);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+    z-index: 3;
+    pointer-events: none;
+  }
+  [data-beforeafter] .before-after-frame::after {
+    content: "\21D4";
+    position: absolute; top: 50%; left: var(--wipe, 55%);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent-ink);
+    box-shadow: var(--shadow-2);
+    color: var(--accent-ink);
+    font-size: 14px; line-height: 1;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .before-after-badge {
+    position: absolute; top: var(--space-3); left: var(--space-3); z-index: 4;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--surface-2); border: 1px solid var(--border-strong);
+    color: var(--muted); font-size: var(--fs-xs); font-weight: 600;
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+  }
+
+  .before-after-controls {
+    flex: 1 1 100%;
+    display: flex; align-items: center; gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .before-after-range-label { flex: 1 1 auto; display: flex; }
+  .before-after-range {
+    width: 100%;
+    min-height: 44px; /* >=44px touch target even though the visual track is thin */
+    padding-block: 12px;
+    -webkit-appearance: none; appearance: none;
+    background: transparent;
+    cursor: ew-resize;
+  }
+  .before-after-range::-webkit-slider-runnable-track {
+    height: 4px; border-radius: 2px; background: var(--border-strong);
+  }
+  .before-after-range::-moz-range-track {
+    height: 4px; border-radius: 2px; background: var(--border-strong);
+  }
+  .before-after-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px; margin-top: -9px;
+    border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--on-accent);
+    box-shadow: var(--shadow-2);
+    transition: transform 0.15s ease;
+  }
+  .before-after-range::-webkit-slider-thumb:hover { transform: scale(1.1); }
+  .before-after-range::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--on-accent);
+    box-shadow: var(--shadow-2);
+  }
+  .before-after-range:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-sm); }
+
+  .before-after-toggle {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--text);
+    font-size: var(--fs-sm); font-weight: 600;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+  .before-after-toggle:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .before-after-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .before-after-toggle[aria-pressed="true"] {
+    background: var(--accent); color: var(--on-accent); border-color: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    /* Overlap relies on a negative margin pulling the phone frame left; on
+       very narrow viewports there isn't room for that without risking
+       overflow, so stack the two frames instead. */
+    .before-after-frame--mobile {
+      margin-inline-start: 0;
+      align-self: flex-start;
+      width: clamp(96px, 46%, 160px);
+    }
+  }
+
   /* -- Scroll reveal --------------------------------------------------------
      Default state is hidden + nudged down; main.js's IntersectionObserver
      adds .is-revealed once an element enters the viewport (unobserves after,

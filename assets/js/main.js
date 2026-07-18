@@ -140,6 +140,104 @@ function initMagnetic() {
   });
 }
 
+/** Before/after wipe (Task 6): for each [data-beforeafter] container, wires
+ * pointer drag on the frame(s), the keyboard-accessible [data-beforeafter-range]
+ * input, and an optional [data-beforeafter-toggle] snap button — all three
+ * just set the same `--wipe` custom property (0-100, a percentage) on the
+ * container, which styles.css uses to clip [data-beforeafter-after] via
+ * clip-path. [data-beforeafter-static] (new-build projects, no "before" to
+ * compare against) is left completely alone — components.mjs never gives it
+ * a range/toggle/data-beforeafter, so querying for those hooks inside it
+ * would simply find nothing.
+ *
+ * Reduced-motion note: the wipe's clip-path transition is killed globally by
+ * the `*, *::before, *::after { transition-duration: 0.001ms !important }`
+ * rule in styles.css's reduced-motion block, so drag/keyboard/toggle all
+ * snap under reduced-motion with no special-casing needed here. */
+function initBeforeAfter() {
+  const widgets = document.querySelectorAll("[data-beforeafter]");
+  if (!widgets.length) return;
+
+  widgets.forEach((widget) => {
+    const range = widget.querySelector("[data-beforeafter-range]");
+    const toggle = widget.querySelector("[data-beforeafter-toggle]");
+    const frames = widget.querySelectorAll(".before-after-frame");
+    if (!frames.length) return;
+
+    /** Clamp to [0,100], write --wipe, and keep the range + its
+     * aria-valuetext in sync so keyboard/AT users get the same state as a
+     * pointer drag. */
+    const setWipe = (pct) => {
+      const clamped = Math.max(0, Math.min(100, pct));
+      const rounded = Math.round(clamped);
+      widget.style.setProperty("--wipe", `${clamped}%`);
+      if (range) {
+        range.value = String(rounded);
+        range.setAttribute("aria-valuetext", `${rounded}% after, ${100 - rounded}% before`);
+      }
+      return clamped;
+    };
+
+    // Sensible default: both before and after read clearly on load.
+    setWipe(55);
+
+    // -- Pointer drag (mouse + touch, via the Pointer Events API) ----------
+    let activeFrame = null;
+    const pctFromEvent = (e, frame) => {
+      const rect = frame.getBoundingClientRect();
+      if (!rect.width) return 0;
+      return ((e.clientX - rect.left) / rect.width) * 100;
+    };
+
+    frames.forEach((frame) => {
+      frame.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        activeFrame = frame;
+        // setWipe first: setPointerCapture can throw (e.g. an id the browser
+        // doesn't consider active) and must never block the visual update a
+        // click/tap-down is supposed to produce.
+        setWipe(pctFromEvent(e, frame));
+        try {
+          frame.setPointerCapture(e.pointerId);
+        } catch (err) {
+          /* capture is a nice-to-have (keeps the drag tracking outside the
+             frame's bounds) — the pointermove listener below still works
+             without it as long as the pointer stays over the frame. */
+        }
+      });
+      frame.addEventListener("pointermove", (e) => {
+        if (activeFrame !== frame) return; // not the frame currently being dragged
+        setWipe(pctFromEvent(e, frame));
+      });
+      const endDrag = (e) => {
+        if (activeFrame !== frame) return;
+        try {
+          if (frame.hasPointerCapture(e.pointerId)) frame.releasePointerCapture(e.pointerId);
+        } catch (err) {
+          /* nothing to release — already ignored at capture time above */
+        }
+        activeFrame = null;
+      };
+      frame.addEventListener("pointerup", endDrag);
+      frame.addEventListener("pointercancel", endDrag);
+    });
+
+    // -- Keyboard-accessible range input ------------------------------------
+    if (range) {
+      range.addEventListener("input", () => setWipe(Number(range.value)));
+    }
+
+    // -- Optional before/after snap toggle -----------------------------------
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        const next = toggle.getAttribute("aria-pressed") !== "true";
+        toggle.setAttribute("aria-pressed", String(next));
+        setWipe(next ? 100 : 0);
+      });
+    }
+  });
+}
+
 /** Accessible mobile nav: hamburger toggle -> slide-in panel with a focus
  * trap, Esc-to-close (returns focus to the toggle), backdrop/link-click to
  * close, and a scrollbar-aware body-scroll lock (no CLS). Honors
@@ -247,6 +345,7 @@ function init() {
   initHeroGlow();
   initMagnetic();
   initMobileNav();
+  initBeforeAfter();
 }
 
 if (document.readyState === "loading") {
