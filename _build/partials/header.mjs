@@ -42,7 +42,7 @@ export default function header({ page }) {
   // viewport correctly.
   return html`<header class="site-header">
   <div class="container header-inner">
-    <a class="logo"${raw(attr({ href: "index.html", "aria-label": `${site.meta.siteName} home` }))}>${raw(logoSvg)}</a>
+    <a class="logo"${raw(attr({ href: "index.html", "aria-label": `${site.meta.siteName} home` }))}>${raw(logoSvg)}<span class="logo-wordmark" aria-hidden="true">Web Development</span></a>
     <nav class="site-nav" aria-label="Primary">
       <ul>${buildNavLinks()}</ul>
     </nav>

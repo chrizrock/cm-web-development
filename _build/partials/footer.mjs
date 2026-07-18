@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { html, raw } from "../lib/render.mjs";
+import { html, raw, attr } from "../lib/render.mjs";
 import { decodeData } from "../lib/decode.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -23,7 +23,7 @@ export default function footer() {
   return html`<footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <span class="logo logo--footer" aria-hidden="true">${raw(logoSvg)}</span>
+      <a class="logo logo--footer"${raw(attr({ href: "index.html", "aria-label": `${meta.siteName} home` }))}>${raw(logoSvg)}<span class="logo-wordmark" aria-hidden="true">Web Development</span></a>
       <p class="footer-tagline">${meta.tagline}</p>
     </div>
     <nav class="footer-nav" aria-label="Footer">

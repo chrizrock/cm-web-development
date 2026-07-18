@@ -317,13 +317,45 @@
   }
 
   .logo {
-    display: inline-flex; align-items: center;
+    display: inline-flex; align-items: center; gap: var(--space-2);
     color: var(--text);
     transition: color 0.25s ease, transform 0.25s ease;
   }
   .logo svg { height: 30px; width: auto; }
   .logo:hover { color: var(--accent-ink); }
   .logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: var(--radius-sm); }
+
+  /* "Web Development" wordmark completing the "CM" monogram into the full
+     CM Web Development lockup (rev4 Change B). Real text, not an image --
+     better for a11y/SEO -- but it's still purely decorative CHROME: the
+     link's own aria-label ("<siteName> home") is the accessible name
+     regardless of this span's content, so it's marked aria-hidden to avoid
+     a screen reader announcing the monogram's own "CM monogram" label,
+     then this text, as two confusing fragments alongside the link name.
+     Muted at rest (secondary to the bright monogram mark) and brightens
+     together with it on hover/focus since both key off .logo's color via
+     currentColor -- only the resting tone is set explicitly here. */
+  .logo-wordmark {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .logo:hover .logo-wordmark,
+  .logo:focus-visible .logo-wordmark { color: currentColor; }
+
+  /* Below 421px the header has the monogram + wordmark on one side and the
+     theme toggle + hamburger on the other with no room to spare -- drop the
+     wordmark and keep just the "cm" mark (still a complete, recognizable
+     logo). Scoped to the header only: the footer lockup has a full row to
+     itself and always shows the full wordmark (see .logo--footer below). */
+  @media (max-width: 420px) {
+    .site-header .logo-wordmark { display: none; }
+  }
 
   .site-nav { margin-inline-start: auto; }
   .site-nav ul { display: flex; align-items: center; gap: clamp(0.4rem, 0.1rem + 1vw, 1.25rem); }
@@ -1151,6 +1183,47 @@
     box-shadow: var(--shadow-3), var(--glow);
   }
 
+  /* -- 2b. Full-width showcase (rev4 Change A) ----------------------------
+     The work page's single featured pick isn't a card among cards -- it's
+     the visual centerpiece at the top of the page. Everything below is
+     scoped to .work-featured-grid so Home's featured tier (which reuses the
+     exact same .project-card--featured/.before-after--featured classes for
+     its own, unrelated 3-up grid) is completely untouched.
+
+     .work-featured-grid wraps the whole thing in an elevated panel, then
+     .project-card--featured is forced to a single stacked column (media
+     full width on top, the eyebrow/name/blurb/tags/link editorial detail
+     row below) at EVERY width -- not just below the 921px breakpoint where
+     the plain .project-card--featured rule (used elsewhere) already
+     stacks. Two classes beats one, so this wins regardless of source
+     order: no need to fight or duplicate the min-width:921px rule above. */
+  .work-featured-grid {
+    padding: clamp(var(--space-5), 2.5vw + var(--space-3), var(--space-8));
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-3);
+  }
+  .work-featured-grid .project-card--featured {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(var(--space-6), 3vw, var(--space-7));
+  }
+  /* Full-width media: the desktop frame's own flex:1 1 260px (base rule)
+     already grows it to fill whatever room the mobile frame + gap leave --
+     widening the PANEL above is what turns that into a genuinely large,
+     full-width showcase image instead of a narrow card thumbnail. */
+  .work-featured-grid .before-after {
+    width: 100%;
+  }
+  .work-featured-grid .project-card-body {
+    margin-top: 0;
+    max-width: 68ch;
+  }
+  .work-featured-grid .project-card-name {
+    font-size: var(--fs-2xl);
+  }
+
   /* -- 3. Filter bar -------------------------------------------------------- */
   .work-filter-bar {
     display: flex;
@@ -1789,6 +1862,10 @@
   .footer-brand { display: flex; flex-direction: column; gap: var(--space-4); max-width: 34ch; }
   .logo--footer { display: inline-flex; color: var(--text); }
   .logo--footer svg { height: 34px; width: auto; }
+  /* Proportional to the larger 34px footer mark (vs. 30px in the header) --
+     the footer lockup has a full row to itself, so the wordmark always
+     shows here regardless of viewport width (no ≤420px hide rule). */
+  .logo--footer .logo-wordmark { font-size: var(--fs-md); }
   .footer-tagline { color: var(--muted); font-size: var(--fs-sm); max-width: none; }
 
   .footer-nav ul { display: flex; flex-direction: column; gap: var(--space-1); }

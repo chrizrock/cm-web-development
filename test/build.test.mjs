@@ -27,6 +27,20 @@ test("header + footer identical across pages (no drift)", () => {
   assert.ok(footers.every((h) => h === footers[0]), "footers differ");
 });
 
+// rev4 Change B: the "cm" monogram gets a "Web Development" wordmark next
+// to it in BOTH the header and footer lockups, completing the CM Web
+// Development brand. Real text (not an image), and part of the home link
+// in both places.
+test("header + footer both show the 'Web Development' wordmark next to the monogram, as a home link", () => {
+  for (const f of PAGES) {
+    const h = read(f);
+    const header = h.match(/<header[\s\S]*?<\/header>/)[0];
+    const footer = h.match(/<footer[\s\S]*?<\/footer>/)[0];
+    assert.match(header, /<a class="logo"[^>]*aria-label="CM Web Development home"[^>]*>[\s\S]*?<span class="logo-wordmark"[^>]*>Web Development<\/span><\/a>/, `${f} header wordmark`);
+    assert.match(footer, /<a class="logo logo--footer"[^>]*aria-label="CM Web Development home"[^>]*>[\s\S]*?<span class="logo-wordmark"[^>]*>Web Development<\/span><\/a>/, `${f} footer wordmark`);
+  }
+});
+
 test("active nav marked per page", () => {
   assert.match(
     read("services.html"),
@@ -166,6 +180,22 @@ test("main.js wires a client-side random featured pick, guarded to the work page
   assert.match(js, /data-work-featured/, "guards on the work page's featured slot");
   assert.match(js, /Math\.random/, "picks randomly");
   assert.match(js, /wireBeforeAfterWidget/, "wires the wipe on the cloned featured pick");
+});
+
+// rev4 Change A: the featured slot is now a full-width showcase panel
+// (.work-featured-grid), not a narrow card -- assert the slot markup that
+// makes that CSS possible is present, and that the CSS itself styles
+// .work-featured-grid as its own scoped panel (never touching Home's
+// unrelated, same-classed .featured-work featured tier).
+test("work page featured slot renders inside the full-width showcase wrapper", () => {
+  const h = read("work.html");
+  assert.match(h, /<div class="featured-work work-featured-grid" data-work-featured>/, "featured slot carries the showcase wrapper class");
+});
+
+test("styles.css scopes the full-width showcase panel to .work-featured-grid, not the bare .featured-work Home reuses", () => {
+  const css = read("assets/css/styles.css");
+  assert.match(css, /\.work-featured-grid\s*\{[^}]*background:\s*var\(--surface\)/, "showcase panel styling present");
+  assert.match(css, /\.work-featured-grid \.project-card--featured\s*\{[^}]*flex-direction:\s*column/, "featured card forced to a full-width stacked layout");
 });
 
 // --- Services page (Task 9) ------------------------------------------------
