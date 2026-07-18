@@ -34,6 +34,22 @@ test("active nav marked per page", () => {
   );
 });
 
+// --- Home page (Task 7) --------------------------------------------------
+
+test("home hero uses the signature line", () => {
+  assert.match(read("index.html"), /rebuild the ones that don.?t/i);
+});
+
+test("home shows the 3 featured projects", () => {
+  const h = read("index.html");
+  for (const slug of ["princess-purse", "madrona-recovery", "component-supply"])
+    assert.match(h, new RegExp(`data-slug="${slug}"`));
+});
+
+test("home stat band renders 4 stats", () => {
+  assert.ok((read("index.html").match(/class="[^"]*stat-tile\b/g) || []).length >= 4);
+});
+
 // --- Entity-decode: pre-encoded HTML entities in source JSON must decode
 // ONCE at data-load time, so downstream esc()/html() output a single
 // &amp; (which the browser displays as "&"), never a double-escaped

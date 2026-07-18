@@ -1,14 +1,15 @@
 // Build engine. pageShell() assembles the full document around a page's
 // <main>; build() renders and writes all 5 static HTML files to the repo
 // root. Zero runtime deps — Node built-ins only.
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { html, serialize } from "./lib/render.mjs";
+import { decodeData } from "./lib/decode.mjs";
 import head from "./partials/head.mjs";
 import header from "./partials/header.mjs";
 import footer from "./partials/footer.mjs";
-import indexPage from "./pages/index.mjs";
+import homePage from "./pages/home.mjs";
 import servicesPage from "./pages/services.mjs";
 import workPage from "./pages/work.mjs";
 import aboutPage from "./pages/about.mjs";
@@ -16,6 +17,14 @@ import contactPage from "./pages/contact.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
+
+// Load + entity-decode the shared data once, then hand it to every page render
+// (see the data note in components.mjs — decode happens once, at load time).
+// Stub pages that take no arguments simply ignore what they're passed.
+const loadJSON = (file) =>
+  decodeData(JSON.parse(readFileSync(path.join(__dirname, "data", file), "utf8")));
+const site = loadJSON("site.json");
+const projects = loadJSON("projects.json");
 
 export function pageShell({ page, title, description, main }) {
   return html`<!doctype html>
@@ -36,7 +45,7 @@ ${footer()}
 // header.mjs) and the canonical/OG-url path segment (in head.mjs), so both
 // partials stay in lockstep with a single identifier per page.
 const PAGES = [
-  { file: "index.html", page: "index.html", title: null, description: null, render: indexPage },
+  { file: "index.html", page: "index.html", title: null, description: null, render: homePage },
   { file: "services.html", page: "services.html", title: "Services", description: null, render: servicesPage },
   { file: "work.html", page: "work.html", title: "Work", description: null, render: workPage },
   { file: "about.html", page: "about.html", title: "About", description: null, render: aboutPage },
@@ -49,7 +58,7 @@ export function build() {
       page: p.page,
       title: p.title,
       description: p.description,
-      main: p.render(),
+      main: p.render({ site, projects }),
     });
     writeFileSync(path.join(ROOT, p.file), serialize(out), "utf8");
   }
