@@ -43,9 +43,19 @@
       <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Switch to light theme">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
       </button>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <span class="nav-toggle-icon" aria-hidden="true"></span>
+      </button>
     </div>
   </div>
 </header>
+<div class="nav-shell">
+  <div class="nav-overlay" data-nav-overlay></div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" inert>
+    <ul><li><a href="index.html" >Home</a></li><li><a href="services.html" >Services</a></li><li><a href="work.html" >Work</a></li><li><a href="about.html" >About</a></li><li><a href="contact.html" aria-current="page">Contact</a></li></ul>
+    <a class="btn btn--primary mobile-nav-cta" href="contact.html">Start a project</a>
+  </nav>
+</div>
 <main id="main"><h1>Contact</h1>
 <p>Page content ships in a later task.</p></main>
 <footer class="site-footer">
