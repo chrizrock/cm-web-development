@@ -1,0 +1,11 @@
+{
+  "name": "cm-web-development",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node _build/build.mjs",
+    "test": "node --test",
+    "serve": "node --watch-path=_build _build/build.mjs & npx --yes serve@14 -l 5050 ."
+  }
+}

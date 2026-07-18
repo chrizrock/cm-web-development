@@ -1,0 +1,183 @@
+{
+  "name": "Chris Dave Magahis",
+  "title": "Front-End Developer",
+  "titleRest": [
+    "WordPress",
+    "AI-Augmented Development",
+    "Graphic Design"
+  ],
+  "summary": "Front-end developer and designer with 20+ years of experience building user-centric, high-performing websites for e-commerce, agency, and consultancy clients across the Philippines, the UAE, and the US. Hand-codes semantic, responsive HTML/CSS and manages WordPress portfolios on WP Engine. Most recently designed and built a multi-agent AI development system that automates site analysis, design, WordPress builds, and QA — two decades of craft paired with modern AI engineering.",
+  "skills": [
+    {
+      "group": "Front-End",
+      "items": [
+        "HTML5, CSS3, Bootstrap",
+        "Responsive & Accessible Design",
+        "Cross-Browser Testing",
+        "Performance Optimization"
+      ]
+    },
+    {
+      "group": "WordPress & CMS",
+      "items": [
+        "Block Themes, Elementor, WP-CLI",
+        "WP Engine Hosting & Migrations",
+        "Shopify",
+        "Joomla (Legacy)"
+      ]
+    },
+    {
+      "group": "AI & Automation",
+      "items": [
+        "Claude Code",
+        "Multi-Agent Orchestration",
+        "MCP",
+        "Playwright Automation",
+        "AI QA/Verification",
+        "Prompt & Agent Design"
+      ]
+    },
+    {
+      "group": "AI-Assisted Delivery",
+      "items": [
+        "React (Vite + TypeScript), Node.js, Python",
+        "AI-Assisted Pipeline",
+        "Compile Checks & Visual-Parity QA"
+      ]
+    },
+    {
+      "group": "UI & Graphic Design",
+      "items": [
+        "Figma, Relume, Google Stitch",
+        "Photoshop, Illustrator, InDesign, Lightroom",
+        "Premiere Pro, After Effects"
+      ]
+    },
+    {
+      "group": "Marketing & Ops",
+      "items": [
+        "SEO/SEM",
+        "Email Marketing & Deliverability",
+        "Google Workspace Administration",
+        "Domain/DNS & Hosting",
+        "CRM Administration"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "WordPress Developer",
+      "company": "Thunderbolt Group",
+      "dates": "Nov 2024 – Present",
+      "location": "Colorado, USA · Remote · Full-Time · thunderboltgroup.com",
+      "description": "Colorado digital-marketing agency serving startups to Fortune 100 — deep behavioral-health, legal, and healthcare expertise.",
+      "highlights": [
+        "Manage the agency's portfolio of client WordPress sites end to end — maintenance, plugin/theme updates, backups, security, and uptime/performance monitoring on WP Engine.",
+        "Build, add, and update pages across client sites (Elementor, Divi, Gutenberg block themes), keeping every change on-brand and content-accurate.",
+        "Support SEO, PPC, and content campaigns on the dev side — conversion landing pages, on-page SEO, and blog publishing through a staged dev-review → production workflow.",
+        "Designed and built the agency's project-management application as a custom WordPress plugin — Kanban boards, members, activity log, time tracking, and end-of-day reports on a 50-endpoint REST API (custom post types, PHP 8), served as a standalone full-page app that bypasses the theme and page builder entirely."
+      ],
+      "subSection": "AI Engineering & Automation",
+      "subHighlights": [
+        "Designed and built \"Devy,\" a multi-agent AI web-development system on Claude Code, orchestrating 8+ specialist agents (scraping, design, WordPress & React builds, QA) from intake to deployed build.",
+        "Engineered deterministic QA gates for AI-generated builds: pixel-diff visual parity (≥98% per breakpoint), scripted content-fidelity diffs, and computed-style verification of animations and effects.",
+        "Built an exact site-cloning pipeline that captures rendered HTML, CSS, assets, and motion from any platform (Squarespace, Elementor, Divi) and reproduces it as a native WordPress block theme.",
+        "Packaged the fleet as a versioned internal Claude Code plugin (private GitHub marketplace) so teammates run the same tooling with one command, integrated with production systems via MCP — Playwright, Google Ads/GA4, Drive, Figma, and Clarity.",
+        "Shipped AI agents for SEO and PPC operations — a 15-agent SEO analysis suite and an industry-agnostic Google Ads negative-keyword auditor — plus an AI-assisted blog-publishing workflow with a human-approval gate."
+      ]
+    },
+    {
+      "role": "Front-End Developer",
+      "company": "PinnacleCart",
+      "tag": "(Project-Based)",
+      "dates": "Jan 2026 – Present",
+      "location": "Golden, CO, USA · Remote · pinnaclecart.com",
+      "highlights": [
+        "Project work done outside my full-time hours at Thunderbolt Group — building conversion-focused, mobile-responsive storefront templates in hand-coded HTML, CSS, and Bootstrap on the PinnacleCart eCommerce platform."
+      ]
+    },
+    {
+      "role": "Front-End Developer",
+      "company": "PinnacleCart",
+      "dates": "Dec 2022 – Nov 2024",
+      "location": "Golden, CO, USA · Remote · pinnaclecart.com",
+      "description": "All-in-one eCommerce platform (475+ features) for growth-focused SMBs.",
+      "highlights": [
+        "Re-themed and upgraded merchant storefronts to the latest cart version — migrating live stores off legacy themes onto current, mobile-responsive templates without losing catalog, customers, or traffic.",
+        "Hand-coded semantic HTML, CSS, and Bootstrap to translate mockups into responsive, pixel-accurate pages; optimized CSS to cut file sizes and eliminate render-blocking resources.",
+        "Redesigned and built conversion-focused storefronts for merchants across industrial supply, e-commerce, and retail — from redesigns of existing stores to new builds from scratch.",
+        "Managed multiple WordPress sites on WP Engine — migrations, backup/restore drills, uptime, and performance — with minimal disruption to live traffic."
+      ]
+    },
+    {
+      "role": "Web & Graphic Designer",
+      "company": "Montreal Management Consultants",
+      "dates": "Oct 2015 – Oct 2022",
+      "location": "Dubai, UAE · On-site · mmce.ae",
+      "highlights": [
+        "Managed the company website end to end — concept to final product — with cross-browser, multi-resolution testing; configured hosting, domains, and Google Workspace.",
+        "Designed corporate identity systems (logos, letterhead, business cards) and full marketing packages — brochures, banners, posters, print — plus original social-media graphics; administered SugarCRM and Apptivo."
+      ]
+    },
+    {
+      "role": "Web & Graphic Designer",
+      "company": "Fabyulos",
+      "tag": "(Freelance)",
+      "dates": "Feb 2019 – Jun 2021",
+      "location": "Remote · fabyulos.com",
+      "highlights": [
+        "Designed and developed a Shopify e-commerce store (jersey apparel); set up hosting, domains, and email, managed the product catalog, and linked the store to Facebook Shops."
+      ]
+    }
+  ],
+  "earlierExperience": [
+    {
+      "role": "Web & Graphic Designer",
+      "company": "We Buy Your Property",
+      "dates": "2013 – 2015",
+      "location": "Dubai, UAE · On-site",
+      "line": "CMS websites on WordPress and Joomla, corporate branding, vtiger CRM administration, and daily email/SMS campaigns end to end."
+    },
+    {
+      "role": "Web & Graphic Designer",
+      "company": "South Travel & Tourism",
+      "dates": "2007 – 2013",
+      "location": "Dubai, UAE · On-site",
+      "line": "Site performance and landing pages, SEO/SEM traffic growth, and email campaigns for a long-running Dubai travel agency."
+    },
+    {
+      "role": "Web Designer",
+      "company": "South East Asia Tours",
+      "dates": "2004 – 2007",
+      "location": "Sharjah, UAE · On-site",
+      "line": "Designed and deployed 15+ hand-coded hotel-booking websites; set the design guidelines, templates, and file-structure standards."
+    }
+  ],
+  "notableProjects": [
+    {
+      "name": "A-American Self Storage",
+      "meta": "(Wichita Falls, TX)",
+      "description": "Full WordPress redesign: a conversion-focused rebuild staged on WP Engine."
+    },
+    {
+      "name": "Windhorse Integrative Mental Health",
+      "meta": "(nonprofit)",
+      "description": "React (Vite + TypeScript) rebuild via my AI-assisted pipeline, with pixel-parity QA."
+    },
+    {
+      "name": "Booth Filter Store",
+      "meta": "(eCommerce)",
+      "description": "Storefront redesign on the PinnacleCart platform, mockup to live build."
+    }
+  ],
+  "education": {
+    "degree": "BS Computer Science",
+    "school": "Central Visayas Polytechnic College",
+    "meta": "Dumaguete City, Philippines · 2001",
+    "extra": "Vice-Chairman, Exec. Committee on IT"
+  },
+  "languages": [
+    "English",
+    "Filipino (Tagalog)"
+  ]
+}

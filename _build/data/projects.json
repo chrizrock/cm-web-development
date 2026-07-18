@@ -1,0 +1,395 @@
+[
+  {
+    "slug": "princess-purse",
+    "name": "Princess Purse",
+    "kind": "Wholesale handbags",
+    "type": "Redesign",
+    "platform": "E-Commerce",
+    "featured": true,
+    "role": "Design & Front-End Build",
+    "blurb": "A dated, cluttered storefront rebuilt around the product photography — a calmer palette, real hierarchy in the navigation, and a hero that finally sells the bags instead of competing with them.",
+    "summary": [
+      "Replaced the crowded three-row header with a single clean bar — logo, search, account, cart.",
+      "Rebuilt the hero around the product photography instead of a stock image with text stacked on top.",
+      "Cut the navigation down to real categories, so buyers reach a product in fewer clicks.",
+      "Made the whole storefront properly responsive — the old one was barely usable on a phone."
+    ],
+    "tags": [
+      "E-Commerce",
+      "Responsive",
+      "Storefront"
+    ],
+    "live": "https://www.princesspurse.com/",
+    "old": "https://web.archive.org/web/20260419025057/http://www.princesspurse.com/"
+  },
+  {
+    "slug": "madrona-recovery",
+    "name": "Madrona Recovery",
+    "kind": "Adolescent behavioral health",
+    "type": "Redesign",
+    "platform": "WordPress",
+    "featured": true,
+    "role": "WordPress Rebuild",
+    "blurb": "Families arrive here in a crisis, so the rebuild is about clarity under stress — a warmer, more confident identity and a path that gets parents to the right program without hunting for it.",
+    "summary": [
+      "Put the primary actions — Referral, Client Portal, Call Now — in the header where a parent in a crisis can find them.",
+      "Rebuilt the program structure so families land on the right level of care instead of browsing.",
+      "Warmer, more confident visual identity while keeping the calm the subject demands.",
+      "Accessible contrast and type sizing throughout — this audience is not reading on a good day."
+    ],
+    "tags": [
+      "WordPress",
+      "Healthcare",
+      "Accessibility"
+    ],
+    "live": "https://madronarecovery.com/",
+    "old": "https://web.archive.org/web/20250404033721/https://www.madronarecovery.com/"
+  },
+  {
+    "slug": "component-supply",
+    "name": "Component Supply",
+    "kind": "Medical device components",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": true,
+    "role": "Storefront Redesign",
+    "blurb": "Hypotubes, mandrels, PTFE, heat shrink — a deep technical catalog for medical device engineers who arrive knowing the exact part number they need. The redesign is built around getting them to it.",
+    "summary": [
+      "Rebuilt the catalog navigation around how engineers actually search — by spec, not by marketing category.",
+      "Cleaner product presentation so a highly technical catalog stops reading like a spreadsheet.",
+      "Modern, mobile-responsive storefront on the current cart version.",
+      "Kept the URL structure intact through the rebuild so existing search rankings survived."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Technical Catalog"
+    ],
+    "live": "https://www.componentsupplycompany.com/",
+    "old": "https://web.archive.org/web/20231030204426/https://www.componentsupplycompany.com/"
+  },
+  {
+    "slug": "booth-filter-store",
+    "name": "Booth Filter Store",
+    "kind": "Industrial filtration",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "A deep, technical catalog where customers know exactly what they need and just have to find it. The redesign puts findability first — clearer merchandising, and a storefront that holds up on a phone in a workshop.",
+    "summary": [
+      "Findability first: search and category structure surfaced, because these buyers arrive knowing the part they need.",
+      "Cleaner product merchandising so a technical catalog stops looking like a spreadsheet.",
+      "Rebuilt mobile layout — the store gets used on a phone, on a shop floor, in gloves.",
+      "Hand-coded on the PinnacleCart platform, no page-builder bloat."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Conversion"
+    ],
+    "live": "https://www.boothfilterstore.com/cart2/",
+    "old": "https://www.boothfilterstore.com/"
+  },
+  {
+    "slug": "pro-scientific",
+    "name": "PRO Scientific",
+    "kind": "Laboratory homogenizers",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "A US manufacturer of rotor-stator and multi-sample homogenizers for biotech, pharma, and food science. The rebuild gives serious lab equipment a storefront that looks as precise as the instruments.",
+    "summary": [
+      "Rebuilt the product presentation to match the precision of the instruments being sold.",
+      "Clearer paths by application — biotech, pharma, food, cosmetics — rather than one flat catalog.",
+      "Modern responsive storefront on the current cart version.",
+      "Kept the technical depth buyers need while cutting the visual clutter around it."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Manufacturing"
+    ],
+    "live": "https://www.proscientific.com/sandbox/",
+    "old": "https://proscientific.com/"
+  },
+  {
+    "slug": "hollywood-poster-frames",
+    "name": "Hollywood Poster Frames",
+    "kind": "Wholesale picture &amp; poster frames",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "A wholesale frame supplier with a catalog spanning movie posters, comics, albums, and certificates — every size, every format. The redesign makes a sprawling catalog navigable.",
+    "summary": [
+      "Restructured a sprawling catalog so buyers can find a frame by size and format, not by scrolling.",
+      "Modernized the storefront and brought it onto a current, mobile-responsive theme.",
+      "Cleaner product imagery — the product is a frame, so the presentation has to get out of its way.",
+      "Rebuilt the checkout path for wholesale buyers ordering in volume."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Wholesale"
+    ],
+    "live": "https://hollywoodposterframes.com/",
+    "old": "https://web.archive.org/web/20240327073359/https://hollywoodposterframes.com/"
+  },
+  {
+    "slug": "velodrome",
+    "name": "Velodrome Shop",
+    "kind": "Track cycling",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "A specialist track-cycling store rebuilt for an audience that knows exactly what it wants — clean product presentation and a storefront that doesn't get in the way of the bike.",
+    "summary": [
+      "Rebuilt the storefront around the product photography.",
+      "Simplified the navigation for a specialist audience that shops by category and spec.",
+      "Modern, mobile-responsive layout on a current theme.",
+      "Cleaner, faster front end than the template it replaced."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Retail"
+    ],
+    "live": "https://www.velodrome.shop/",
+    "old": "https://web.archive.org/web/20230530183609/https://www.velodrome.shop/"
+  },
+  {
+    "slug": "monster-makers",
+    "name": "The Monster Makers",
+    "kind": "Mask-making &amp; special-effects supplies",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "Latex, foam, clay and mold-making supplies for prop and creature builders. A cult catalog that deserved a storefront with as much character as the work it supplies.",
+    "summary": [
+      "Rebuilt the storefront to match the character of the craft it serves.",
+      "Restructured the catalog by material and process, the way a builder actually shops.",
+      "Modern, mobile-responsive layout on the current cart version.",
+      "Delivered on a staging sandbox for review before go-live."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Specialty"
+    ],
+    "live": "https://sandbox2.mypinnaclecart.com/monstermakers/",
+    "old": "https://www.monstermakers.com/"
+  },
+  {
+    "slug": "oxman-and-oxman",
+    "name": "Oxman &amp; Oxman",
+    "kind": "Colorado trial attorneys",
+    "type": "Redesign",
+    "platform": "WordPress",
+    "featured": false,
+    "role": "Website Rebuild",
+    "blurb": "A full-service Colorado law firm. People arriving here are usually having a bad week — so the rebuild is about credibility, clarity, and making it obvious how to reach a human.",
+    "summary": [
+      "Rebuilt around trust signals — the practice areas and the attorneys, not stock imagery.",
+      "Made contact unmissable: a prospective client should never hunt for the phone number.",
+      "Clear practice-area structure so visitors self-select into the right matter fast.",
+      "Modern, mobile-responsive rebuild — most people find a lawyer on a phone."
+    ],
+    "tags": [
+      "WordPress",
+      "Legal",
+      "Responsive"
+    ],
+    "live": "https://www.oxmanandoxman.com/",
+    "old": "https://web.archive.org/web/20241125071026/https://www.oxmanandoxman.com/"
+  },
+  {
+    "slug": "thunderbolt-group",
+    "name": "Thunderbolt Group",
+    "kind": "Digital marketing agency",
+    "type": "Redesign",
+    "platform": "WordPress",
+    "featured": false,
+    "role": "Brand Site Rebuild",
+    "blurb": "The agency's own site — the hardest client. Traded a stock-photo skyline and a slow preloader for a sharper, faster brand presence that actually shows the work.",
+    "summary": [
+      "Killed the full-screen preloader that made the old site feel broken before it even appeared.",
+      "Dropped the stock skyline hero for a layout that actually shows the agency's work and clients.",
+      "Rebuilt the page structure so services and case studies are reachable, not buried.",
+      "Faster load and a sharper brand presence — the site an agency should be able to point at."
+    ],
+    "tags": [
+      "WordPress",
+      "Brand Site",
+      "Performance"
+    ],
+    "live": "https://www.thunderboltgroup.com/",
+    "old": "https://web.archive.org/web/20250911094130/https://www.thunderboltgroup.com"
+  },
+  {
+    "slug": "pe-connectors",
+    "name": "Phoenix Enterprises (PE)",
+    "kind": "Electronic components",
+    "type": "Cart &amp; Theme Upgrade",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Cart Upgrade &amp; Re-Theme",
+    "blurb": "Connectors, IC sockets, ribbon cable, hook-up wire — a long-established components supplier running on a legacy cart and an aging theme. Migrated to the current cart version and re-themed, live, without losing the catalog.",
+    "summary": [
+      "Upgraded the store to the latest cart version.",
+      "Replaced the legacy theme with a current, mobile-responsive template.",
+      "Migrated a large components catalog intact — products, categories, and customer accounts.",
+      "Kept the store trading throughout; no downtime, no lost URLs."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "Cart Upgrade",
+      "Re-Theme",
+      "Migration"
+    ],
+    "live": "https://www.peconnectors.com/",
+    "old": "https://web.archive.org/web/20231223000853/https://www.peconnectors.com/"
+  },
+  {
+    "slug": "buymerchant",
+    "name": "BuyMerchant",
+    "kind": "Wholesale closeouts",
+    "type": "Cart &amp; Theme Upgrade",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Cart Upgrade &amp; Re-Theme",
+    "blurb": "Bulk closeouts and wholesale lots for nonprofits, charities, and promotional buyers. Brought off a dated theme and an old cart build onto the current version.",
+    "summary": [
+      "Upgraded the store to the latest cart version.",
+      "Re-themed onto a current, mobile-responsive template.",
+      "Preserved the catalog, pricing tiers, and customer accounts through the migration.",
+      "Cleaner bulk-buying paths for the wholesale and nonprofit audience."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "Cart Upgrade",
+      "Re-Theme",
+      "Wholesale"
+    ],
+    "live": "https://www.buymerchant.com/",
+    "old": "https://web.archive.org/web/20240302124310/https://buymerchant.com/"
+  },
+  {
+    "slug": "horse-smarts",
+    "name": "Horse Smarts",
+    "kind": "Equestrian jewelry &amp; engraved gifts",
+    "type": "Redesign",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Storefront Redesign",
+    "blurb": "Equestrian jewelry, engraved awards, and breed-specific designs — a gift catalog where people arrive shopping for a horse, a Corgi, a Doberman. The redesign is built around letting them browse by the thing they love.",
+    "summary": [
+      "Rebuilt the catalog around how people actually shop it — by breed and by occasion, not by product type.",
+      "Gave the jewelry and engraved pieces the product photography they deserved instead of a cramped grid.",
+      "Modern, mobile-responsive storefront — gift shopping happens on a phone.",
+      "Clearer path from browsing a design to ordering it engraved."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "E-Commerce",
+      "Retail"
+    ],
+    "live": "https://www.horsesmarts.net/store/",
+    "old": "https://web.archive.org/web/20240625174322/https://www.horsesmarts.net/store/"
+  },
+  {
+    "slug": "duraready",
+    "name": "DuraReady",
+    "kind": "Industrial labels",
+    "type": "Cart &amp; Theme Upgrade",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Cart Upgrade &amp; Re-Theme",
+    "blurb": "No-fade, chemical-resistant labels for Zebra and DYMO printers — a highly technical SKU catalog where the right label is a spec, not a style. Upgraded and re-themed.",
+    "summary": [
+      "Upgraded the store to the latest cart version.",
+      "Re-themed onto a current, mobile-responsive template.",
+      "Kept the spec-driven catalog navigable — buyers choose by material, size, and resistance.",
+      "Delivered alongside the live store so it could be reviewed before switching over."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "Cart Upgrade",
+      "Re-Theme",
+      "Technical Catalog"
+    ],
+    "live": "https://duraready.com/cart2/",
+    "old": "https://duraready.com/"
+  },
+  {
+    "slug": "7-day-drapes",
+    "name": "7 Day Drapes",
+    "kind": "Custom drapes &amp; curtains",
+    "type": "New Build",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "New Build",
+    "blurb": "A new storefront, built from nothing. Quick-ship custom drapery, made in the USA — a configurable product sold online, which means the hard part is making a made-to-measure purchase feel simple.",
+    "summary": [
+      "Built from scratch — no previous site to rebuild from.",
+      "Designed the buying flow around a made-to-measure product: fabric, pleat, size, lining.",
+      "Mobile-first storefront; most drapery shopping starts on a phone.",
+      "Hand-coded front end on the PinnacleCart platform."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "New Build",
+      "E-Commerce"
+    ],
+    "live": "https://7daydrapes.com/"
+  },
+  {
+    "slug": "component-supply-blog",
+    "name": "Component Supply — Blog",
+    "kind": "Technical content hub",
+    "type": "New Build",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "New Build",
+    "blurb": "A new editorial section for a medical-device component supplier — built so their engineering content has a home that supports the catalog rather than sitting apart from it.",
+    "summary": [
+      "New blog section built from scratch, matched to the storefront it lives inside.",
+      "Readable long-form layout for genuinely technical content.",
+      "Built to support the catalog — content that leads back to the parts it discusses.",
+      "Responsive and hand-coded, consistent with the main store."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "New Build",
+      "Content"
+    ],
+    "live": "https://www.componentsupplycompany.com/blog/"
+  },
+  {
+    "slug": "bevel-heaven",
+    "name": "Bevel Heaven",
+    "kind": "Vintage Ducati parts &amp; restoration",
+    "type": "Cart &amp; Theme Upgrade",
+    "platform": "PinnacleCart",
+    "featured": false,
+    "role": "Cart Upgrade &amp; Re-Theme",
+    "blurb": "Bevel-drive Ducati spares — Dellorto, Brembo, Ceriani, Marzocchi — for restorers keeping 1970s machines on the road. Distributing worldwide since 2002, but running on a cart and theme that had aged out from under them.",
+    "summary": [
+      "Upgraded the store to the latest cart version.",
+      "Re-themed onto a current, mobile-responsive template — the old one was a fixed-width, desktop-only layout.",
+      "Migrated a deep parts catalog intact, right down to the model-specific fitment categories restorers navigate by.",
+      "Kept the store trading through the migration: same products, same customers, same URLs."
+    ],
+    "tags": [
+      "PinnacleCart",
+      "Cart Upgrade",
+      "Re-Theme",
+      "Migration"
+    ],
+    "live": "https://store.bevelheaven.com/",
+    "old": "https://web.archive.org/web/20260209033555/https://store.bevelheaven.com/"
+  }
+]

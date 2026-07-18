@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "siteName": "Chris Dave Magahis",
+    "tagline": "Front-end developer & WordPress specialist — 20+ years hand-coding sites that convert",
+    "description": "Hand-coded website rebuilds, new builds, e-commerce cart/theme upgrades, WordPress care, and AI-augmented delivery from a 20+ year front-end developer and WordPress specialist.",
+    "url": "https://chrizrock.github.io",
+    "author": "Chris Dave Magahis",
+    "locale": "en_US"
+  },
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "Services", "href": "/services/" },
+    { "label": "Work", "href": "/work/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Contact", "href": "/contact/" }
+  ],
+  "contact": {
+    "email": "chriz.magahis@gmail.com",
+    "whatsapp": "https://wa.me/639692821388",
+    "whatsappDisplay": "+63 969 282 1388",
+    "discord": "chrizmagahis",
+    "github": "https://github.com/chrizrock",
+    "location": "Philippines · Remote"
+  },
+  "stats": [
+    { "value": "20+", "label": "Years" },
+    { "value": "17", "label": "Rebuilds shown" },
+    { "value": "3", "label": "Countries" },
+    { "value": "0", "label": "Frameworks" }
+  ],
+  "services": [
+    {
+      "id": "rebuilds",
+      "title": "Website Rebuilds",
+      "summary": "A rebuild of the site you already have — same business, same brand, but a storefront or homepage that finally works. Most of the 17 projects on this site are exactly this: dated, cluttered, or barely-usable sites rebuilt around real hierarchy and the product photography or content that was already there.",
+      "forWho": "Businesses whose current site is quietly costing them customers — a crowded header, a hero that doesn't sell anything, navigation buyers can't get through, or a layout that breaks on a phone.",
+      "bullets": [
+        "Replace crowded, multi-row headers with a single clean bar — logo, search, account, cart.",
+        "Rebuild the hero around real product photography or content instead of stock images and text stacked on top.",
+        "Cut bloated navigation down to the categories customers actually use, so they reach a product in fewer clicks.",
+        "Make the whole site properly responsive — many of the sites I've rebuilt were barely usable on a phone before.",
+        "Work across WordPress, PinnacleCart, and hand-coded HTML/CSS storefronts — whatever platform the business is already running."
+      ]
+    },
+    {
+      "id": "new-builds",
+      "title": "New Builds",
+      "summary": "A new site or storefront built from scratch — hand-coded, semantic HTML/CSS translated from a mockup into a responsive, pixel-accurate live build. No page-builder bloat, no framework overhead.",
+      "forWho": "New businesses or product lines that need a site that doesn't exist yet — a storefront, a content hub, or a marketing site.",
+      "bullets": [
+        "Hand-code semantic HTML, CSS, and Bootstrap to translate a mockup into a responsive, pixel-accurate site.",
+        "Optimize CSS to cut file size and eliminate render-blocking resources instead of shipping a framework's full stylesheet.",
+        "Set up hosting, domains, and email as part of the build, not as an afterthought.",
+        "Built new storefronts and content hubs on the PinnacleCart platform, from mockup to live build."
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "title": "E-Commerce & Cart Upgrades",
+      "summary": "Cart and theme upgrades for merchants who are stuck on an old storefront template — re-themed onto the current, mobile-responsive version of their platform without losing catalog, customers, or traffic. Also full e-commerce store builds on Shopify and PinnacleCart.",
+      "forWho": "Merchants on PinnacleCart or Shopify running a legacy theme that's falling behind — slow, non-responsive, or missing current cart features.",
+      "bullets": [
+        "Re-theme and upgrade live merchant storefronts to the latest cart version — migrating off legacy themes onto current, mobile-responsive templates.",
+        "Migrate a live store without losing catalog, customers, or traffic in the process.",
+        "Designed and built a Shopify e-commerce store end to end — hosting, domains, email, product catalog, and Facebook Shops integration.",
+        "Redesign conversion-focused storefronts across industrial supply, e-commerce, and retail merchants."
+      ]
+    },
+    {
+      "id": "wordpress-care",
+      "title": "WordPress Care & Maintenance",
+      "summary": "Ongoing management of a WordPress site or portfolio of sites on WP Engine — updates, backups, security, and uptime/performance monitoring — so the site stays fast and safe without the owner having to think about it.",
+      "forWho": "Businesses and agencies running WordPress who need reliable day-to-day care, not a one-off project.",
+      "bullets": [
+        "Manage a portfolio of client WordPress sites end to end — maintenance, plugin/theme updates, backups, security, and uptime/performance monitoring on WP Engine.",
+        "Build, add, and update pages across sites (Elementor, Divi, Gutenberg block themes), keeping every change on-brand and content-accurate.",
+        "Run migrations and backup/restore drills with minimal disruption to live traffic.",
+        "Support SEO, PPC, and content campaigns on the dev side — conversion landing pages, on-page SEO, and blog publishing through a staged dev-review to production workflow."
+      ]
+    },
+    {
+      "id": "ai-delivery",
+      "title": "AI-Augmented Delivery",
+      "summary": "\"Devy,\" a multi-agent AI development system built on Claude Code, orchestrating specialist agents — scraping, design, WordPress and React builds, QA — from intake to deployed build. Two decades of hand-coding craft paired with modern AI engineering, with deterministic QA gates so AI-generated work is verified, not just trusted.",
+      "forWho": "Clients who want the speed of AI-assisted development without giving up pixel-accurate, verified output.",
+      "bullets": [
+        "Orchestrate 8+ specialist AI agents (scraping, design, WordPress & React builds, QA) from intake to deployed build.",
+        "Engineered deterministic QA gates for AI-generated builds: pixel-diff visual parity (≥98% per breakpoint), scripted content-fidelity diffs, and computed-style verification of animations and effects.",
+        "Built an exact site-cloning pipeline that captures rendered HTML, CSS, assets, and motion from any platform (Squarespace, Elementor, Divi) and reproduces it as a native WordPress block theme.",
+        "Integrated the AI pipeline with production systems via MCP — Playwright, Google Ads/GA4, Drive, Figma, and Clarity.",
+        "Also shipped AI agents for SEO and PPC operations — a multi-agent SEO analysis suite and an industry-agnostic Google Ads negative-keyword auditor."
+      ]
+    }
+  ]
+}
