@@ -886,189 +886,293 @@
     100% { transform: translateY(44px); opacity: 0; }
   }
 
-  /* -- 1b. Hero pipeline (flagship visual) ---------------------------------
-     A vertical stepper of the studio's real 5-step process (data/process.mjs):
-     numbered nodes 01→05 threaded down a glowing teal→violet track, with the
-     final Launch node accented as the "shipped" payoff. Purely presentational
-     (no interactive targets, so no focus/44px concerns). Token-driven, both
-     themes. Sits in the hero's right column at desktop (see the home
-     responsive block); stacks below the hero text on mobile — always a
-     vertical pipeline, so it can never overflow horizontally.
+  /* -- 1b. Hero flow collage (flagship visual) -----------------------------
+     A floating, dimensional retelling of the rebuild: a REAL dated screenshot
+     ("Before") in a tilted browser card flows — along dotted SVG connectors
+     with arrowheads — past the studio's real process as floating chips
+     (Audit / Design / Build / QA, data/process.mjs), to the rebuilt "After"
+     card (elevated), and lands on the glowing teal "Launched" endpoint (the
+     payoff). Purely presentational; token-driven; both themes.
 
-     It intentionally carries NO glow of its own beyond the single accented
-     Launch badge — the hero's section-anchor atmosphere is the only ambient
-     glow, so the two never compete. */
-  .hero-pipeline {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
+     Responsive by construction: these BASE rules are the mobile-first SAFE
+     stack (Before → chips → After → Launched, in real order) — static flow,
+     full-width items, centered, so it can NEVER overflow. The absolute
+     floating collage is layered on top only at >=900px (see the home
+     responsive block). The Launched card carries the ONLY glow here — the
+     hero's section-anchor atmosphere is the sole ambient glow, so the two
+     never compete. */
+  .hero-flow {
+    --flow-shadow: var(--shadow-2);
     min-width: 0;
-    padding: clamp(var(--space-5), 1.5vw + var(--space-4), var(--space-7));
-    /* Slightly translucent surface so the anchor glow reads faintly through
-       the panel instead of being boxed out. */
-    background: color-mix(in srgb, var(--surface) 82%, transparent);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-2);
+    width: 100%;
   }
-  .hero-pipeline-head {
+  .hero-flow-stage {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    padding-bottom: var(--space-4);
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+  /* Dotted connectors are a desktop enhancement; the stacked mobile flow reads
+     via real narrative order + the Before/After tags, so the absolute SVG is
+     hidden until the collage kicks in. */
+  .hero-flow-links { display: none; }
+
+  /* Browser-framed screenshot card (Before / After) */
+  .flow-item { width: 100%; }
+  .flow-window {
+    position: relative;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+    box-shadow: var(--flow-shadow);
+    overflow: hidden;
+  }
+  .flow-window-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 1.7rem;
+    padding-inline: var(--space-3);
+    background: color-mix(in srgb, var(--surface-3) 60%, var(--surface));
     border-bottom: 1px solid var(--border);
   }
-  .hero-pipeline-kicker {
+  .flow-dots { display: inline-flex; gap: 5px; }
+  .flow-dots i {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--faint);
+  }
+  .flow-url {
+    height: 8px;
+    flex: 1;
+    max-width: 58%;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--surface) 55%, var(--bg));
+    border: 1px solid var(--border);
+  }
+
+  /* -- Generic wireframe MOCKUPS (not screenshots; zero external requests) ---
+     Abstract block layouts that read as "dated/cluttered" (before) vs "clean/
+     rebuilt" (after). Fixed aspect-ratio reserves height (no CLS). Token-driven
+     so both mockups recolor correctly in light + dark. Purely decorative
+     (aria-hidden in the markup). */
+  .mock {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .mock span { display: block; }
+
+  /* BEFORE — cramped, mismatched, muted greyscale, tight spacing */
+  .mock--before {
+    padding: 4px;
+    gap: 3px;
+    background: color-mix(in srgb, var(--surface-3) 55%, var(--surface));
+  }
+  .mk-strip {
+    height: 4px;
+    border-radius: 1px;
+    background: var(--border-strong);
+  }
+  .mk-head--b {
+    display: flex;
+    align-items: center;
+    gap: 3px;               /* cramped */
+    padding: 3px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--faint) 34%, var(--surface));
+  }
+  .mk-logo {
+    width: 16px; height: 8px;
+    border-radius: 2px;
+    background: var(--muted);
+  }
+  .mk-navb {
+    width: 13px; height: 5px;
+    border-radius: 1px;
+    background: var(--faint);
+  }
+  .mk-banner {
+    height: 32%;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--faint) 58%, var(--surface));
+  }
+  .mk-mess { display: flex; gap: 3px; flex: 1; }
+  .mk-mess > span {
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--faint) 44%, var(--surface));
+  }
+  .mk-mess > span:nth-child(1) { flex: 2; }
+  .mk-mess > span:nth-child(2) { flex: 1; margin-top: 6px; }   /* misaligned */
+  .mk-mess > span:nth-child(3) { flex: 1.4; }
+
+  /* AFTER — single clean header, clear hero + accent, tidy grid, generous space */
+  .mock--after {
+    padding: 9px;
+    gap: 8px;
+    background: var(--surface);
+  }
+  .mk-head--a { display: flex; align-items: center; gap: 6px; }
+  .mk-logo--a {
+    width: 18px; height: 7px;
+    border-radius: 2px;
+    margin-right: auto;                          /* logo left, nav+cta right */
+    background: color-mix(in srgb, var(--text) 70%, transparent);
+  }
+  .mk-nav {
+    width: 12px; height: 4px;
+    border-radius: 2px;
+    background: var(--faint);
+  }
+  .mk-cta {
+    width: 22px; height: 9px;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+  .mk-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    height: 40%;
+    padding: 8px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 9%, var(--surface-3));
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .mk-hero-line {
+    width: 62%; height: 6px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--text) 72%, transparent);
+  }
+  .mk-hero-line--sm { width: 42%; height: 4px; background: color-mix(in srgb, var(--text) 38%, transparent); }
+  .mk-hero-btn {
+    width: 26px; height: 9px;
+    margin-top: 2px;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+  .mk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    flex: 1;
+  }
+  .mk-grid > span {
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--muted) 32%, var(--surface-3));
+    border: 1px solid color-mix(in srgb, var(--border-strong) 70%, transparent);
+  }
+  /* Corner tag — plain styled span, never a heading */
+  .flow-tag {
+    position: absolute;
+    top: calc(1.7rem + var(--space-2));
+    left: var(--space-2);
+    z-index: 2;
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--accent-ink);
+    padding: 0.12rem var(--space-2);
+    border-radius: var(--radius-pill);
+    color: var(--muted);
+    background: color-mix(in srgb, var(--bg) 68%, transparent);
+    border: 1px solid var(--border-strong);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
   }
-  .hero-pipeline-sub {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: var(--fs-md);
-    color: var(--text);
+  .flow-tag--after {
+    color: var(--accent-ink);
+    background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
-  .pipeline {
-    display: flex;
-    flex-direction: column;
-  }
-  /* Each node: a fixed rail cell (numbered badge + the connector that bridges
-     to the next badge) beside the text cell. No gap between nodes — the
-     connector spans the space instead, so the track reads as one continuous
-     line even when a descriptor wraps. */
-  .pipeline-node {
-    display: grid;
-    grid-template-columns: 2.75rem 1fr;
-    column-gap: var(--space-4);
-  }
-  .pipeline-rail {
-    display: flex;
-    flex-direction: column;
+  /* Floating process chips — compact, labelled pills like the reference's
+     little payment/shipping cards. */
+  .flow-chip {
+    display: inline-flex;
     align-items: center;
-    /* stretch to the row height (grid default) so the connector can reach the
-       next node's badge across a taller, wrapped descriptor. */
-  }
-  .pipeline-node-num {
-    flex: none;
-    width: 2.75rem;
-    height: 2.75rem;
-    display: grid;
-    place-items: center;
+    gap: var(--space-2);
+    padding: 0.4rem var(--space-3);
     border-radius: var(--radius-pill);
-    border: 1px solid var(--border-strong);
     background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-1);
+    white-space: nowrap;
+  }
+  .flow-chip-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .flow-chip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding-inline: 0.3rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--accent-ink);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  /* Launched endpoint — the visual climax. Carries the signature glow. */
+  .flow-launch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: var(--glow);
+  }
+  .flow-launch-icon { font-size: 1.5rem; line-height: 1; }
+  .flow-launch-text { display: flex; flex-direction: column; gap: 0.1rem; }
+  .flow-launch-title {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: var(--fs-md);
-    color: var(--accent-ink);
-    font-variant-numeric: tabular-nums;
-  }
-  .pipeline-connector {
-    flex: 1 1 auto;
-    width: 2px;
-    min-height: var(--space-6);
-    margin-block: var(--space-2);
-    border-radius: 2px;
-    /* teal→violet progression across the four segments (color-mix, token
-       colors only — no hardcoded hex) so the whole track fades from the teal
-       audit end to the violet launch end. */
-    background: linear-gradient(180deg, var(--accent), var(--accent-2));
-  }
-  .pipeline-node:nth-child(1) .pipeline-connector {
-    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--accent-2)));
-  }
-  .pipeline-node:nth-child(2) .pipeline-connector {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, var(--accent-2)), color-mix(in srgb, var(--accent) 45%, var(--accent-2)));
-  }
-  .pipeline-node:nth-child(3) .pipeline-connector {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, var(--accent-2)), color-mix(in srgb, var(--accent) 20%, var(--accent-2)));
-  }
-  .pipeline-node:nth-child(4) .pipeline-connector {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 20%, var(--accent-2)), var(--accent-2));
-  }
-  .pipeline-node-text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    padding-block: var(--space-1) var(--space-6);
-    min-width: 0;
-  }
-  .pipeline-node:last-child .pipeline-node-text { padding-bottom: 0; }
-  .pipeline-node-label {
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: var(--fs-lg);
-    line-height: 1.15;
+    line-height: 1.05;
     color: var(--text);
   }
-  .pipeline-node-desc {
-    font-size: var(--fs-sm);
-    color: var(--muted);
-    max-width: 40ch;
-  }
-
-  /* The Launch node is the payoff: a filled teal badge with the signature
-     glow (the pipeline's only glow), and a "Shipped" state pill. */
-  .pipeline-node--launch .pipeline-node-num {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on-accent);
-    box-shadow: var(--glow);
-  }
-  .pipeline-node--launch .pipeline-node-label { color: var(--text); }
-  .pipeline-shipped {
-    font-family: var(--font-body);
+  .flow-launch-sub {
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--accent-ink);
-    padding: 0.15rem var(--space-3);
-    border-radius: var(--radius-pill);
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   }
 
-  /* Entrance: nodes rise/fade and the connectors fill downward, in sequence.
-     Gated entirely behind no-preference so reduced-motion users never see the
-     hidden start state — the pipeline is simply complete and static for them,
-     with no animation and no delayed-empty flash. transform/opacity only. */
+  /* Mobile-first entrance: a gentle staggered fade/rise of the whole stack.
+     transform/opacity only; gated behind no-preference so reduced-motion users
+     get the complete static composition. The desktop collage adds its own
+     positioned entrance + dotted-line draw (home responsive block). */
   @media (prefers-reduced-motion: no-preference) {
-    .hero-pipeline .pipeline-node {
+    .hero-flow-stage > * {
       opacity: 0;
-      animation: pipeline-node-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: flow-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .hero-pipeline .pipeline-node:nth-child(1) { animation-delay: 0.10s; }
-    .hero-pipeline .pipeline-node:nth-child(2) { animation-delay: 0.22s; }
-    .hero-pipeline .pipeline-node:nth-child(3) { animation-delay: 0.34s; }
-    .hero-pipeline .pipeline-node:nth-child(4) { animation-delay: 0.46s; }
-    .hero-pipeline .pipeline-node:nth-child(5) { animation-delay: 0.58s; }
-
-    .hero-pipeline .pipeline-connector {
-      transform: scaleY(0);
-      transform-origin: top center;
-      animation: pipeline-fill 0.4s ease-out forwards;
-    }
-    .hero-pipeline .pipeline-node:nth-child(1) .pipeline-connector { animation-delay: 0.28s; }
-    .hero-pipeline .pipeline-node:nth-child(2) .pipeline-connector { animation-delay: 0.40s; }
-    .hero-pipeline .pipeline-node:nth-child(3) .pipeline-connector { animation-delay: 0.52s; }
-    .hero-pipeline .pipeline-node:nth-child(4) .pipeline-connector { animation-delay: 0.64s; }
+    .hero-flow-stage > *:nth-child(2) { animation-delay: 0.06s; }
+    .hero-flow-stage > *:nth-child(3) { animation-delay: 0.14s; }
+    .hero-flow-stage > *:nth-child(4) { animation-delay: 0.22s; }
+    .hero-flow-stage > *:nth-child(5) { animation-delay: 0.30s; }
+    .hero-flow-stage > *:nth-child(6) { animation-delay: 0.38s; }
+    .hero-flow-stage > *:nth-child(7) { animation-delay: 0.46s; }
   }
-  @keyframes pipeline-node-in {
-    from { opacity: 0; transform: translateY(12px); }
+  @keyframes flow-rise {
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: none; }
-  }
-  @keyframes pipeline-fill {
-    from { transform: scaleY(0); }
-    to   { transform: scaleY(1); }
   }
 
   /* -- 2. Stat band ------------------------------------------------------- */
@@ -1311,15 +1415,121 @@
     .stat-band { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   @media (min-width: 900px) {
-    /* Two-up hero: thesis/CTAs left, the 5-step pipeline right. */
+    /* Two-up hero: thesis/CTAs left, the floating flow collage right. */
     .hero-columns {
       display: grid;
       grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
       gap: clamp(var(--space-6), 4vw, var(--space-9));
       align-items: center;
     }
-    .hero-pipeline { align-self: center; }
+    .hero-flow { align-self: center; }
+
+    /* The stack becomes a positioned STAGE: fixed aspect-ratio (reserves
+       height — no CLS), children absolutely placed by % so they scale with
+       the column and can't push the page wide. viewBox on the SVG matches this
+       ratio (100 x 116) so connector coordinates map straight to the % layout. */
+    .hero-flow-stage {
+      position: relative;
+      display: block;
+      max-width: none;
+      margin: 0;
+      aspect-ratio: 100 / 116;
+    }
+    .hero-flow-links {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      overflow: visible;
+      pointer-events: none;
+      color: var(--accent);   /* arrowhead fill (currentColor) */
+    }
+    .hero-flow-link {
+      stroke: color-mix(in srgb, var(--accent) 78%, transparent);
+      stroke-width: 0.7;
+      stroke-linecap: round;
+      stroke-dasharray: 0.1 2.6;   /* dotted */
+      fill: none;
+    }
+
+    /* Positioned pieces. Rotation lives in --rot so entrance/float keyframes
+       can preserve it. */
+    .flow-item, .flow-chip {
+      position: absolute;
+      transform: rotate(var(--rot, 0deg));
+      transform-origin: center;
+    }
+    .flow-item--before {
+      --rot: -3.5deg;
+      top: 1%; left: 0;
+      width: 55%;
+      z-index: 2;
+    }
+    .flow-item--after {
+      --rot: 3deg;
+      top: 40%; right: 0;
+      width: 58%;
+      z-index: 4;
+      --flow-shadow: var(--shadow-3);
+    }
+    .flow-item--after .flow-window { box-shadow: var(--shadow-3), var(--glow); }
+    /* Launched: full-width row pinned to the bottom, pill centered inside — so
+       centering never fights the entrance transform. */
+    .flow-item--launch {
+      --rot: 0deg;
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      justify-content: center;
+      transform: none;
+      z-index: 8;
+    }
+    .flow-chip { z-index: 6; }
+    .flow-chip--0 { --rot:  2.5deg; top: 4%;  right: 2%; }   /* Audit  */
+    .flow-chip--1 { --rot: -2deg;   top: 23%; right: 9%; }   /* Design */
+    .flow-chip--2 { --rot: -3deg;   top: 52%; left: 0; }     /* Build  */
+    .flow-chip--3 { --rot:  2.5deg; top: 70%; left: 5%; }    /* QA     */
+
+    /* Desktop entrance + perpetual float. transform/opacity + SVG dashoffset
+       only; all gated behind no-preference so reduced-motion shows the full
+       static collage (dots complete, cards placed). The entrance runs on the
+       positioned item (keeps --rot); the slow bob runs on the inner .flow-float
+       so the two transforms never collide. */
+    @media (prefers-reduced-motion: no-preference) {
+      /* neutralise the simpler mobile-stack entrance at this width */
+      .hero-flow-stage > * { animation: none; }
+
+      .flow-item, .flow-chip {
+        opacity: 0;
+        animation: flow-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .flow-item--before { animation-delay: 0.08s; }
+      .flow-chip--0 { animation-delay: 0.20s; }
+      .flow-chip--1 { animation-delay: 0.30s; }
+      .flow-chip--2 { animation-delay: 0.40s; }
+      .flow-chip--3 { animation-delay: 0.50s; }
+      .flow-item--after { animation-delay: 0.46s; }
+      .flow-item--launch { animation-delay: 0.68s; }
+
+      .hero-flow-links { opacity: 0; animation: flow-fade 0.7s ease forwards 0.30s; }
+      .hero-flow-link { stroke-dashoffset: 42; animation: flow-draw 1.1s ease forwards 0.38s; }
+
+      .flow-float { animation: flow-bob 7s ease-in-out infinite; }
+      .flow-item--after .flow-float { animation-delay: -2.4s; }
+      .flow-item--launch .flow-float { animation-delay: -4.6s; }
+    }
   }
+  @keyframes flow-in {
+    from { opacity: 0; transform: translateY(12px) rotate(var(--rot, 0deg)); }
+    to   { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)); }
+  }
+  @keyframes flow-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  @keyframes flow-draw { to { stroke-dashoffset: 0; } }
+  @keyframes flow-fade { to { opacity: 1; } }
   @media (min-width: 761px) {
     .differentiator-inner { grid-template-columns: 1.15fr 0.85fr; }
   }

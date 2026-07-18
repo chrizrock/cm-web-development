@@ -54,41 +54,49 @@ test("home hero uses the signature line", () => {
   assert.match(read("index.html"), /rebuild the ones that don.?t/i);
 });
 
-// rev5 Change A: the hero's right column is a 5-step pipeline of the real
-// process (Audit → Design → Build → QA → Launch), with the final Launch node
-// visually accented as the "shipped" payoff.
-test("home hero renders the 5-step pipeline with every real step label", () => {
+// rev7: the hero's right column is a FLOATING FLOW COLLAGE — a real dated
+// screenshot ("Before") flows through the real process (as floating chips) to
+// the rebuilt "After" card and a glowing "Launched" endpoint. Replaces the rev5
+// numbered stepper.
+test("home hero renders the floating flow collage (before -> process -> after -> launched)", () => {
   const h = read("index.html");
-  const start = h.indexOf('class="hero-pipeline"');
-  const end = h.indexOf("</section>", start);
-  assert.ok(start > -1, "hero-pipeline present in the hero");
-  const pipeline = h.slice(start, end);
-  for (const step of ["Audit", "Design", "Build", "QA", "Launch"]) {
-    assert.match(pipeline, new RegExp(`class="pipeline-node-label">${step}`), `pipeline step ${step}`);
-  }
-  // Launch is the accented payoff node.
-  assert.match(pipeline, /pipeline-node--launch/, "Launch node accented");
-  assert.match(pipeline, /class="pipeline-shipped">Shipped/, "Launch shows the shipped state");
-  // Numbered 01..05 stepper.
-  for (const num of ["01", "02", "03", "04", "05"])
-    assert.match(pipeline, new RegExp(`class="pipeline-node-num">${num}`), `node ${num}`);
+  const start = h.indexOf('class="hero-flow"');
+  assert.ok(start > -1, "hero-flow present in the hero");
+  const flow = h.slice(start, h.indexOf("</aside>", start));
+  // Before / After anchor cards are GENERIC CSS/HTML wireframe MOCKUPS — not
+  // screenshots of any real site (illustrative flow; zero external requests).
+  assert.match(flow, /flow-tag--before">Before/, "Before tag");
+  assert.match(flow, /flow-tag--after">After/, "After tag");
+  assert.match(flow, /class="mock mock--before"/, "generic before mockup");
+  assert.match(flow, /class="mock mock--after"/, "generic after mockup");
+  // The flow must NOT embed real project screenshots (it's not a showcase).
+  assert.ok(!/<img/.test(flow), "no <img> — mockups are pure CSS/HTML, no screenshots");
+  assert.ok(!/princess-purse/.test(flow), "no real client screenshot filenames");
+  // Fake browser chrome (traffic-light dots + a fake URL bar).
+  assert.match(flow, /class="flow-url"/, "fake URL bar");
+  // Launched endpoint — the visual payoff.
+  assert.match(flow, /flow-item--launch/, "Launched endpoint card");
+  assert.match(flow, /flow-launch-title">Launched/, "Launched title");
 });
 
-// The hero pipeline must reuse the REAL, shared process copy (data/process.mjs)
-// — not fabricate its own — so it can never drift from the Services page.
-test("home hero pipeline descriptors are the real shared process text (no drift, not fabricated)", async () => {
+// The process chips must reuse the REAL shared step names (data/process.mjs) so
+// they can never drift from the Services page or fabricate a step.
+test("home hero flow chips are the real shared process step names (no drift, not fabricated)", async () => {
   const { PROCESS_STEPS } = await import("../_build/data/process.mjs");
   const h = read("index.html");
-  for (const step of PROCESS_STEPS) {
-    // Each `node` descriptor is a verbatim leading clause of that step's real
-    // Services `copy`.
-    assert.ok(step.copy.toLowerCase().includes(step.node.replace(/\.$/, "").toLowerCase()),
-      `${step.name}: node descriptor is a real clause of its Services copy`);
-    assert.ok(h.includes(esc(step.node)), `${step.name} node descriptor rendered in the hero`);
+  const start = h.indexOf('class="hero-flow"');
+  const flow = h.slice(start, h.indexOf("</aside>", start));
+  // Audit / Design / Build / QA render as floating chips...
+  for (const step of PROCESS_STEPS.slice(0, 4)) {
+    assert.match(flow, new RegExp(`class="flow-chip-label">${esc(step.name)}`), `chip ${step.name}`);
   }
+  // ...and the 5th real step (Launch) is realised as the "Launched" endpoint —
+  // not dropped, not renamed to something fabricated.
+  assert.equal(PROCESS_STEPS[4].name, "Launch");
+  assert.ok(flow.includes("Launched"), "Launch step realised as the Launched endpoint");
 });
 
-test("home still has exactly one h1 after adding the pipeline", () => {
+test("home still has exactly one h1 after the hero flow collage", () => {
   assert.equal((read("index.html").match(/<h1[\s>]/g) || []).length, 1);
 });
 

@@ -32,38 +32,115 @@ export default function home({ site, projects }) {
   // splitting the phrase.
   //
   // The hero is a two-column composition: the thesis/CTAs on the left, and the
-  // flagship visual on the right — a vertical PIPELINE of the studio's real
-  // 5-step process (data/process.mjs, the same steps + wording the Services
-  // "Five steps, every project" band renders). Nodes are numbered 01→05 down a
-  // glowing teal→violet track; the final Launch node is accented as the
-  // "shipped" payoff. Purely presentational (no interactive targets): an <ol>
-  // carries the real sequence + labels + terse descriptors to assistive tech,
-  // the decorative rail/numbers are aria-hidden, and the labels are plain
-  // <span>s (not headings) so the page keeps its single <h1> and a sane
-  // heading order. On mobile it stacks below the text (see styles.css). The
-  // centered scroll cue stays a full-width row beneath both columns.
-  const pipeline = html`<aside class="hero-pipeline" aria-label="How I work — my real five-step process, from audit to launch">
-    <div class="hero-pipeline-head">
-      <span class="hero-pipeline-kicker">How I work</span>
-      <span class="hero-pipeline-sub">Five steps, every project</span>
-    </div>
-    <ol class="pipeline">
-      ${PROCESS_STEPS.map((step, i) => {
-        const num = String(i + 1).padStart(2, "0");
-        const isLast = i === PROCESS_STEPS.length - 1;
-        const nodeClass = isLast ? "pipeline-node pipeline-node--launch" : "pipeline-node";
-        return html`<li class="${nodeClass}">
-        <span class="pipeline-rail" aria-hidden="true">
-          <span class="pipeline-node-num">${num}</span>
-          ${isLast ? "" : html`<span class="pipeline-connector"></span>`}
-        </span>
-        <span class="pipeline-node-text">
-          <span class="pipeline-node-label">${step.name}${isLast ? html`<span class="pipeline-shipped">Shipped</span>` : ""}</span>
-          <span class="pipeline-node-desc">${step.node}</span>
-        </span>
-      </li>`;
+  // flagship visual on the right — a FLOATING FLOW COLLAGE that tells the
+  // rebuild story dimensionally. A real dated screenshot ("Before") in a tilted
+  // browser card flows — along dotted SVG connectors with arrowheads — past the
+  // studio's real process as floating chips (Audit / Design / Build / QA, from
+  // data/process.mjs, the single source of truth), to the rebuilt "After" card
+  // (elevated), and finally to the glowing teal "Launched" endpoint — the
+  // payoff. Purely presentational: the whole cluster is one labelled image to
+  // assistive tech (role="img" + one honest aria-label), the connector SVG is
+  // aria-hidden, and every label is a <span> (never a heading) so the page
+  // keeps its single <h1> and a sane heading order.
+  //
+  // Composition is DEPTH-FIRST: cards at a few degrees of rotation, layered
+  // z-order, soft shadows, and the accented Launched card carrying the ONLY
+  // glow (the hero's section-anchor atmosphere is the sole ambient glow — they
+  // never compete). Real assets only: princess-purse before/after screenshots
+  // and the real step names — nothing fabricated.
+  //
+  // Responsive by construction: the markup is mobile-first a SAFE vertical
+  // stack (Before → chips → After → Launched, in real narrative order) that
+  // cannot overflow; the absolute floating collage is a >=900px enhancement
+  // layered on top (see styles.css). The centered scroll cue stays a full-width
+  // row beneath both columns.
+  const CHIP_ICON = { Audit: "✓", Design: "", Build: "</>", QA: "✓" };
+  const chipSteps = PROCESS_STEPS.slice(0, 4); // Audit, Design, Build, QA
+
+  // The Before/After cards are GENERIC, self-contained wireframe mockups drawn
+  // in HTML/CSS — abstract "fake browser window" UIs, not screenshots of any
+  // real site (zero external requests; nothing traceable to a client). The flow
+  // is illustrative — "a dated site, rebuilt and launched" — not a showcase.
+  // `body` is decorative wireframe markup (blocks only, no text). The whole
+  // card is aria-hidden below the aside's single accessible label.
+  const flowWindow = ({ variant, tag, body }) => html`<div class="flow-window flow-window--${variant}" aria-hidden="true">
+    <span class="flow-window-bar">
+      <span class="flow-dots"><i></i><i></i><i></i></span>
+      <span class="flow-url"></span>
+    </span>
+    <span class="flow-tag flow-tag--${variant}">${tag}</span>
+    <div class="mock mock--${variant}">${body}</div>
+  </div>`;
+
+  // Before: a cluttered, dated generic layout — a cramped multi-row header,
+  // mismatched blocks, muted greyscale, tight spacing.
+  const beforeMock = html`<span class="mk-strip"></span>
+    <span class="mk-head mk-head--b">
+      <span class="mk-logo"></span>
+      <span class="mk-navb"></span><span class="mk-navb"></span><span class="mk-navb"></span><span class="mk-navb"></span>
+    </span>
+    <span class="mk-banner"></span>
+    <span class="mk-mess"><span></span><span></span><span></span></span>`;
+
+  // After: a clean, modern generic layout — single tidy header, a clear hero
+  // block with an on-brand accent, a neat equal grid, generous spacing.
+  const afterMock = html`<span class="mk-head mk-head--a">
+      <span class="mk-logo mk-logo--a"></span>
+      <span class="mk-nav"></span><span class="mk-nav"></span><span class="mk-nav"></span>
+      <span class="mk-cta"></span>
+    </span>
+    <span class="mk-hero">
+      <span class="mk-hero-line"></span>
+      <span class="mk-hero-line mk-hero-line--sm"></span>
+      <span class="mk-hero-btn"></span>
+    </span>
+    <span class="mk-grid"><span></span><span></span><span></span></span>`;
+
+  const flow = html`<aside class="hero-flow" role="img" aria-label="A dated site, rebuilt through my five-step process and launched live.">
+    <div class="hero-flow-stage">
+      <svg class="hero-flow-links" viewBox="0 0 100 116" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true">
+        <defs>
+          <marker id="flowArrow" markerWidth="3.4" markerHeight="3.4" refX="2.7" refY="1.6" orient="auto" markerUnits="userSpaceOnUse">
+            <path d="M0.4 0.4 L3 1.6 L0.4 2.8 Z" fill="currentColor" stroke="none" />
+          </marker>
+        </defs>
+        <path class="hero-flow-link" d="M35 37 C 41 44, 40 45, 43 46" marker-end="url(#flowArrow)" />
+        <path class="hero-flow-link" d="M71 78 C 64 84, 50 82, 50 86" marker-end="url(#flowArrow)" />
+      </svg>
+
+      <figure class="flow-item flow-item--before">
+        <div class="flow-float">
+          ${flowWindow({ variant: "before", tag: "Before", body: beforeMock })}
+        </div>
+      </figure>
+
+      ${chipSteps.map((step, i) => {
+        const icon = CHIP_ICON[step.name];
+        return html`<span class="flow-chip flow-chip--${i}">
+        <span class="flow-chip-label">${step.name}</span>${icon
+          ? html`<span class="flow-chip-icon" aria-hidden="true">${icon}</span>`
+          : ""}
+      </span>`;
       })}
-    </ol>
+
+      <figure class="flow-item flow-item--after">
+        <div class="flow-float">
+          ${flowWindow({ variant: "after", tag: "After", body: afterMock })}
+        </div>
+      </figure>
+
+      <div class="flow-item flow-item--launch">
+        <div class="flow-float">
+          <div class="flow-launch">
+            <span class="flow-launch-icon" aria-hidden="true">&#128640;</span>
+            <span class="flow-launch-text">
+              <span class="flow-launch-title">Launched</span>
+              <span class="flow-launch-sub">Live in production</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   </aside>`;
 
   const hero = html`<section class="section section--anchor hero" data-reveal>
@@ -92,7 +169,7 @@ export default function home({ site, projects }) {
           <li>WordPress &middot; PinnacleCart &middot; HTML/CSS</li>
         </ul>
       </div>
-      ${pipeline}
+      ${flow}
     </div>
     <a class="hero-scroll" href="#work" aria-label="Scroll to see the work">
       <span>Scroll</span>
