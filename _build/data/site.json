@@ -5,7 +5,12 @@
     "description": "Hand-coded website rebuilds, new builds, e-commerce cart/theme upgrades, WordPress care, and AI-augmented delivery from a 20+ year front-end developer and WordPress specialist.",
     "url": "https://chrizrock.github.io",
     "author": "Chris Dave Magahis",
-    "locale": "en_US"
+    "locale": "en_US",
+    "ogImage": "assets/img/logo/png/cm-brand-square-512.png",
+    "ogType": "website",
+    "twitterCard": "summary_large_image",
+    "favicon": "assets/img/logo/png/cm-brand-square-512.png",
+    "appleTouchIcon": "assets/img/logo/png/cm-brand-square-180.png"
   },
   "nav": [
     { "label": "Home", "href": "/" },
