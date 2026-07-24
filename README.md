@@ -134,6 +134,33 @@ reference uses a relative href (`services.html`, `assets/img/...`), so the site
 browses correctly from any base path. Only the *absolute* URLs depend on
 `meta.url`.
 
+## Analytics (GoatCounter)
+
+Cookieless, ~3KB, loaded `async` so it never blocks first paint — no cookies,
+no personal data, no consent banner. Emitted from
+`_build/partials/head.mjs`, driven by one value in `_build/data/site.json`:
+
+```json
+"goatcounter": "cm-webdevelopment"
+```
+
+That's the site **code**, not a URL — it becomes
+`https://<code>.goatcounter.com/count`. Set it to `""` or delete the key and
+no script is emitted at all, so analytics can be switched off without touching
+a partial.
+
+Stats: https://cm-webdevelopment.goatcounter.com
+
+Two things worth knowing:
+
+- **Don't reuse another site's code.** GoatCounter buckets hits by **path**,
+  not hostname. This site and the author's CV site both have `index.html` and
+  `work.html`, so pointing both at one code would merge those into single rows
+  that mean nothing for either. Each site gets its own code (add one under
+  Settings → Sites in the same GoatCounter account).
+- **Local dev isn't counted.** `count.js` skips `localhost` and private IP
+  ranges by itself, so `npm run serve` on `:5050` never reaches the stats.
+
 ## Conventions worth knowing
 
 A few rules the tests enforce, so they're not accidentally undone:
