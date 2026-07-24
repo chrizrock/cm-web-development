@@ -6,7 +6,7 @@ before-and-after comparisons across 17 projects, six services, a working
 Formspree contact form, dark/light theming, and scroll reveals — no framework,
 no build-tool magic, no runtime dependencies.
 
-**Live:** https://chrizrock.github.io/cm-web-development/
+**Live:** https://cm-webdevelopment.github.io
 
 ## How it's built
 
@@ -108,8 +108,32 @@ progressively enhances it with inline validation and an async submit.
 
 ## Deployment
 
-Deployed to GitHub Pages from `main` / `(root)` at
-**https://chrizrock.github.io/cm-web-development/**.
+Live at **https://cm-webdevelopment.github.io** — GitHub Pages, `main` /
+`(root)`.
+
+### ⚠️ Two remotes — `origin` alone does not publish
+
+This repo has **two** remotes, and pushing only to `origin` leaves the live
+site on the previous version, silently and with no error:
+
+| Remote | Repo | Role |
+|---|---|---|
+| `origin` | `chrizrock/cm-web-development` | source of truth for commits |
+| `site` | `cm-webdevelopment/cm-webdevelopment.github.io` | **the published site** |
+
+A full deploy:
+
+```bash
+npm run build && npm test    # HTML at the repo root must be in sync with _build/
+git push origin main
+git push site main           # the one that actually publishes
+```
+
+`chrizrock` is a collaborator (Write) on the site repo, so one account pushes
+to both — no account switching. Write is enough to push; **changing Pages
+settings needs Admin**, i.e. `gh auth switch --user cm-webdevelopment` first.
+Pages is already configured, so that only matters if the source branch or path
+changes.
 
 `.nojekyll` is present at the repo root so files and folders starting with `_`
 (like `_build/`) aren't swallowed by GitHub's default Jekyll build.
@@ -121,7 +145,7 @@ Deployed to GitHub Pages from `main` / `(root)` at
 from (see `_build/partials/head.mjs`). It is currently:
 
 ```json
-"url": "https://chrizrock.github.io/cm-web-development"
+"url": "https://cm-webdevelopment.github.io"
 ```
 
 Moving the site (a custom domain, a user/org Pages site, a rename) means
