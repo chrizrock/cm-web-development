@@ -3,7 +3,7 @@
     "siteName": "CM Web Development",
     "tagline": "Front-end developer & WordPress specialist — 20+ years hand-coding sites that convert",
     "description": "Hand-coded website rebuilds, new builds, e-commerce cart/theme upgrades, WordPress care, and AI-augmented delivery from a 20+ year front-end developer and WordPress specialist.",
-    "url": "https://REPLACE-WITH-YOUR-PAGES-URL",
+    "url": "https://chrizrock.github.io/cm-web-development",
     "author": "CM Web Development",
     "locale": "en_US",
     "ogImage": "assets/img/og/og-default.png",
@@ -13,11 +13,26 @@
     "appleTouchIcon": "assets/img/logo/png/cm-brand-square-180.png"
   },
   "nav": [
-    { "label": "Home", "href": "index.html" },
-    { "label": "Services", "href": "services.html" },
-    { "label": "Work", "href": "work.html" },
-    { "label": "About", "href": "about.html" },
-    { "label": "Contact", "href": "contact.html" }
+    {
+      "label": "Home",
+      "href": "index.html"
+    },
+    {
+      "label": "Services",
+      "href": "services.html"
+    },
+    {
+      "label": "Work",
+      "href": "work.html"
+    },
+    {
+      "label": "About",
+      "href": "about.html"
+    },
+    {
+      "label": "Contact",
+      "href": "contact.html"
+    }
   ],
   "contact": {
     "email": "chriz.magahis@gmail.com",
@@ -28,16 +43,28 @@
     "location": "Philippines · Remote"
   },
   "stats": [
-    { "value": "20+", "label": "Years" },
-    { "value": "17", "label": "Projects shown" },
-    { "value": "3", "label": "Countries" },
-    { "value": "0", "label": "Frameworks" }
+    {
+      "value": "20+",
+      "label": "Years"
+    },
+    {
+      "value": "17",
+      "label": "Projects shown"
+    },
+    {
+      "value": "3",
+      "label": "Countries"
+    },
+    {
+      "value": "0",
+      "label": "Frameworks"
+    }
   ],
   "services": [
     {
       "id": "rebuilds",
       "title": "Website Rebuilds",
-      "summary": "A rebuild of the site you already have — same business, same brand, but a storefront or homepage that finally works. Most of the 17 projects on this site are exactly this: dated, cluttered, or barely-usable sites rebuilt around real hierarchy and the product photography or content that was already there.",
+      "summary": "A rebuild of the site you already have — same business, same brand, but a storefront or homepage that finally works. Dated, cluttered, or barely-usable sites rebuilt around real hierarchy and the product photography or content that was already there.",
       "forWho": "Businesses whose current site is quietly costing them customers — a crowded header, a hero that doesn't sell anything, navigation buyers can't get through, or a layout that breaks on a phone.",
       "bullets": [
         "Replace crowded, multi-row headers with a single clean bar — logo, search, account, cart.",
@@ -57,6 +84,19 @@
         "Optimize CSS to cut file size and eliminate render-blocking resources instead of shipping a framework's full stylesheet.",
         "Set up hosting, domains, and email as part of the build, not as an afterthought.",
         "Built new storefronts and content hubs on the PinnacleCart platform, from mockup to live build."
+      ]
+    },
+    {
+      "id": "app-product",
+      "title": "App & Product Work",
+      "summary": "Application work beyond the brochure site — internal tools, dashboards, and product front-ends built in React (Vite + TypeScript) with Node.js or Python behind them. Delivered through the same AI-augmented pipeline as the site work, with compile checks and visual-parity QA on every build rather than a hand-off and hope.",
+      "forWho": "Businesses who need something a CMS page can't do — a tool their team uses daily, a customer-facing dashboard, or a product front-end that has to hold up under real use.",
+      "bullets": [
+        "Build product front-ends and internal tools in React with Vite and TypeScript, typed end to end.",
+        "Back them with Node.js or Python services, scoped to what the tool actually needs rather than a stack chosen in advance.",
+        "Run the same delivery pipeline as the site work: compile checks on every build and visual-parity QA before anything ships.",
+        "Carry the same accessibility and responsive floor the sites get — keyboard paths, reduced-motion support, and layouts that hold on a phone.",
+        "Hand over readable, commented source you or another developer can pick up — no framework lock-in beyond what the job needs."
       ]
     },
     {

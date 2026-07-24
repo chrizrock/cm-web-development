@@ -23,6 +23,18 @@ const SHOT = {
 const shotPath = (slug, phase, breakpoint) => `assets/img/shots/${slug}-${phase}-${breakpoint}.jpg`;
 
 /**
+ * firstSentence(s) -> the first real sentence of a string, used verbatim as a
+ * teaser. TRUNCATION of real copy, never a paraphrase — so a teaser can't
+ * drift from the summary it came from. Falls back to the whole string when
+ * there's no sentence break. Shared by Home's service cards and the Services
+ * page index so both teasers are derived the same way.
+ */
+export const firstSentence = (s) => {
+  const m = String(s).match(/^.*?\.(?=\s|$)/);
+  return m ? m[0] : s;
+};
+
+/**
  * button({ label, href, variant }) -> <a class="btn btn--{variant}">
  * variant: "primary" (default) | "ghost"
  */

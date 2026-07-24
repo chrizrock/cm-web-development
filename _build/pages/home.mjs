@@ -8,19 +8,7 @@
 // see the data note in components.mjs. All copy is real (site.json / cv.json /
 // projects.json); nothing here is fabricated.
 import { html, raw } from "../lib/render.mjs";
-import { section, statTile, serviceCard, projectCard, button } from "../partials/components.mjs";
-// The real 5-step process — shared with the Services "Five steps, every
-// project" band (single source of truth) so the hero pipeline below can never
-// drift from it. See data/process.mjs.
-import { PROCESS_STEPS } from "../data/process.mjs";
-
-// First real sentence of a service summary, used verbatim as a card teaser
-// (truncation of real copy — never a paraphrase). Falls back to the whole
-// string if there's no sentence break.
-const firstSentence = (s) => {
-  const m = String(s).match(/^.*?\.(?=\s|$)/);
-  return m ? m[0] : s;
-};
+import { section, statTile, serviceCard, projectCard, button, firstSentence } from "../partials/components.mjs";
 
 export default function home({ site, projects }) {
   const { stats, services } = site;
@@ -32,112 +20,113 @@ export default function home({ site, projects }) {
   // splitting the phrase.
   //
   // The hero is a two-column composition: the thesis/CTAs on the left, and the
-  // flagship visual on the right — a FLOATING FLOW COLLAGE that tells the
-  // rebuild story dimensionally. A real dated screenshot ("Before") in a tilted
-  // browser card flows — along dotted SVG connectors with arrowheads — past the
-  // studio's real process as floating chips (Audit / Design / Build / QA, from
-  // data/process.mjs, the single source of truth), to the rebuilt "After" card
-  // (elevated), and finally to the glowing teal "Launched" endpoint — the
-  // payoff. Purely presentational: the whole cluster is one labelled image to
-  // assistive tech (role="img" + one honest aria-label), the connector SVG is
-  // aria-hidden, and every label is a <span> (never a heading) so the page
-  // keeps its single <h1> and a sane heading order.
+  // flagship visual on the right — the code, beside what it renders.
   //
-  // Composition is DEPTH-FIRST: cards at a few degrees of rotation, layered
-  // z-order, soft shadows, and the accented Launched card carrying the ONLY
-  // glow (the hero's section-anchor atmosphere is the sole ambient glow — they
-  // never compete). Real assets only: princess-purse before/after screenshots
-  // and the real step names — nothing fabricated.
+  // This replaced an earlier before/after collage. The collage was about
+  // REDESIGN (dated layout becomes modern layout) while the headline beside it
+  // makes a claim about CONVERSION and about hand-writing the markup — so the
+  // picture was answering a question the sentence hadn't asked. Two panes of
+  // real code and its real output put the visual and the words back in
+  // agreement.
   //
-  // Responsive by construction: the markup is mobile-first a SAFE vertical
-  // stack (Before → chips → After → Launched, in real narrative order) that
-  // cannot overflow; the absolute floating collage is a >=900px enhancement
-  // layered on top (see styles.css). The centered scroll cue stays a full-width
-  // row beneath both columns.
-  const CHIP_ICON = { Audit: "✓", Design: "", Build: "</>", QA: "✓" };
-  const chipSteps = PROCESS_STEPS.slice(0, 4); // Audit, Design, Build, QA
+  // Responsive by construction: mobile-first the two panes are a SAFE vertical
+  // stack (code above, render below — the order you'd actually work in) that
+  // cannot overflow; the side-by-side split is a wider-viewport enhancement
+  // (see styles.css). The centered scroll cue stays a full-width row beneath
+  // both columns.
+  // The hero visual: THE CODE, AND WHAT IT RENDERS.
+  //
+  // Two panes — hand-written semantic markup on the left, the browser's
+  // rendering of that exact markup on the right. The snippet is real, valid
+  // HTML and the render pane mirrors it element for element (heading →
+  // paragraph → call-to-action), so the picture demonstrates the claim instead
+  // of illustrating it. That claim is the one differentiator here: these sites
+  // are hand-written, not assembled in a page builder.
+  //
+  // The snippet is deliberately GENERIC (a table booking). It makes no claim
+  // about any real client, quotes no metric, and nothing in it is fabricated —
+  // same rule the rest of this file follows.
+  //
+  // Accessibility: the cluster is one labelled image (role="img" + a single
+  // honest aria-label) with both panes aria-hidden beneath it. Every label in
+  // the render pane is a <span>, never a heading, so the page keeps its single
+  // <h1> and a sane heading order.
 
-  // The Before/After cards are GENERIC, self-contained wireframe mockups drawn
-  // in HTML/CSS — abstract "fake browser window" UIs, not screenshots of any
-  // real site (zero external requests; nothing traceable to a client). The flow
-  // is illustrative — "a dated site, rebuilt and launched" — not a showcase.
-  // `body` is decorative wireframe markup (blocks only, no text). The whole
-  // card is aria-hidden below the aside's single accessible label.
-  const flowWindow = ({ variant, tag, body }) => html`<div class="flow-window flow-window--${variant}" aria-hidden="true">
-    <span class="flow-window-bar">
+  // Syntax tokens, hand-rolled. Deliberately no highlighter dependency —
+  // "Zero frameworks" is on this hero's own meta list, so shipping a library
+  // to colour six lines of HTML would undercut the sentence beside it.
+  const openTag = (name, attrs = []) =>
+    html`<span class="tok-p">&lt;</span><span class="tok-t">${name}</span>${attrs.map(
+      ([k, v]) =>
+        html` <span class="tok-a">${k}</span><span class="tok-p">=</span><span class="tok-s">"${v}"</span>`
+    )}<span class="tok-p">&gt;</span>`;
+  const closeTag = (name) =>
+    html`<span class="tok-p">&lt;/</span><span class="tok-t">${name}</span><span class="tok-p">&gt;</span>`;
+  const codeText = (s) => html`<span class="tok-x">${s}</span>`;
+
+  // Indent is a CLASS, never literal whitespace: template-literal indentation
+  // would otherwise leak into the output and shift every line.
+  //
+  // Each line also carries its own index as --i, so the typing delay is one
+  // calc() in the stylesheet instead of seventeen nth-child rules that would
+  // need renumbering every time a line is added or removed.
+  // Depth ships as --d and the stylesheet multiplies it, rather than a
+  // cl--i1/cl--i2/cl--i3 ladder — one missing rung in that ladder silently
+  // dumps a line flush against the gutter, which is exactly what happened
+  // when the nav pushed the document to depth 3.
+  const cl = (depth, ...parts) => [depth, parts];
+  const codeLine = ([depth, parts], i) =>
+    html`<span class="cl" style="--i:${i};--d:${depth}">${parts}</span>`;
+
+  // A WHOLE PAGE, header to footer — not a fragment. Every text node here has
+  // to appear in the render pane beside it (build.test.mjs enforces that), so
+  // the two panes can never drift into claiming something untrue.
+  //
+  // "Atlas Bistro" is a fictional placeholder, same rule the wireframe mockups
+  // followed before it: no real client, no real screenshot, nothing traceable.
+  const codeLines = [
+    cl(0, openTag("body")),
+    cl(1, openTag("header")),
+    cl(2, openTag("a", [["class", "logo"]]), codeText("Atlas"), closeTag("a")),
+    cl(2, openTag("nav")),
+    cl(3, openTag("a", [["href", "/menu"]]), codeText("Menu"), closeTag("a")),
+    cl(3, openTag("a", [["href", "/hours"]]), codeText("Hours"), closeTag("a")),
+    cl(2, closeTag("nav")),
+    cl(1, closeTag("header")),
+    cl(1, openTag("main")),
+    cl(2, openTag("h1"), codeText("Book a table"), closeTag("h1")),
+    cl(2, openTag("p"), codeText("Open until 11 tonight."), closeTag("p")),
+    cl(2, openTag("a", [["class", "cta"]]), codeText("Reserve"), closeTag("a")),
+    cl(1, closeTag("main")),
+    cl(1, openTag("footer"), codeText("© Atlas Bistro"), closeTag("footer")),
+    cl(0, closeTag("body")),
+  ].map(codeLine);
+
+  const paneBar = (label) => html`<span class="pane-bar">
       <span class="flow-dots"><i></i><i></i><i></i></span>
-      <span class="flow-url"></span>
-    </span>
-    <span class="flow-tag flow-tag--${variant}">${tag}</span>
-    <div class="mock mock--${variant}">${body}</div>
-  </div>`;
+      <span class="pane-label">${label}</span>
+    </span>`;
 
-  // Before: a cluttered, dated generic layout — a cramped multi-row header,
-  // mismatched blocks, muted greyscale, tight spacing.
-  const beforeMock = html`<span class="mk-strip"></span>
-    <span class="mk-head mk-head--b">
-      <span class="mk-logo"></span>
-      <span class="mk-navb"></span><span class="mk-navb"></span><span class="mk-navb"></span><span class="mk-navb"></span>
-    </span>
-    <span class="mk-banner"></span>
-    <span class="mk-mess"><span></span><span></span><span></span></span>`;
+  const flow = html`<aside class="hero-build" role="img" aria-label="A complete hand-written HTML document — header, nav, main and footer — beside the finished site it renders: a nav bar, a heading reading Book a table, a Reserve button, and a footer.">
+    <div class="hero-build-stage">
+      <div class="build-pane build-pane--code" aria-hidden="true">
+        ${paneBar("index.html")}
+        <div class="code-block">${codeLines}<span class="code-caret"></span></div>
+      </div>
 
-  // After: a clean, modern generic layout — single tidy header, a clear hero
-  // block with an on-brand accent, a neat equal grid, generous spacing.
-  const afterMock = html`<span class="mk-head mk-head--a">
-      <span class="mk-logo mk-logo--a"></span>
-      <span class="mk-nav"></span><span class="mk-nav"></span><span class="mk-nav"></span>
-      <span class="mk-cta"></span>
-    </span>
-    <span class="mk-hero">
-      <span class="mk-hero-line"></span>
-      <span class="mk-hero-line mk-hero-line--sm"></span>
-      <span class="mk-hero-btn"></span>
-    </span>
-    <span class="mk-grid"><span></span><span></span><span></span></span>`;
-
-  const flow = html`<aside class="hero-flow" role="img" aria-label="A dated site, rebuilt through my five-step process and launched live.">
-    <div class="hero-flow-stage">
-      <svg class="hero-flow-links" viewBox="0 0 100 116" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true">
-        <defs>
-          <marker id="flowArrow" markerWidth="3.4" markerHeight="3.4" refX="2.7" refY="1.6" orient="auto" markerUnits="userSpaceOnUse">
-            <path d="M0.4 0.4 L3 1.6 L0.4 2.8 Z" fill="currentColor" stroke="none" />
-          </marker>
-        </defs>
-        <path class="hero-flow-link" d="M35 37 C 41 44, 40 45, 43 46" marker-end="url(#flowArrow)" />
-        <path class="hero-flow-link" d="M71 78 C 64 84, 50 82, 50 86" marker-end="url(#flowArrow)" />
-      </svg>
-
-      <figure class="flow-item flow-item--before">
-        <div class="flow-float">
-          ${flowWindow({ variant: "before", tag: "Before", body: beforeMock })}
-        </div>
-      </figure>
-
-      ${chipSteps.map((step, i) => {
-        const icon = CHIP_ICON[step.name];
-        return html`<span class="flow-chip flow-chip--${i}">
-        <span class="flow-chip-label">${step.name}</span>${icon
-          ? html`<span class="flow-chip-icon" aria-hidden="true">${icon}</span>`
-          : ""}
-      </span>`;
-      })}
-
-      <figure class="flow-item flow-item--after">
-        <div class="flow-float">
-          ${flowWindow({ variant: "after", tag: "After", body: afterMock })}
-        </div>
-      </figure>
-
-      <div class="flow-item flow-item--launch">
-        <div class="flow-float">
-          <div class="flow-launch">
-            <span class="flow-launch-icon" aria-hidden="true">&#128640;</span>
-            <span class="flow-launch-text">
-              <span class="flow-launch-title">Launched</span>
-              <span class="flow-launch-sub">Live in production</span>
-            </span>
-          </div>
+      <div class="build-pane build-pane--render" aria-hidden="true">
+        ${paneBar("atlasbistro.test")}
+        <div class="render-body">
+          <span class="rs-header rp-el">
+            <span class="rs-logo">Atlas</span>
+            <span class="rs-nav"><span>Menu</span><span>Hours</span></span>
+          </span>
+          <span class="rs-main">
+            <span class="rp-el rp-title">Book a table</span>
+            <span class="rp-el rp-text">Open until 11 tonight.</span>
+            <span class="rp-el rp-cta">Reserve</span>
+          </span>
+          <span class="rs-footer rp-el">© Atlas Bistro</span>
         </div>
       </div>
     </div>
@@ -186,8 +175,10 @@ export default function home({ site, projects }) {
   });
 
   // -- 3. WHAT I DO -----------------------------------------------------------
-  // Four of the five services (the AI service is covered by the differentiator
-  // band below). Teaser = the first real sentence of each service summary.
+  // A curated subset, not all six: the AI service is covered by the
+  // differentiator band below, and app/product work is deliberately held back
+  // to the Services page until there's app work in the portfolio to point at.
+  // Teaser = the first real sentence of each service summary.
   const serviceOrder = ["rebuilds", "new-builds", "ecommerce", "wordpress-care"];
   const serviceCards = serviceOrder
     .map((id) => services.find((s) => s.id === id))

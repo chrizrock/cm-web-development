@@ -18,6 +18,39 @@ test("all 5 pages generated with a shell", () => {
   }
 });
 
+// The header swaps the desktop nav for the hamburger below a breakpoint that
+// lives in TWO places — a media query in styles.css and MOBILE_NAV_MAX in
+// main.js. They were 720px while the desktop header actually needs ~956px to
+// fit on one line, so every width from 721-955px rendered the desktop header
+// with nowhere to put it: the CTA and theme toggle wrapped to a second row and
+// hung outside the fixed-height sticky band, over the page content.
+test("mobile-nav breakpoint agrees between styles.css and main.js, and clears the header's real width", () => {
+  const css = read("assets/css/styles.css");
+  const js = read("assets/js/main.js");
+
+  const cssBp = css.match(/@media \(max-width: (\d+)px\) \{\s*\.site-nav \{ display: none; \}/);
+  assert.ok(cssBp, "found the mobile-nav media query in styles.css");
+
+  const jsBp = js.match(/const MOBILE_NAV_MAX = (\d+);/);
+  assert.ok(jsBp, "found MOBILE_NAV_MAX in main.js");
+
+  assert.equal(
+    cssBp[1],
+    jsBp[1],
+    `breakpoint drift: styles.css says ${cssBp[1]}px, main.js says ${jsBp[1]}px`
+  );
+
+  // Measured content width of the full desktop header at the switchover.
+  // Below this the desktop header cannot fit on one line.
+  assert.ok(
+    Number(cssBp[1]) >= 955,
+    `breakpoint ${cssBp[1]}px is below the ~956px the desktop header needs — the 721-955px wrap bug`
+  );
+
+  // The band is fixed-height and sticky, so a wrapped row escapes it entirely.
+  assert.match(css, /\.header-inner \{[^}]*flex-wrap: nowrap;/s, "header must not be allowed to wrap");
+});
+
 test("header + footer identical across pages (no drift)", () => {
   const grab = (h, tag) => h.match(new RegExp(`<${tag}[\\s\\S]*?</${tag}>`))[0];
   const norm = (s) => s.replace(/aria-current="page"/g, "");
@@ -54,50 +87,66 @@ test("home hero uses the signature line", () => {
   assert.match(read("index.html"), /rebuild the ones that don.?t/i);
 });
 
-// rev7: the hero's right column is a FLOATING FLOW COLLAGE — a real dated
-// screenshot ("Before") flows through the real process (as floating chips) to
-// the rebuilt "After" card and a glowing "Launched" endpoint. Replaces the rev5
-// numbered stepper.
-test("home hero renders the floating flow collage (before -> process -> after -> launched)", () => {
+// rev8: the hero's right column is THE CODE AND WHAT IT RENDERS — hand-written
+// semantic markup in one pane, the page it produces in the other. Replaces the
+// rev7 before/after flow collage, which argued redesign while the headline
+// beside it argues conversion + hand-coding.
+test("home hero renders the code pane and the render pane", () => {
   const h = read("index.html");
-  const start = h.indexOf('class="hero-flow"');
-  assert.ok(start > -1, "hero-flow present in the hero");
-  const flow = h.slice(start, h.indexOf("</aside>", start));
-  // Before / After anchor cards are GENERIC CSS/HTML wireframe MOCKUPS — not
-  // screenshots of any real site (illustrative flow; zero external requests).
-  assert.match(flow, /flow-tag--before">Before/, "Before tag");
-  assert.match(flow, /flow-tag--after">After/, "After tag");
-  assert.match(flow, /class="mock mock--before"/, "generic before mockup");
-  assert.match(flow, /class="mock mock--after"/, "generic after mockup");
-  // The flow must NOT embed real project screenshots (it's not a showcase).
-  assert.ok(!/<img/.test(flow), "no <img> — mockups are pure CSS/HTML, no screenshots");
-  assert.ok(!/princess-purse/.test(flow), "no real client screenshot filenames");
-  // Fake browser chrome (traffic-light dots + a fake URL bar).
-  assert.match(flow, /class="flow-url"/, "fake URL bar");
-  // Launched endpoint — the visual payoff.
-  assert.match(flow, /flow-item--launch/, "Launched endpoint card");
-  assert.match(flow, /flow-launch-title">Launched/, "Launched title");
-});
+  const start = h.indexOf('class="hero-build"');
+  assert.ok(start > -1, "hero-build present in the hero");
+  const build = h.slice(start, h.indexOf("</aside>", start));
 
-// The process chips must reuse the REAL shared step names (data/process.mjs) so
-// they can never drift from the Services page or fabricate a step.
-test("home hero flow chips are the real shared process step names (no drift, not fabricated)", async () => {
-  const { PROCESS_STEPS } = await import("../_build/data/process.mjs");
-  const h = read("index.html");
-  const start = h.indexOf('class="hero-flow"');
-  const flow = h.slice(start, h.indexOf("</aside>", start));
-  // Audit / Design / Build / QA render as floating chips...
-  for (const step of PROCESS_STEPS.slice(0, 4)) {
-    assert.match(flow, new RegExp(`class="flow-chip-label">${esc(step.name)}`), `chip ${step.name}`);
+  assert.match(build, /class="build-pane build-pane--code"/, "code pane");
+  assert.match(build, /class="build-pane build-pane--render"/, "render pane");
+  // Hand-rolled syntax tokens — no highlighter dependency, since "Zero
+  // frameworks" is on this same hero's meta list.
+  assert.match(build, /class="tok-a">class/, "attribute token");
+
+  // The code pane must show a WHOLE PAGE, header to footer — that's the point
+  // of it. A fragment would undersell what's being demonstrated.
+  for (const tag of ["body", "header", "nav", "main", "footer"]) {
+    assert.match(build, new RegExp(`class="tok-t">${tag}<`), `<${tag}> in the document`);
   }
-  // ...and the 5th real step (Launch) is realised as the "Launched" endpoint —
-  // not dropped, not renamed to something fabricated.
-  assert.equal(PROCESS_STEPS[4].name, "Launch");
-  assert.ok(flow.includes("Launched"), "Launch step realised as the Launched endpoint");
+  // ...and the render pane must show the corresponding page furniture.
+  assert.match(build, /class="rs-header rp-el"/, "rendered header bar");
+  assert.match(build, /class="rs-nav"/, "rendered nav");
+  assert.match(build, /class="rs-footer rp-el"/, "rendered footer");
+  // Pure CSS/HTML, exactly like the collage it replaced: no screenshots, no
+  // external requests, nothing traceable to a real client.
+  assert.ok(!/<img/.test(build), "no <img> — the panes are pure CSS/HTML");
 });
 
-test("home still has exactly one h1 after the hero flow collage", () => {
-  assert.equal((read("index.html").match(/<h1[\s>]/g) || []).length, 1);
+// The whole point of this hero is that the two panes AGREE: every text node in
+// the code must actually appear in the render pane. If they drift, the visual
+// is lying about what the markup produces.
+test("home hero render pane matches the code it shows", () => {
+  const h = read("index.html");
+  const start = h.indexOf('class="hero-build"');
+  const build = h.slice(start, h.indexOf("</aside>", start));
+
+  // Text nodes authored in the code pane...
+  const codeText = [...build.matchAll(/class="tok-x">([^<]+)</g)].map((m) => m[1]);
+  assert.ok(codeText.length >= 3, "code pane has text nodes");
+
+  // ...must each be rendered in the render pane.
+  const renderStart = build.indexOf('class="render-body"');
+  const render = build.slice(renderStart);
+  for (const t of codeText) {
+    assert.ok(render.includes(t), `render pane shows "${t}" from the code`);
+  }
+});
+
+// The render pane imitates a heading and a button, but must never USE a real
+// <h1>/<button> — the page owns exactly one h1, and the pane is decorative
+// beneath the aside's single aria-label.
+test("home still has exactly one h1, and the render pane fakes its heading with a span", () => {
+  const h = read("index.html");
+  assert.equal((h.match(/<h1[\s>]/g) || []).length, 1);
+  const start = h.indexOf('class="hero-build"');
+  const build = h.slice(start, h.indexOf("</aside>", start));
+  assert.ok(!/<h1[\s>]|<h2[\s>]|<button[\s>]/.test(build), "no real heading/button elements in the panes");
+  assert.match(build, /class="rp-el rp-title">/, "heading is a styled span");
 });
 
 test("home shows the 3 featured projects", () => {
@@ -259,6 +308,75 @@ test("services page renders all service blocks + process", () => {
     assert.match(h, new RegExp(pattern), s.title);
   }
   for (const step of ["Audit", "Design", "Build", "QA", "Launch"]) assert.ok(h.includes(step));
+});
+
+// The services index is the page's table of contents — every card must jump
+// to a block that actually exists, or the page silently sends people nowhere.
+test("services index lists every service and each card anchors to a real block", async () => {
+  const site = JSON.parse(readFileSync("_build/data/site.json", "utf8"));
+  const h = read("services.html");
+  const index = h.slice(h.indexOf('class="svc-index"'), h.indexOf("</ul>", h.indexOf('class="svc-index"')));
+
+  const hrefs = [...index.matchAll(/href="#([a-z-]+)"/g)].map((m) => m[1]);
+  assert.equal(hrefs.length, site.services.length, "one index card per service");
+
+  for (const id of hrefs) {
+    assert.ok(h.includes(`<section id="${id}"`), `index card #${id} lands on a real block`);
+  }
+});
+
+// The proof lines claim real counts of real work. They're derived from
+// projects.json at build time, and this pins them to it — a service must never
+// advertise work that isn't there, and the three services with no matching
+// projects must show no count rather than a fabricated one.
+test("service proof counts match projects.json, and unbacked services claim nothing", () => {
+  const projects = JSON.parse(readFileSync("_build/data/projects.json", "utf8"));
+  const list = Array.isArray(projects) ? projects : projects.projects;
+  const h = read("services.html");
+
+  const countOf = (type) => list.filter((p) => p.type === type).length;
+  const expected = {
+    rebuilds: countOf("Redesign"),
+    "new-builds": countOf("New Build"),
+    ecommerce: countOf("Cart &amp; Theme Upgrade"),
+  };
+
+  for (const [id, n] of Object.entries(expected)) {
+    assert.ok(n > 0, `${id} should have matching projects to claim`);
+    const block = h.slice(h.indexOf(`<section id="${id}"`), h.indexOf("</section>", h.indexOf(`<section id="${id}"`)));
+    assert.match(
+      block,
+      new RegExp(`<strong>${n} of the ${list.length} projects</strong>`),
+      `${id} proof line states the real count`
+    );
+    // Hash, not ?type= — clean-URL hosts 301 away the query string.
+    assert.match(block, /href="work\.html#type=/, `${id} proof link survives a clean-URL redirect`);
+  }
+
+  // No projects of that kind => no claim at all.
+  for (const id of ["app-product", "wordpress-care", "ai-delivery"]) {
+    const block = h.slice(h.indexOf(`<section id="${id}"`), h.indexOf("</section>", h.indexOf(`<section id="${id}"`)));
+    assert.ok(!/service-block-proof/.test(block), `${id} must not claim work it has none of`);
+  }
+});
+
+// Grid items default to align-self: stretch, so the count pill grew to fill
+// whatever vertical slack its card had left — the card with the shortest
+// teaser rendered a visibly fatter pill (34px) than its neighbours (27px).
+// Both declarations are load-bearing, not cosmetic.
+test("services index count pill is pinned, not stretched by its grid row", () => {
+  const css = read("assets/css/styles.css");
+  const pill = css.match(/\.svc-index-count \{[^}]*\}/s);
+  assert.ok(pill, "found .svc-index-count");
+  assert.match(pill[0], /align-self: end;/, "pill must not inherit grid's stretch default");
+
+  const card = css.match(/\.svc-index-card \{[^}]*\}/s);
+  assert.ok(card, "found .svc-index-card");
+  assert.match(
+    card[0],
+    /grid-template-rows: auto 1fr auto;/,
+    "teaser row must absorb the slack so pills share a baseline"
+  );
 });
 
 test("services page has anchors for every service id", () => {

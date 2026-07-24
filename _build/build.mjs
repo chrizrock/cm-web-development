@@ -59,7 +59,7 @@ const PAGES = [
     page: "services.html",
     title: "Services",
     description:
-      "Website rebuilds, new builds, e-commerce cart & theme upgrades, WordPress care & maintenance, and AI-augmented delivery — hand-coded, from a 20+ year front-end developer and WordPress specialist.",
+      "Website rebuilds, new builds, app & product work, e-commerce cart & theme upgrades, WordPress care & maintenance, and AI-augmented delivery — hand-coded, from a 20+ year front-end developer and WordPress specialist.",
     render: servicesPage,
   },
   {

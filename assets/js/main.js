@@ -6,6 +6,12 @@
 const root = document.documentElement;
 const STORAGE_KEY = "theme";
 
+/** Widest viewport that still uses the hamburger + slide-in mobile nav.
+ * Mirrors `@media (max-width: 959px)` in styles.css — the width below which
+ * the full desktop header (logo + nav + CTA + toggle) no longer fits on one
+ * line. The two must move together. */
+const MOBILE_NAV_MAX = 959;
+
 /** Reflect the current theme onto the toggle button's ARIA + label. */
 function syncToggle(btn, theme) {
   const isLight = theme === "light";
@@ -85,6 +91,41 @@ function initReveal() {
     { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
   );
   els.forEach((el) => observer.observe(el));
+}
+
+/** Hero build sequence: the code types itself in and the page assembles
+ * beside it, once, the first time the hero enters the viewport — then it
+ * holds still permanently.
+ *
+ * The CSS default is the finished, fully-rendered result; the sequence only
+ * exists under [data-flow="play"]. So if this never runs (no JS, JS error,
+ * reduced-motion) the visitor still gets the complete static picture instead
+ * of an empty frame. That's why the attribute is added here rather than
+ * authored into the markup. */
+function initHeroFlow() {
+  const stage = document.querySelector(".hero-build-stage");
+  if (!stage) return;
+
+  // Reduced-motion: leave the attribute off. CSS then renders the resolved
+  // end-state with no animation at all.
+  if (prefersReducedMotion()) return;
+
+  const play = () => stage.setAttribute("data-flow", "play");
+
+  // The hero is above the fold on load, so IntersectionObserver would fire
+  // immediately anyway — but observing keeps the behaviour correct if the
+  // page is restored mid-scroll (back/forward nav, deep link, refresh).
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        play();
+        obs.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  observer.observe(stage);
 }
 
 /** Living glow: every few seconds, nudge each .section--anchor's
@@ -369,7 +410,12 @@ function initMobileNav() {
 
   // Crossing back to desktop width while open (e.g. rotating a tablet)
   // shouldn't leave the panel open and scroll locked underneath it.
-  const desktopQuery = window.matchMedia("(min-width: 721px)");
+  //
+  // Must match the max-width: 959px rule in styles.css that swaps the desktop
+  // nav for this hamburger. If the two drift, there's a band of widths where
+  // the panel stays open behind a visible desktop nav, or closes while the
+  // hamburger is still the only way to navigate.
+  const desktopQuery = window.matchMedia(`(min-width: ${MOBILE_NAV_MAX + 1}px)`);
   const onBreakpointChange = (e) => {
     if (e.matches) close({ returnFocus: false });
   };
@@ -411,13 +457,38 @@ function initWorkFilters() {
     if (counter) counter.textContent = `Showing ${shown} of ${total}`;
   };
 
+  const activate = (btn) => {
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+    applyFilter(btn.dataset.filter);
+  };
+
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.getAttribute("aria-pressed") === "true") return; // already active
-      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
-      applyFilter(btn.dataset.filter);
+      activate(btn);
     });
   });
+
+  // Deep link: work.html#type=Redesign lands with that filter already applied.
+  // The Services page proof links point here, so "11 of the 17 projects here
+  // are rebuilds" arrives showing those 11 rather than dumping the visitor on
+  // the unfiltered grid to find them.
+  //
+  // Hash is checked as well as ?type= because hosts serving clean URLs (the
+  // local `serve`, Netlify/Vercel pretty URLs) 301 work.html -> /work and drop
+  // the query string; the fragment survives that redirect. Query wins when
+  // both are present, since it's the more explicit of the two.
+  //
+  // An unknown or absent value is ignored, so a stale link degrades to the
+  // full grid rather than an empty one.
+  const fromHash = decodeURIComponent(location.hash.replace(/^#type=/, ""));
+  const wanted =
+    new URLSearchParams(location.search).get("type") ||
+    (location.hash.startsWith("#type=") ? fromHash : null);
+  if (wanted) {
+    const match = buttons.find((b) => b.dataset.filter === wanted);
+    if (match) activate(match);
+  }
 }
 
 /** Work-page featured tier: exactly ONE project, picked at random on every
@@ -638,6 +709,7 @@ function init() {
   initThemeToggle();
   initScrollState();
   initReveal();
+  initHeroFlow();
   initHeroGlow();
   initMagnetic();
   initMobileNav();
