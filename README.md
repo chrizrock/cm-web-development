@@ -1,10 +1,12 @@
-# Chris Dave Magahis — Portfolio Site
+# CM Web Development
 
 A hand-coded, five-page portfolio and services site for a front-end developer &
-WordPress specialist: **Home, Services, Work, About, Contact.** Real before-and-after
-comparisons across 17 rebuilds, a working Formspree contact form, dark/light
-theming, and scroll reveals — no framework, no build-tool magic, no runtime
-dependencies.
+WordPress specialist: **Home, Services, Work, About, Contact.** Real
+before-and-after comparisons across 17 projects, six services, a working
+Formspree contact form, dark/light theming, and scroll reveals — no framework,
+no build-tool magic, no runtime dependencies.
+
+**Live:** https://chrizrock.github.io/cm-web-development/
 
 ## How it's built
 
@@ -22,7 +24,7 @@ dependencies.
   (`node:fs`, `node:path`, `node:http` via `serve` for local dev). Nothing is
   bundled, transpiled, or hydrated client-side. `assets/js/main.js` is a small,
   dependency-free vanilla-JS file (theme toggle, scroll reveals, before/after
-  sliders, Work filters, contact-form enhancement).
+  sliders, Work filters, hero build sequence, contact-form enhancement).
 - **Self-hosted fonts.** `assets/fonts/*.woff2` (Space Grotesk, Inter) are
   shipped locally and preloaded from `_build/partials/head.mjs` — no Google
   Fonts or other third-party requests at runtime.
@@ -45,6 +47,11 @@ the static file server only; nothing else in the toolchain is a dependency.
 After any content or template change, **always run `npm run build`** before
 committing — the root-level `.html` files must stay in sync with `_build/`.
 
+> **Local-dev gotcha:** `npx serve` issues a `301` from `page.html` to `/page`
+> and **drops the query string** doing it. Deep links that carry state use a
+> hash (`work.html#type=Redesign`) rather than `?type=` for exactly this
+> reason — a fragment survives that redirect where a query does not.
+
 ## Adding a project to Work
 
 1. Add before/after screenshots to `assets/img/shots/`, following the existing
@@ -63,6 +70,26 @@ committing — the root-level `.html` files must stay in sync with `_build/`.
    after-screenshots present, and that every `old` project has its
    before-screenshots present).
 
+`type` does double duty: the Services page derives its per-service proof
+counts from it (currently Redesign 11, Cart & Theme Upgrade 4, New Build 2)
+and links each one into a filtered Work page. Those counts are computed at
+build time and asserted in `test/build.test.mjs` — a service can never
+advertise work that isn't in `projects.json`.
+
+## Adding a service
+
+Add an entry to `_build/data/site.json` → `services[]` (`id`, `title`,
+`summary`, `forWho`, `bullets[]`), then add its `id` to `SERVICE_ORDER` in
+`_build/pages/services.mjs` — **the page renders from that array, not from the
+JSON order**, so a service missing from it is silently dropped. The "Service NN
+of NN" counters and the closing CTA derive from the list length, so nothing
+else needs renumbering.
+
+To give the service a proof line, map its `id` to a project `type` in
+`SERVICE_WORK_TYPE` in the same file. Services with no matching projects are
+left without a proof line deliberately — never give one a type it has no real
+work for.
+
 ## Contact form (Formspree)
 
 The Contact page form posts directly to a Formspree endpoint, set in
@@ -79,55 +106,56 @@ own endpoint (`https://formspree.io/f/<your-form-id>`) and rebuild
 (Formspree's own hosted "thank you" page takes over); `assets/js/main.js`
 progressively enhances it with inline validation and an async submit.
 
-## ⚠️ Required before deploying: `meta.url`
+## Deployment
 
-`_build/data/site.json` → `meta.url` is currently set to an obvious
-placeholder:
+Deployed to GitHub Pages from `main` / `(root)` at
+**https://chrizrock.github.io/cm-web-development/**.
+
+`.nojekyll` is present at the repo root so files and folders starting with `_`
+(like `_build/`) aren't swallowed by GitHub's default Jekyll build.
+
+### If the URL ever changes
+
+`_build/data/site.json` → `meta.url` is the base every page's
+`<link rel="canonical">` and Open Graph / Twitter `url`/`image` tags are built
+from (see `_build/partials/head.mjs`). It is currently:
 
 ```json
-"url": "https://REPLACE-WITH-YOUR-PAGES-URL"
+"url": "https://chrizrock.github.io/cm-web-development"
 ```
 
-**This must be changed to the site's real deployed URL before going live.**
-It's the base every page's `<link rel="canonical">` and Open Graph / Twitter
-`url`/`image` tags are built from (see `_build/partials/head.mjs`). Left as the
-placeholder, canonical URLs and social-share previews will point at a URL that
-doesn't exist.
+Moving the site (a custom domain, a user/org Pages site, a rename) means
+editing that value, running `npm run build`, and committing the regenerated
+HTML — otherwise canonical URLs and social-share previews keep pointing at the
+old address.
 
-Internal navigation is unaffected either way — every nav link, button, and
-asset reference in the site uses a relative href (`services.html`,
-`assets/img/...`), so the site browses and works correctly even before
-`meta.url` is set. Only the *absolute* URLs (canonical link, `og:url`,
-`og:image`, `twitter:image`) depend on it.
+Internal navigation is unaffected either way: every nav link, button, and asset
+reference uses a relative href (`services.html`, `assets/img/...`), so the site
+browses correctly from any base path. Only the *absolute* URLs depend on
+`meta.url`.
 
-**To fix:** edit `meta.url` in `_build/data/site.json` to your real GitHub
-Pages URL (e.g. `https://<username>.github.io/<repo>` for a project page, or
-`https://<username>.github.io` for a user/org page), then run
-`npm run build` and commit the regenerated HTML.
+## Conventions worth knowing
 
-## Deploying to GitHub Pages
+A few rules the tests enforce, so they're not accidentally undone:
 
-1. Set `meta.url` as described above, then `npm run build` and commit the
-   regenerated `.html` files.
-2. Push to GitHub:
-   ```bash
-   git remote add origin <your-repo-url>
-   git push -u origin main
-   ```
-3. In the GitHub repo: **Settings → Pages → Build and deployment → Source:**
-   `Deploy from a branch`, **Branch:** `main` / `(root)`.
-4. `.nojekyll` is already present at the repo root — this disables Jekyll
-   processing so files/folders starting with `_` (like `_build/`) aren't
-   swallowed by GitHub's default Jekyll build.
-5. Once the Pages URL is live, confirm it matches what you set in `meta.url`
-   (step 1) — if it doesn't, update `meta.url`, rebuild, and push again.
-
-### Optional, after launch
-
-- Point a custom domain at the Pages deployment (`CNAME` file + DNS), then
-  update `meta.url` to the custom domain and rebuild.
-- Add cookieless analytics (e.g. GoatCounter) to match the author's other
-  site, if desired.
+- **Nothing fabricated.** Copy, counts, and credentials come from
+  `_build/data/*.json`. The hero's code/render panes use a fictional
+  placeholder ("Atlas Bistro") rather than implying a real client, and both
+  panes must agree — every text node in the code pane has to appear in the
+  rendered pane beside it.
+- **One `<h1>` per page.** The hero's render pane imitates a heading and a
+  button with styled `<span>`s precisely so it doesn't introduce a second
+  `<h1>` or a stray `<button>`.
+- **The header must never wrap.** It's a fixed-height sticky band, so a wrapped
+  second row renders *outside* it over the page content. The desktop nav gives
+  way to the hamburger below **960px**, which is the width the full header
+  actually needs. That breakpoint lives in two places — a media query in
+  `assets/css/styles.css` and `MOBILE_NAV_MAX` in `assets/js/main.js` — and a
+  test asserts they agree.
+- **Motion plays once.** Sequences run on entry and settle; nothing loops
+  perpetually. Everything is gated behind `prefers-reduced-motion:
+  no-preference`, and the default (no-JS, reduced-motion) state is always the
+  finished composition rather than an empty frame.
 
 ## Project structure
 
@@ -139,18 +167,19 @@ _build/
   data/site.json         # site-wide copy: meta, nav, contact, stats, services
   data/projects.json      # the 17 Work-page projects (before/after data)
   data/cv.json             # About-page skills/experience content
-  partials/head.mjs        # <head>: meta, OG/Twitter, favicon, font preloads
-  partials/header.mjs       # nav bar + theme toggle
-  partials/footer.mjs        # footer
-  partials/components.mjs     # shared components (section, cards, before/after…)
-  pages/*.mjs                  # one module per page (home/services/work/about/contact)
+  data/process.mjs          # the shared 5-step process (Services page)
+  partials/head.mjs          # <head>: meta, OG/Twitter, favicon, font preloads
+  partials/header.mjs         # nav bar + theme toggle
+  partials/footer.mjs          # footer
+  partials/components.mjs       # shared components (section, cards, before/after…)
+  pages/*.mjs                    # one module per page (home/services/work/about/contact)
 assets/
-  css/styles.css                # single stylesheet, dark + light theme tokens
-  js/main.js                     # theme toggle, reveals, sliders, filters, form
-  fonts/*.woff2                   # self-hosted Space Grotesk + Inter
-  img/                              # logo, portrait, project screenshots, OG image
-  cv/                                # downloadable CV PDF
-test/*.test.mjs                       # node:test suite — run via `npm test`
+  css/styles.css                  # single stylesheet, dark + light theme tokens
+  js/main.js                       # theme toggle, reveals, sliders, filters, form
+  fonts/*.woff2                     # self-hosted Space Grotesk + Inter
+  img/                                # logo, project screenshots, OG image
+  cv/                                  # downloadable CV PDF
+test/*.test.mjs                         # node:test suite — run via `npm test`
 index.html / services.html / work.html / about.html / contact.html
-                                        # GENERATED — do not hand-edit, run `npm run build`
+                                          # GENERATED — do not hand-edit, run `npm run build`
 ```
