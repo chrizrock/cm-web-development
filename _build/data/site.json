@@ -10,7 +10,8 @@
     "ogType": "website",
     "twitterCard": "summary_large_image",
     "favicon": "assets/img/logo/png/cm-brand-square-512.png",
-    "appleTouchIcon": "assets/img/logo/png/cm-brand-square-180.png"
+    "appleTouchIcon": "assets/img/logo/png/cm-brand-square-180.png",
+    "goatcounter": "cm-webdevelopment"
   },
   "nav": [
     {

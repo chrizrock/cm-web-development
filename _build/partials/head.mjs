@@ -27,6 +27,24 @@ const PRE_PAINT_SCRIPT = `try {
     document.documentElement.setAttribute("data-theme", t);
   } catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }`;
 
+/**
+ * GoatCounter — cookieless analytics, ~3KB, loaded async so it never blocks
+ * rendering or delays first paint. No cookies, no personal data, no consent
+ * banner needed.
+ *
+ * Driven by site.json -> meta.goatcounter (the site CODE, e.g. "chrizrock",
+ * not the full URL). Omit or empty that value and no script is emitted at all
+ * — which is what keeps analytics out of local builds if you ever want that.
+ *
+ * count.js skips localhost and private IP ranges on its own, so `npm run
+ * serve` on :5050 never pollutes the stats.
+ */
+const analytics = (code) =>
+  code
+    ? html`<script data-goatcounter="https://${code}.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>`
+    : "";
+
 export default function head({ title, description, page }) {
   const { meta } = site;
   const fullTitle = title ? `${title} — ${meta.siteName}` : `${meta.siteName} — ${meta.tagline}`;
@@ -63,5 +81,6 @@ ${FONT_PRELOADS.map(
 <script>
   ${raw(PRE_PAINT_SCRIPT)}
 </script>
+${analytics(meta.goatcounter)}
 </head>`;
 }
