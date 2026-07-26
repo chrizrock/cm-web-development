@@ -1210,23 +1210,19 @@
       opacity: 0;
       animation: rp-in 0.40s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .hero-build-stage[data-flow="play"] .rs-header { animation-delay: 0.62s; }
-    .hero-build-stage[data-flow="play"] .rp-title  { animation-delay: 0.78s; }
-    .hero-build-stage[data-flow="play"] .rp-text   { animation-delay: 0.85s; }
-    .hero-build-stage[data-flow="play"] .rp-cta    { animation-delay: 0.92s; }
-    .hero-build-stage[data-flow="play"] .rs-footer { animation-delay: 1.06s; }
+    /* The rendered site assembles once the code lands: hero image, then the
+       heading, then the card row stepping in. */
+    .hero-build-stage[data-flow="play"] .site-hero    { animation-delay: 0.62s; }
+    .hero-build-stage[data-flow="play"] .site-head    { animation-delay: 0.76s; }
+    .hero-build-stage[data-flow="play"] .site-card:nth-child(1) { animation-delay: 0.90s; }
+    .hero-build-stage[data-flow="play"] .site-card:nth-child(2) { animation-delay: 0.99s; }
+    .hero-build-stage[data-flow="play"] .site-card:nth-child(3) { animation-delay: 1.08s; }
 
-    /* The illustrated pieces snap in last — the chip while the code types,
-       the modules docking on one after the result resolves. */
-    .hero-build-stage[data-flow="play"] .hb-chip,
-    .hero-build-stage[data-flow="play"] .hb-node {
+    /* The </> chip snaps in while the code types. */
+    .hero-build-stage[data-flow="play"] .hb-chip {
       opacity: 0;
-      animation: hb-pop 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: hb-pop 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.30s;
     }
-    .hero-build-stage[data-flow="play"] .hb-chip    { animation-delay: 0.30s; }
-    .hero-build-stage[data-flow="play"] .hb-node--1 { animation-delay: 1.18s; }
-    .hero-build-stage[data-flow="play"] .hb-node--2 { animation-delay: 1.30s; }
-    .hero-build-stage[data-flow="play"] .hb-node--3 { animation-delay: 1.42s; }
   }
   @keyframes cl-in {
     from { opacity: 0; transform: translateX(-5px); }
@@ -1408,6 +1404,37 @@
     font-size: var(--fs-sm);
   }
 
+  /* -- the rendered site: a landing page in miniature (hero image + heading +
+     a card row), the illustrated result screen from the brief. -- */
+  .site-body {
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+  .site-hero {
+    display: grid; place-items: center;
+    height: 5.4rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 32%, var(--surface-3)), var(--surface-3));
+    color: color-mix(in srgb, var(--accent-ink) 75%, #fff);
+  }
+  .site-hero-icon { width: 44px; height: auto; display: block; }
+  .site-head { display: flex; flex-direction: column; gap: 7px; }
+  .site-head i { height: 11px; border-radius: 4px; background: var(--text); display: block; }
+  .site-head i:first-child { width: 62%; opacity: 0.92; }
+  .site-head i:last-child  { width: 40%; height: 8px; opacity: 0.5; }
+  .site-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+  .site-card {
+    height: 2.7rem; border-radius: var(--radius-sm);
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    display: block;
+  }
+
   /* ── Hero build — illustrated device motif ───────────────────────────────
      The floating </> chip, module nodes and glow from the brief, dressing the
      two real screens. Desktop-only: below 900px the stage is a clean vertical
@@ -1458,11 +1485,11 @@
 
   .hb-glow {
     position: absolute; z-index: 0;
-    inset: 8% 0;
+    inset: -6% -8%;
     border-radius: 50%;
     background: radial-gradient(closest-side,
-      color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%);
-    filter: blur(10px);
+      color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%);
+    filter: blur(22px);
     pointer-events: none;
   }
 
@@ -1855,28 +1882,38 @@
     }
 
     .device { position: absolute; display: flex; flex-direction: column; align-items: center; }
-    /* The monitor bezel around each screen. */
+    /* Chunky, light-steel monitor bezel — the illustrated look from the brief.
+       A thick frame in a lighter steel than the screen, a soft top highlight,
+       and a deep drop shadow so each monitor reads as a solid object. */
     .device-frame {
       width: 100%;
-      padding: 9px;
-      border-radius: 16px;
-      background: linear-gradient(155deg, var(--surface-3), var(--surface-2));
-      border: 1px solid var(--border-strong);
-      box-shadow: var(--shadow-3);
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(158deg,
+        color-mix(in srgb, var(--muted) 52%, var(--surface-3)),
+        var(--surface-3) 55%,
+        var(--surface-2));
+      border: 1px solid color-mix(in srgb, var(--muted) 40%, var(--border-strong));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+        var(--shadow-3);
     }
-    .device-frame .build-pane { box-shadow: none; }
-    /* Neck + base. */
+    .device-frame .build-pane { box-shadow: none; border-color: transparent; }
+    /* Neck + wide base, in the same steel as the bezel. */
     .device-stand {
       display: block; position: relative;
-      width: 26px; height: 15px;
-      background: linear-gradient(var(--surface-3), var(--surface-2));
-      border-inline: 1px solid var(--border-strong);
+      width: 34px; height: 20px;
+      background: linear-gradient(
+        color-mix(in srgb, var(--muted) 46%, var(--surface-3)), var(--surface-2));
+      border-inline: 1px solid color-mix(in srgb, var(--muted) 30%, var(--border-strong));
     }
     .device-stand::after {
-      content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-      width: 76px; height: 8px; border-radius: 4px;
-      background: linear-gradient(var(--surface-3), var(--surface-2));
-      border: 1px solid var(--border-strong);
+      content: ""; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+      width: 108px; height: 11px; border-radius: 6px;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--muted) 46%, var(--surface-3)), var(--surface-2));
+      border: 1px solid color-mix(in srgb, var(--muted) 30%, var(--border-strong));
+      box-shadow: 0 10px 24px -10px rgba(0,0,0,0.6);
     }
 
     .device--code   { top: 2%; left: 0; width: 68%; z-index: 2; }

@@ -87,66 +87,48 @@ test("home hero uses the signature line", () => {
   assert.match(read("index.html"), /rebuild the ones that don.?t/i);
 });
 
-// rev8: the hero's right column is THE CODE AND WHAT IT RENDERS — hand-written
-// semantic markup in one pane, the page it produces in the other. Replaces the
-// rev7 before/after flow collage, which argued redesign while the headline
-// beside it argues conversion + hand-coding.
-test("home hero renders the code pane and the render pane", () => {
+// rev9: the hero's right column is an ILLUSTRATED TWO-MONITOR SCENE — a big
+// monitor showing the real hand-written code, and a smaller monitor showing the
+// site it renders (a landing page: hero image, heading, a card row).
+test("home hero renders the two-monitor scene (code + rendered site)", () => {
   const h = read("index.html");
   const start = h.indexOf('class="hero-build"');
   assert.ok(start > -1, "hero-build present in the hero");
   const build = h.slice(start, h.indexOf("</aside>", start));
 
-  assert.match(build, /class="build-pane build-pane--code"/, "code pane");
-  assert.match(build, /class="build-pane build-pane--render"/, "render pane");
-  // Hand-rolled syntax tokens — no highlighter dependency, since "Zero
-  // frameworks" is on this same hero's meta list.
+  // Two framed monitors with stands.
+  assert.match(build, /class="device device--code"/, "code monitor");
+  assert.match(build, /class="device device--render"/, "result monitor");
+  assert.match(build, /class="device-frame"/, "monitor bezel");
+  assert.equal((build.match(/class="device-stand"/g) || []).length, 2, "both monitors have a stand");
+
+  // Big monitor still shows the REAL whole-document code, header to footer —
+  // hand-rolled tokens, no highlighter dependency (Zero frameworks).
   assert.match(build, /class="tok-a">class/, "attribute token");
-
-  // The code pane must show a WHOLE PAGE, header to footer — that's the point
-  // of it. A fragment would undersell what's being demonstrated.
   for (const tag of ["body", "header", "nav", "main", "footer"]) {
-    assert.match(build, new RegExp(`class="tok-t">${tag}<`), `<${tag}> in the document`);
+    assert.match(build, new RegExp(`class="tok-t">${tag}<`), `<${tag}> in the code`);
   }
-  // ...and the render pane must show the corresponding page furniture.
-  assert.match(build, /class="rs-header rp-el"/, "rendered header bar");
-  assert.match(build, /class="rs-nav"/, "rendered nav");
-  assert.match(build, /class="rs-footer rp-el"/, "rendered footer");
-  // Pure CSS/HTML, exactly like the collage it replaced: no screenshots, no
-  // external requests, nothing traceable to a real client.
-  assert.ok(!/<img/.test(build), "no <img> — the panes are pure CSS/HTML");
+
+  // Result monitor shows the landing page: a hero image block, a heading, and a
+  // three-card row.
+  assert.match(build, /class="site-hero rp-el"/, "rendered hero block");
+  assert.match(build, /class="site-head rp-el"/, "rendered heading");
+  assert.equal((build.match(/class="site-card rp-el"/g) || []).length, 3, "a three-card row");
+
+  // Pure CSS/HTML/inline-SVG — no external image requests, nothing traceable to
+  // a real client.
+  assert.ok(!/<img/.test(build), "no <img> — the scene is pure CSS/HTML/SVG");
 });
 
-// The whole point of this hero is that the two panes AGREE: every text node in
-// the code must actually appear in the render pane. If they drift, the visual
-// is lying about what the markup produces.
-test("home hero render pane matches the code it shows", () => {
-  const h = read("index.html");
-  const start = h.indexOf('class="hero-build"');
-  const build = h.slice(start, h.indexOf("</aside>", start));
-
-  // Text nodes authored in the code pane...
-  const codeText = [...build.matchAll(/class="tok-x">([^<]+)</g)].map((m) => m[1]);
-  assert.ok(codeText.length >= 3, "code pane has text nodes");
-
-  // ...must each be rendered in the render pane.
-  const renderStart = build.indexOf('class="render-body"');
-  const render = build.slice(renderStart);
-  for (const t of codeText) {
-    assert.ok(render.includes(t), `render pane shows "${t}" from the code`);
-  }
-});
-
-// The render pane imitates a heading and a button, but must never USE a real
-// <h1>/<button> — the page owns exactly one h1, and the pane is decorative
-// beneath the aside's single aria-label.
-test("home still has exactly one h1, and the render pane fakes its heading with a span", () => {
+// The scene is decorative beneath the aside's single aria-label, so it must
+// never introduce a second <h1> or a real <button> — the page owns exactly one
+// <h1>, in the hero heading.
+test("home still has exactly one h1, and the hero scene uses no heading/button elements", () => {
   const h = read("index.html");
   assert.equal((h.match(/<h1[\s>]/g) || []).length, 1);
   const start = h.indexOf('class="hero-build"');
   const build = h.slice(start, h.indexOf("</aside>", start));
-  assert.ok(!/<h1[\s>]|<h2[\s>]|<button[\s>]/.test(build), "no real heading/button elements in the panes");
-  assert.match(build, /class="rp-el rp-title">/, "heading is a styled span");
+  assert.ok(!/<h1[\s>]|<h2[\s>]|<button[\s>]/.test(build), "no real heading/button elements in the scene");
 });
 
 test("home shows the 3 featured projects", () => {

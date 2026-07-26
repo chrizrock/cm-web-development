@@ -114,23 +114,23 @@ export default function home({ site, projects }) {
     <polyline points="19,3 25,9 19,15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`;
 
-  // Tiny module-node icons (audit ✓ / build </> / ship). Pure strokes.
-  const nodeCheck = html`<svg class="hb-node-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5 l3.2 3.2 L15 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  const nodeLines = html`<svg class="hb-node-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="16" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="11" x2="12" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+  // Generic "image" glyph for the rendered site's hero block (mountains + sun).
+  const siteHeroIcon = html`<svg class="site-hero-icon" viewBox="0 0 48 32" fill="none" aria-hidden="true">
+    <circle cx="35" cy="9" r="4" fill="currentColor" opacity="0.9"/>
+    <path d="M2 31 L15 15 L25 25 L34 15 L46 31 Z" fill="currentColor" opacity="0.65"/>
+  </svg>`;
 
-  const flow = html`<aside class="hero-build" role="img" aria-label="A complete hand-written HTML document — header, nav, main and footer — beside the finished site it renders: a nav bar, a heading reading Book a table, a Reserve button, and a footer.">
+  // The illustrated two-monitor scene from the brief: a big monitor showing the
+  // real hand-written code, and a smaller monitor showing the site it renders
+  // (a landing page — hero image + heading + a card row). Chunky illustrated
+  // bezels + stands (styles.css). The whole cluster is one labelled image and
+  // every piece is aria-hidden.
+  const flow = html`<aside class="hero-build" role="img" aria-label="A monitor showing hand-written code, beside a smaller monitor showing the website it builds — a hero image, a heading, and a row of cards.">
     <div class="hero-build-stage">
       <span class="hb-glow" aria-hidden="true"></span>
-
-      <!-- Floating </> chip + module nodes: the illustrated motif from the
-           brief, dressing the two real screens. Connectors are CSS stubs on
-           each piece (::before), robust across breakpoints — no stretched SVG.
-           Purely presentational; the whole cluster is one labelled image and
-           every piece here is aria-hidden. -->
       <span class="hb-chip" aria-hidden="true">${codeGlyph}</span>
 
-      <!-- Big monitor: the code. The screen is the real code pane; .device
-           adds the illustrated bezel + neck + base around it. -->
+      <!-- Big monitor: the real code. -->
       <figure class="device device--code">
         <div class="device-frame">
           <div class="build-pane build-pane--code" aria-hidden="true">
@@ -141,27 +141,19 @@ export default function home({ site, projects }) {
         <span class="device-stand" aria-hidden="true"></span>
       </figure>
 
-      <!-- Boxes pointing at the code screen — what's happening as it's built. -->
-      <span class="hb-node hb-node--1" aria-hidden="true">${nodeLines}</span>
-      <span class="hb-node hb-node--2" aria-hidden="true">${codeGlyph}</span>
-      <span class="hb-node hb-node--3" aria-hidden="true">${nodeCheck}</span>
-
-      <!-- Smaller monitor, front-right: the rendered result. -->
+      <!-- Smaller monitor, front-right: the rendered landing page. -->
       <figure class="device device--render">
         <div class="device-frame">
           <div class="build-pane build-pane--render" aria-hidden="true">
             ${paneBar("atlasbistro.test")}
-            <div class="render-body">
-              <span class="rs-header rp-el">
-                <span class="rs-logo">Atlas</span>
-                <span class="rs-nav"><span>Menu</span><span>Hours</span></span>
+            <div class="site-body">
+              <span class="site-hero rp-el">${siteHeroIcon}</span>
+              <span class="site-head rp-el"><i></i><i></i></span>
+              <span class="site-cards">
+                <i class="site-card rp-el"></i>
+                <i class="site-card rp-el"></i>
+                <i class="site-card rp-el"></i>
               </span>
-              <span class="rs-main">
-                <span class="rp-el rp-title">Book a table</span>
-                <span class="rp-el rp-text">Open until 11 tonight.</span>
-                <span class="rp-el rp-cta">Reserve</span>
-              </span>
-              <span class="rs-footer rp-el">© Atlas Bistro</span>
             </div>
           </div>
         </div>
