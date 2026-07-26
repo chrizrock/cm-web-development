@@ -1961,18 +1961,25 @@
       box-shadow: var(--shadow-3), var(--glow);
     }
 
-    /* Turn the illustrated motif on. */
+    /* Turn the illustrated motif on. grid + place-items centres the icon in
+       each box (inline-flex would leave it left-aligned). */
     .hb-glow { display: block; }
     .hb-chip { display: grid; }
-    .hb-stage { display: inline-flex; }
+    .hb-stage { display: grid; }
 
     /* </> chip badges the code monitor's top-left — it stands for Build. The
        three stage boxes (Audit, Design, QA) stack in the gutter just right of
        the code monitor, each with a stub reaching left onto the code screen. */
     .hb-chip     { top: -3%; left: -1%; }
-    .hb-stage--1 { top: 5%;  right: 18%; }
-    .hb-stage--2 { top: 23%; right: 18%; }
-    .hb-stage--3 { top: 41%; right: 18%; }
+    /* Audit + Design sit in the upper-right gutter, stubs pointing left at the
+       code screen (where it's built). */
+    .hb-stage--1 { top: 6%;  right: 16%; }
+    .hb-stage--2 { top: 26%; right: 16%; }
+    /* QA moves to the lower-left of the result monitor, stub pointing RIGHT at
+       the rendered screen (where it's tested) — so the three aren't stacked in
+       one column. */
+    .hb-stage--3 { bottom: 8%; left: 30%; }
+    .hb-stage--3::before { right: auto; left: 100%; }
   }
   @media (min-width: 761px) {
     .differentiator-inner { grid-template-columns: 1.15fr 0.85fr; }
