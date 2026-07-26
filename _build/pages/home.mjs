@@ -132,10 +132,11 @@ export default function home({ site, projects }) {
     Build: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><polyline points="8,6 4,10 8,14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="12,6 16,10 12,14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     QA: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5 l3.4 3.4 L16 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   };
-  const stageBoxes = PROCESS_STEPS.slice(0, 4).map(
-    (step, i) => html`<span class="hb-stage hb-stage--${i + 1}" aria-hidden="true">
-      <span class="hb-stage-ic">${STAGE_ICON[step.name]}</span><span class="hb-stage-label">${step.name}</span>
-    </span>`
+  // The </> chip already stands for Build, so the boxes are the other stages:
+  // Audit, Design, QA (in process order). Icon-only.
+  const STAGE_NAMES = ["Audit", "Design", "QA"];
+  const stageBoxes = PROCESS_STEPS.filter((s) => STAGE_NAMES.includes(s.name)).map(
+    (step, i) => html`<span class="hb-stage hb-stage--${i + 1}" role="img" aria-label="${step.name}">${STAGE_ICON[step.name]}</span>`
   );
 
   // The illustrated two-monitor scene from the brief: a big monitor showing the
@@ -146,7 +147,7 @@ export default function home({ site, projects }) {
   const flow = html`<aside class="hero-build" role="img" aria-label="A monitor showing hand-written code, beside a smaller monitor showing the website it builds — a hero image, a heading, and a row of cards.">
     <div class="hero-build-stage">
       <span class="hb-glow" aria-hidden="true"></span>
-      <span class="hb-chip" aria-hidden="true">${codeGlyph}</span>
+      <span class="hb-chip" role="img" aria-label="Build">${codeGlyph}</span>
 
       ${stageBoxes}
 

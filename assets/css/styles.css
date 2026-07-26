@@ -1226,10 +1226,9 @@
       animation: hb-pop 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .hero-build-stage[data-flow="play"] .hb-chip     { animation-delay: 0.30s; }
-    .hero-build-stage[data-flow="play"] .hb-stage--1 { animation-delay: 0.60s; }
-    .hero-build-stage[data-flow="play"] .hb-stage--2 { animation-delay: 0.78s; }
-    .hero-build-stage[data-flow="play"] .hb-stage--3 { animation-delay: 0.96s; }
-    .hero-build-stage[data-flow="play"] .hb-stage--4 { animation-delay: 1.14s; }
+    .hero-build-stage[data-flow="play"] .hb-stage--1 { animation-delay: 0.62s; }
+    .hero-build-stage[data-flow="play"] .hb-stage--2 { animation-delay: 0.82s; }
+    .hero-build-stage[data-flow="play"] .hb-stage--3 { animation-delay: 1.02s; }
   }
   @keyframes cl-in {
     from { opacity: 0; transform: translateX(-5px); }
@@ -1456,32 +1455,27 @@
 
   .hb-glow, .hb-chip, .hb-node, .hb-stage { display: none; }
 
-  /* Stage pills: the real process (Audit → Design → Build → QA) as labelled
-     icon boxes pointing at the code screen. Desktop-only, aria-hidden. */
+  /* Stage boxes: the real process (Audit → Design → Build → QA) as icon-only
+     boxes — same square style as the </> chip — each pointing at the code
+     screen. Desktop-only, aria-hidden's the icon inside via role/label. */
   .hb-stage {
     position: absolute; z-index: 5;
-    align-items: center; gap: 0.4rem;
-    padding: 0.28rem 0.62rem 0.28rem 0.5rem;
-    border-radius: var(--radius-pill);
+    place-items: center;
+    width: 2.8rem; height: 2.8rem;
+    border-radius: var(--radius-md);
     background: var(--surface-2);
-    border: 1px solid color-mix(in srgb, var(--accent) 46%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
     box-shadow: var(--shadow-1);
-    white-space: nowrap;
-  }
-  .hb-stage-ic {
-    display: grid; place-items: center;
-    width: 1.1rem; height: 1.1rem;
     color: var(--accent-ink);
   }
-  .hb-stage-ic svg { width: 100%; height: 100%; display: block; }
-  .hb-stage-label {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: var(--fs-xs); color: var(--text);
-  }
-  /* Connector stub — a short dotted line pointing left at the code screen. */
+  .hb-stage svg { width: 55%; height: auto; display: block; }
+  /* Connector stub — a short dotted line pointing left at the code screen.
+     Width is set per-box at desktop so it reaches the screen edge from wherever
+     the box sits. */
   .hb-stage::before {
-    content: ""; position: absolute; top: 50%; right: 100%; width: 1.4rem;
-    border-top: 2px dotted color-mix(in srgb, var(--accent) 58%, transparent);
+    content: ""; position: absolute; top: 50%; right: 100%;
+    width: var(--stub, 2.4rem);
+    border-top: 2px dotted color-mix(in srgb, var(--accent) 60%, transparent);
   }
 
   .hb-glyph { width: 62%; height: auto; color: var(--accent-ink); display: block; }
@@ -1951,8 +1945,8 @@
       box-shadow: 0 10px 24px -10px rgba(0,0,0,0.6);
     }
 
-    .device--code   { top: 0; left: 0; width: 70%; z-index: 2; }
-    .device--render { bottom: 3%; right: 0; width: 47%; z-index: 3; }
+    .device--code   { top: 0; left: 0; width: 66%; z-index: 2; }
+    .device--render { bottom: 2%; right: 0; width: 56%; z-index: 3; }
     /* Compact code so the screen reads landscape (like a real monitor) rather
        than tall, and 15 lines still fit with no inner scrollbar. */
     .device--code .code-block {
@@ -1972,14 +1966,13 @@
     .hb-chip { display: grid; }
     .hb-stage { display: inline-flex; }
 
-    /* </> chip badges the code monitor's top-left. The four stage pills step
-       down the right, each pointing left at the code screen — the process
-       (Audit → Design → Build → QA) as the page is built. */
+    /* </> chip badges the code monitor's top-left — it stands for Build. The
+       three stage boxes (Audit, Design, QA) stack in the gutter just right of
+       the code monitor, each with a stub reaching left onto the code screen. */
     .hb-chip     { top: -3%; left: -1%; }
-    .hb-stage--1 { top: 4%;  right: 2%; }
-    .hb-stage--2 { top: 20%; right: 8%; }
-    .hb-stage--3 { top: 36%; right: 2%; }
-    .hb-stage--4 { top: 52%; right: 10%; }
+    .hb-stage--1 { top: 5%;  right: 18%; }
+    .hb-stage--2 { top: 23%; right: 18%; }
+    .hb-stage--3 { top: 41%; right: 18%; }
   }
   @media (min-width: 761px) {
     .differentiator-inner { grid-template-columns: 1.15fr 0.85fr; }
