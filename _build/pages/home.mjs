@@ -9,6 +9,9 @@
 // projects.json); nothing here is fabricated.
 import { html, raw } from "../lib/render.mjs";
 import { section, statTile, serviceCard, projectCard, button, firstSentence } from "../partials/components.mjs";
+// The real 5-step process (Audit/Design/Build/QA/Launch), shared with the
+// Services page so the hero's stage boxes can never drift from it.
+import { PROCESS_STEPS } from "../data/process.mjs";
 
 export default function home({ site, projects }) {
   const { stats, services } = site;
@@ -120,6 +123,21 @@ export default function home({ site, projects }) {
     <path d="M2 31 L15 15 L25 25 L34 15 L46 31 Z" fill="currentColor" opacity="0.65"/>
   </svg>`;
 
+  // Stage boxes: the real development process (Audit → Design → Build → QA)
+  // as labelled icon pills pointing at the code screen — "what's happening" as
+  // the page is built. Icons are stroke-only SVGs (no font, crisp at any size).
+  const STAGE_ICON = {
+    Audit: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="4.5" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="12" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    Design: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.8"/></svg>`,
+    Build: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><polyline points="8,6 4,10 8,14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="12,6 16,10 12,14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    QA: html`<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5 l3.4 3.4 L16 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  };
+  const stageBoxes = PROCESS_STEPS.slice(0, 4).map(
+    (step, i) => html`<span class="hb-stage hb-stage--${i + 1}" aria-hidden="true">
+      <span class="hb-stage-ic">${STAGE_ICON[step.name]}</span><span class="hb-stage-label">${step.name}</span>
+    </span>`
+  );
+
   // The illustrated two-monitor scene from the brief: a big monitor showing the
   // real hand-written code, and a smaller monitor showing the site it renders
   // (a landing page — hero image + heading + a card row). Chunky illustrated
@@ -129,6 +147,8 @@ export default function home({ site, projects }) {
     <div class="hero-build-stage">
       <span class="hb-glow" aria-hidden="true"></span>
       <span class="hb-chip" aria-hidden="true">${codeGlyph}</span>
+
+      ${stageBoxes}
 
       <!-- Big monitor: the real code. -->
       <figure class="device device--code">
