@@ -1215,9 +1215,25 @@
     .hero-build-stage[data-flow="play"] .rp-text   { animation-delay: 0.85s; }
     .hero-build-stage[data-flow="play"] .rp-cta    { animation-delay: 0.92s; }
     .hero-build-stage[data-flow="play"] .rs-footer { animation-delay: 1.06s; }
+
+    /* The illustrated pieces snap in last — the chip while the code types,
+       the modules docking on one after the result resolves. */
+    .hero-build-stage[data-flow="play"] .hb-chip,
+    .hero-build-stage[data-flow="play"] .hb-node {
+      opacity: 0;
+      animation: hb-pop 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-build-stage[data-flow="play"] .hb-chip    { animation-delay: 0.30s; }
+    .hero-build-stage[data-flow="play"] .hb-node--1 { animation-delay: 1.18s; }
+    .hero-build-stage[data-flow="play"] .hb-node--2 { animation-delay: 1.30s; }
+    .hero-build-stage[data-flow="play"] .hb-node--3 { animation-delay: 1.42s; }
   }
   @keyframes cl-in {
     from { opacity: 0; transform: translateX(-5px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes hb-pop {
+    from { opacity: 0; transform: scale(0.82); }
     to   { opacity: 1; transform: none; }
   }
   @keyframes rp-in {
@@ -1390,6 +1406,64 @@
     color: var(--on-accent);
     font-weight: 600;
     font-size: var(--fs-sm);
+  }
+
+  /* ── Hero build — illustrated device motif ───────────────────────────────
+     The floating </> chip, module nodes and glow from the brief, dressing the
+     two real screens. Desktop-only: below 900px the stage is a clean vertical
+     stack of the two panes, so this absolutely-positioned decoration is hidden
+     to avoid overflow. All aria-hidden and purely presentational. */
+  /* Monitor framing is a desktop enhancement. On mobile the .device figures
+     just stack their screens (frame inert, stand hidden), so the two panes
+     read as the clean stack they were before. */
+  .device { margin: 0; min-width: 0; }
+  .device-frame { min-width: 0; }
+  .device-stand { display: none; }
+
+  .hb-glow, .hb-chip, .hb-node { display: none; }
+
+  .hb-glyph { width: 62%; height: auto; color: var(--accent-ink); display: block; }
+
+  .hb-chip {
+    position: absolute; z-index: 4;
+    width: 3.4rem; height: 3.4rem;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: var(--shadow-1);
+  }
+  .hb-node {
+    position: absolute; z-index: 4;
+    width: 2.7rem; height: 2.7rem;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: var(--shadow-1);
+    color: var(--accent-ink);
+  }
+  .hb-node .hb-glyph { width: 58%; }
+  .hb-node-icon { width: 56%; height: auto; display: block; }
+
+  /* Connector stubs — a short dotted line from each floating piece toward the
+     screens. Pure CSS, so nothing has to dock onto a moving target. */
+  .hb-chip::before,
+  .hb-node::before {
+    content: ""; position: absolute;
+    border-top: 2px dotted color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .hb-chip::before { top: 50%; left: 100%; width: 1.5rem; }
+  .hb-node::before { top: 50%; right: 100%; width: 1.5rem; }
+
+  .hb-glow {
+    position: absolute; z-index: 0;
+    inset: 8% 0;
+    border-radius: 50%;
+    background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%);
+    filter: blur(10px);
+    pointer-events: none;
   }
 
   /* ── Services index ──────────────────────────────────────────────────────
@@ -1769,20 +1843,66 @@
     }
     .hero-build { align-self: center; }
 
-    /* The panes stay STACKED even here. The hero's visual column is the
-       narrower of the two, and setting code beside render inside it would
-       cramp both past legibility — the code would wrap, which on a hero
-       arguing "hand-written" is the one thing it must not do. Stacked, each
-       pane keeps full width; the offset and elevation on the render pane
-       supply the depth a side-by-side would have given. */
-    .hero-build-stage { gap: var(--space-4); }
-
-    /* The result steps out from its source — offset right, slightly narrower,
-       and the only element here carrying the glow. */
-    .build-pane--render {
-      width: 92%;
-      margin-left: auto;
+    /* Two illustrated MONITORS: a big one showing the code, a smaller one
+       front-right showing the rendered result — the brief's exact composition.
+       The stage is a positioned canvas with a reserved aspect ratio (no CLS);
+       the two devices are absolutely placed by % so they scale with the column
+       and can't push the page wide. */
+    .hero-build-stage {
+      position: relative;
+      aspect-ratio: 10 / 9;
+      gap: 0;
     }
+
+    .device { position: absolute; display: flex; flex-direction: column; align-items: center; }
+    /* The monitor bezel around each screen. */
+    .device-frame {
+      width: 100%;
+      padding: 9px;
+      border-radius: 16px;
+      background: linear-gradient(155deg, var(--surface-3), var(--surface-2));
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-3);
+    }
+    .device-frame .build-pane { box-shadow: none; }
+    /* Neck + base. */
+    .device-stand {
+      display: block; position: relative;
+      width: 26px; height: 15px;
+      background: linear-gradient(var(--surface-3), var(--surface-2));
+      border-inline: 1px solid var(--border-strong);
+    }
+    .device-stand::after {
+      content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+      width: 76px; height: 8px; border-radius: 4px;
+      background: linear-gradient(var(--surface-3), var(--surface-2));
+      border: 1px solid var(--border-strong);
+    }
+
+    .device--code   { top: 2%; left: 0; width: 68%; z-index: 2; }
+    .device--render { bottom: 0; right: 0; width: 48%; z-index: 3; }
+    /* Slightly smaller code so 15 lines fit the narrower monitor without an
+       inner horizontal scrollbar. */
+    .device--code .code-block { font-size: 0.72rem; line-height: 1.4; }
+    .device--code .cl { padding-left: 2rem; }
+    /* The result monitor is the payoff — its frame carries the signature glow,
+       the one glowing element here. */
+    .device--render .device-frame {
+      border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+      box-shadow: var(--shadow-3), var(--glow);
+    }
+
+    /* Turn the illustrated motif on (grid = centre the icon in each). */
+    .hb-glow { display: block; }
+    .hb-chip, .hb-node { display: grid; }
+
+    /* </> chip badges the code monitor's top-left. The pointing boxes cluster
+       in the open upper-right, each with a stub aimed back at the code screen —
+       "what's happening" as the page is built. */
+    .hb-chip    { top: -3%; left: -1%; }
+    .hb-node--1 { top: 2%;  right: 13%; }
+    .hb-node--2 { top: 16%; right: 1%; }
+    .hb-node--3 { top: 30%; right: 15%; }
   }
   @media (min-width: 761px) {
     .differentiator-inner { grid-template-columns: 1.15fr 0.85fr; }
