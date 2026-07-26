@@ -1971,13 +1971,14 @@
        three stage boxes (Audit, Design, QA) stack in the gutter just right of
        the code monitor, each with a stub reaching left onto the code screen. */
     .hb-chip     { top: -3%; left: -1%; }
-    /* Audit + Design sit in the upper-right gutter, stubs pointing left at the
-       code screen (where it's built). */
-    .hb-stage--1 { top: 6%;  right: 16%; }
-    .hb-stage--2 { top: 26%; right: 16%; }
-    /* QA moves to the lower-left of the result monitor, stub pointing RIGHT at
-       the rendered screen (where it's tested) — so the three aren't stacked in
-       one column. */
+    /* Audit badges the code screen's top-right corner (mirroring the </> chip
+       on the top-left) — a corner badge, so no connector stub. */
+    .hb-stage--1 { top: -3%; right: 32%; }
+    .hb-stage--1::before { content: none; }
+    /* Design sits in the right gutter, stub pointing left at the code screen. */
+    .hb-stage--2 { top: 20%; right: 14%; }
+    /* QA sits at the lower-left of the result monitor, stub pointing RIGHT at
+       the rendered screen — so the three surround the scene, not one column. */
     .hb-stage--3 { bottom: 8%; left: 30%; }
     .hb-stage--3::before { right: auto; left: 100%; }
   }
