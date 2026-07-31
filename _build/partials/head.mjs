@@ -2,12 +2,28 @@
 // favicon, preloaded self-hosted fonts, stylesheet, and the pre-paint theme
 // script (no flash of wrong theme on load).
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { html, raw } from "../lib/render.mjs";
 import { decodeData } from "../lib/decode.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Content-hash cache-buster for an asset, relative to this file. GitHub Pages
+// serves assets with Cache-Control: max-age=600, so without a version query a
+// browser reuses the old stylesheet for up to 10 minutes after a deploy — the
+// "I can't see the changes" trap. Appending ?v=<hash> changes the URL whenever
+// the file's contents change, forcing a fresh fetch exactly when needed.
+const assetV = (rel) => {
+  try {
+    const hash = createHash("sha1").update(readFileSync(path.join(__dirname, rel))).digest("hex").slice(0, 10);
+    return `?v=${hash}`;
+  } catch {
+    return "";
+  }
+};
+const CSS_V = assetV("../../assets/css/styles.css");
 const site = decodeData(
   JSON.parse(readFileSync(path.join(__dirname, "../data/site.json"), "utf8"))
 );
@@ -77,7 +93,7 @@ ${FONT_PRELOADS.map(
   (href) =>
     html`<link rel="preload" as="font" type="font/woff2" href="${href}" crossorigin>`
 )}
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css${raw(CSS_V)}">
 <script>
   ${raw(PRE_PAINT_SCRIPT)}
 </script>

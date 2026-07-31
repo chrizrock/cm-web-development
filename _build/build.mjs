@@ -18,6 +18,19 @@ import contactPage from "./pages/contact.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
+// Content-hash cache-buster for main.js — same reason as the stylesheet's in
+// head.mjs: no version query means a cached copy lingers for max-age after a
+// deploy. ?v=<hash> changes only when the file's contents do.
+import { createHash } from "node:crypto";
+const JS_V = (() => {
+  try {
+    const hash = createHash("sha1").update(readFileSync(path.join(ROOT, "assets/js/main.js"))).digest("hex").slice(0, 10);
+    return `?v=${hash}`;
+  } catch {
+    return "";
+  }
+})();
+
 // Load + entity-decode the shared data once, then hand it to every page render
 // (see the data note in components.mjs — decode happens once, at load time).
 // Stub pages that take no arguments simply ignore what they're passed.
@@ -36,7 +49,7 @@ ${head({ title, description, page })}
 ${header({ page })}
 <main id="main">${main}</main>
 ${footer()}
-<script type="module" src="assets/js/main.js"></script>
+<script type="module" src="assets/js/main.js${JS_V}"></script>
 </body>
 </html>`;
 }
