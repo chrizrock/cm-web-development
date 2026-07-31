@@ -44,26 +44,26 @@ const codeMotif = html`<div class="about-code-wrap">
 // the client, not invented labels) with the employer name itself removed.
 // Nothing here is a client, employer, or fact that isn't already in
 // cv.json.
-const BACKGROUND = [
+// "How I got here" reframed as the arc of the CRAFT, not the résumé — the
+// tools changed across 20+ years, the discipline didn't. No employers,
+// geography, or dates; every phase maps to real cv.json skills/experience
+// (hand-coded HTML/CSS/JS; WordPress/Joomla + Bootstrap; the multi-agent,
+// QA-gated AI delivery system). Nothing invented.
+const PHASES = [
   {
-    years: "2004 – 2015",
-    region: "UAE",
-    line: "Web and graphic design for travel and local businesses in Sharjah and Dubai — 15+ hand-coded hotel-booking sites, CMS builds on WordPress and Joomla, corporate branding, and email/SEO campaigns.",
+    label: "Hand-coded",
+    line: "Semantic HTML, CSS, and JavaScript — every line by hand.",
+    tags: ["HTML5", "CSS3", "JavaScript"],
   },
   {
-    years: "2015 – 2022",
-    region: "Dubai, UAE",
-    line: "Ran a consultancy's website end to end — design, hosting, cross-browser testing — plus corporate identity systems, marketing collateral, and CRM administration.",
+    label: "CMS & frameworks",
+    line: "WordPress, Joomla, and Bootstrap — faster to build, still fully under control.",
+    tags: ["WordPress", "Joomla", "Bootstrap"],
   },
   {
-    years: "2019 – 2021",
-    region: "Remote · Freelance",
-    line: "Designed and built a Shopify storefront for an apparel brand — catalog, hosting, domains, email, and Facebook Shops integration.",
-  },
-  {
-    years: "2022 – Present",
-    region: "Colorado, USA · Remote",
-    line: "Re-themed e-commerce storefronts on a major cart platform, then moved in-house managing an agency's client WordPress portfolio and building the AI-augmented, QA-gated delivery system behind this studio.",
+    label: "Agentic",
+    line: "A multi-agent, QA-gated AI pipeline: analysis, design, build, verification.",
+    tags: ["Multi-agent", "MCP", "Visual-parity QA"],
   },
 ];
 
@@ -90,18 +90,20 @@ const VALUES = [
 ];
 
 /**
- * backgroundItem({ years, region, line }) -> one de-identified background
- * chapter (years, region, one line of capability copy — no employer name).
- * Reuses the .experience-item* classes from the original timeline; the
- * years take the "role" heading slot and the region takes the "org" slot.
+ * phaseItem({ label, line, tags }, i, total) -> one numbered phase card in the
+ * craft-arc progression: an index, the label, the line, and the real tools of
+ * that era as chips. The last card is flagged .phase--now (the current state),
+ * which the stylesheet accents and glows.
  */
-function backgroundItem({ years, region, line }) {
-  return html`<li class="experience-item" data-reveal>
-  <div class="experience-item-head">
-    <h3 class="experience-item-role">${years}</h3>
-    <span class="experience-item-org">${region}</span>
-  </div>
-  <p class="experience-item-line">${line}</p>
+function phaseItem({ label, line, tags }, i, total) {
+  const num = String(i + 1).padStart(2, "0");
+  const now = i === total - 1;
+  return html`<li class="phase${now ? " phase--now" : ""}" data-reveal>
+  <span class="phase-num" aria-hidden="true">${num}</span>
+  ${now ? html`<span class="phase-badge">Now</span>` : ""}
+  <h3 class="phase-label">${label}</h3>
+  <p class="phase-line">${line}</p>
+  <ul class="phase-tags">${tags.map((t) => html`<li>${t}</li>`)}</ul>
 </li>`;
 }
 
@@ -141,20 +143,19 @@ export default function about({ site, cv }) {
     children: html`<div class="skills-grid">${skillGroups}</div>`,
   });
 
-  // -- 3. BACKGROUND (rev3 reframe) --------------------------------------------
-  // Capability + geography breadth, no past employer names — see the
-  // BACKGROUND comment above for how each chapter maps back to real
-  // cv.json experience/earlierExperience entries.
-  const backgroundItems = BACKGROUND.map((chapter) => backgroundItem(chapter));
+  // -- 3. HOW I GOT HERE: the craft arc ----------------------------------------
+  // Three phases of how the work was built (not where or for whom) — see the
+  // PHASES comment above for how each maps to real cv.json skills/experience.
+  const phaseItems = PHASES.map((phase, i) => phaseItem(phase, i, PHASES.length));
 
   const backgroundSection = section({
     id: "background",
     eyebrow: "How I got here",
     title: "20+ years, condensed.",
     intro:
-      "Small-business and consultancy web work in the UAE, a freelance e-commerce build, then platform and in-house agency WordPress work in the US — the kinds of projects, not the résumé.",
+      "One through-line: building for the web as it changed — the tools moved, the craft didn't.",
     reveal: true,
-    children: html`<ol class="experience-timeline">${backgroundItems}</ol>`,
+    children: html`<ol class="phase-track">${phaseItems}</ol>`,
   });
 
   // -- 4. WHY ME: VALUES --------------------------------------------------------

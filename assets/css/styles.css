@@ -2557,6 +2557,95 @@
     max-width: 64ch;
   }
 
+  /* "How I got here" reframed as the craft arc — three numbered phase cards
+     that intensify toward the present: the last is accented + glows as "Now".
+     Mobile-first single column; three-up at desktop (below). */
+  .phase-track {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+    padding: 0;
+    list-style: none;
+  }
+  .phase {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .phase:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .phase-num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-wide);
+  }
+  .phase-label {
+    margin-top: var(--space-3);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-md);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .phase-line {
+    margin-top: var(--space-2);
+    color: var(--muted);
+    max-width: 46ch;
+  }
+  .phase-tags {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    margin-top: var(--space-4); margin-bottom: 0;
+    padding: 0; list-style: none;
+  }
+  .phase-tags li {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    padding: 0.18rem var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+  }
+  /* The present state — the payoff — carries the one glow. */
+  .phase--now {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: var(--glow);
+  }
+  .phase--now .phase-num { color: var(--accent-ink); }
+  .phase--now .phase-tags li {
+    color: var(--accent-ink);
+    border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+  }
+  .phase-badge {
+    position: absolute; top: var(--space-5); right: var(--space-5);
+    font-size: var(--fs-xs); font-weight: 600;
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  /* Three-up from tablet, with a teal arrow in each gap showing the
+     progression. Equal-height cards (the line flexes) so the tag rows align. */
+  @media (min-width: 760px) {
+    .phase-track { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .phase-line { flex: 1; }
+    .phase:not(:last-child)::after {
+      content: "→";
+      position: absolute; top: 50%;
+      right: calc(var(--space-4) * -0.5);
+      transform: translate(50%, -50%);
+      color: var(--accent);
+      font-size: 1.3rem; line-height: 1;
+    }
+  }
+
   /* -- 4. Why me / values ------------------------------------------------------ */
   .values-grid {
     display: grid;

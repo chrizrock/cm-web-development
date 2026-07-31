@@ -147,6 +147,14 @@ test("home stat band's project-count stat reads 'Projects shown', not 'Rebuilds 
   assert.doesNotMatch(h, /Rebuilds shown/);
 });
 
+// The 'Services' stat must equal the real number of services, or it lies.
+test("home stat band's 'Services' count matches site.services", () => {
+  const site = JSON.parse(readFileSync("_build/data/site.json", "utf8"));
+  const stat = site.stats.find((s) => s.label === "Services");
+  assert.ok(stat, "a Services stat exists");
+  assert.equal(String(site.services.length), stat.value, "Services stat matches the real service count");
+});
+
 // --- Rebrand: "CM Web Development" chrome (rev2 Change 1) -------------------
 // The studio brand replaces the personal name in page-hero eyebrows, <title>,
 // og:site_name, and og/twitter titles across all 5 pages. The About page's
@@ -407,16 +415,31 @@ test("about page renders every skills group", () => {
 // capability copy, no company names). Assert both halves of that: the
 // background section itself renders, AND none of the former employer
 // names leak onto the page.
-test("about page's background section renders (reframed, no past-employer names)", () => {
+test("about page's 'how I got here' is the craft arc — phases, no employers, no dates", () => {
   const h = read("about.html");
   assert.match(h, /id="background"/);
-  assert.match(h, /class="experience-timeline"/);
   assert.match(h, /20\+ years, condensed\./);
+  // Reframed as a numbered craft-arc progression, not a dated timeline.
+  assert.match(h, /class="phase-track"/);
+  const bg = h.slice(h.indexOf('id="background"'), h.indexOf("</section>", h.indexOf('id="background"')));
+  for (const label of ["Hand-coded", "CMS &amp; frameworks", "Agentic"]) {
+    assert.match(bg, new RegExp(`class="phase-label">${label}<`), `phase ${label}`);
+  }
+  // The present phase is flagged as "Now".
+  assert.match(bg, /phase--now/);
+  assert.match(bg, /class="phase-badge">Now</);
+  // Real tools shown as chips (grounded in cv.json skills, not decoration).
+  for (const tag of ["HTML5", "WordPress", "MCP"]) {
+    assert.match(bg, new RegExp(`<li>${tag}</li>`), `tag ${tag}`);
+  }
+  // No employer names anywhere on the page...
   const cv = JSON.parse(readFileSync("_build/data/cv.json", "utf8"));
   const employers = [...cv.experience, ...cv.earlierExperience].map((r) => r.company);
   for (const company of employers) {
     assert.doesNotMatch(h, new RegExp(company.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${company} should not appear on about.html`);
   }
+  // ...and no résumé dates in the section — the whole point of the reframe.
+  assert.doesNotMatch(bg, /\b(19|20)\d\d\b/, "no year in the craft-arc section");
 });
 
 test("about page code motif is a decorative window-chrome card (aria-hidden, dots, filename, real token snippet)", () => {
