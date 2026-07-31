@@ -155,6 +155,35 @@ test("home stat band's 'Services' count matches site.services", () => {
   assert.equal(String(site.services.length), stat.value, "Services stat matches the real service count");
 });
 
+// The home work marquee: three columns of REAL after-screenshots (each shot
+// duplicated for a seamless loop), decorative (aria-hidden) with a real "see
+// all" link so no focusable element is hidden. Images must be real project
+// files, not fabricated.
+test("home work marquee renders real project shots in a decorative, seamless-loop marquee", () => {
+  const h = read("index.html");
+  const start = h.indexOf('class="section showcase"');
+  assert.ok(start > -1, "showcase section present");
+  const sec = h.slice(start, h.indexOf("</section>", start));
+
+  assert.match(sec, /class="showcase-marquee" aria-hidden="true"/, "marquee is decorative");
+  assert.equal((sec.match(/class="showcase-col/g) || []).length, 3, "three columns");
+  assert.match(sec, /class="section-more" href="work\.html"/, "a real, non-hidden 'see all' link");
+
+  // Every marquee image is a real after-desktop shot for a project in the data,
+  // and each appears an even number of times (duplicated for the seamless loop).
+  const projects = JSON.parse(readFileSync("_build/data/projects.json", "utf8"));
+  const list = Array.isArray(projects) ? projects : projects.projects;
+  const slugs = new Set(list.map((p) => p.slug));
+  const srcs = [...sec.matchAll(/assets\/img\/shots\/([a-z0-9-]+)-after-desktop\.jpg/g)].map((m) => m[1]);
+  assert.ok(srcs.length >= 6, "marquee has shots");
+  for (const slug of srcs) assert.ok(slugs.has(slug), `${slug} is a real project`);
+  const counts = {};
+  for (const s of srcs) counts[s] = (counts[s] || 0) + 1;
+  for (const [slug, n] of Object.entries(counts)) {
+    assert.equal(n % 2, 0, `${slug} appears an even number of times (duplicated for the loop)`);
+  }
+});
+
 // --- Rebrand: "CM Web Development" chrome (rev2 Change 1) -------------------
 // The studio brand replaces the personal name in page-hero eyebrows, <title>,
 // og:site_name, and og/twitter titles across all 5 pages. The About page's

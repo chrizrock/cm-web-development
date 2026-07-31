@@ -1555,6 +1555,52 @@
     pointer-events: none;
   }
 
+  /* ── Work marquee: a moving wall of real shipped shots ───────────────────
+     Three columns of after-screenshots scrolling vertically (alternating
+     direction), the content duplicated so a -50% loop is seamless. The band
+     is clipped with a top/bottom mask so shots fade in and out at the edges.
+     Decorative (aria-hidden in the markup); pauses on hover. Under
+     reduced-motion it's a still wall (animation gated below). */
+  .showcase { overflow: hidden; }
+  .showcase-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--space-4); flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+  .showcase-marquee {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    height: 460px;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  /* Third column only appears when there's room. */
+  .showcase-col:nth-child(3) { display: none; }
+  .showcase-col {
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .showcase-shot {
+    display: block; border-radius: var(--radius-md); overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-1);
+  }
+  .showcase-shot img { width: 100%; height: auto; display: block; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .showcase-col { animation: marq-scroll 44s linear infinite; will-change: transform; }
+    .showcase-col--down { animation-direction: reverse; }
+    .showcase-marquee:hover .showcase-col { animation-play-state: paused; }
+  }
+  @keyframes marq-scroll {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+  @media (min-width: 760px) {
+    .showcase-marquee { grid-template-columns: repeat(3, 1fr); height: 560px; }
+    .showcase-col:nth-child(3) { display: flex; }
+  }
+
   /* ── Services index ──────────────────────────────────────────────────────
      The six services as one scannable board, before ~4,000px of long-form
      blocks begin. Each card is a real in-page anchor, so this is the page's

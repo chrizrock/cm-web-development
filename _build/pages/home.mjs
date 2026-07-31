@@ -264,9 +264,39 @@ export default function home({ site, projects }) {
     intro:
       "Three rebuilds, side by side. On the left is the site that was there; on the right is what I shipped. Same business, same brand — a storefront that finally sells.",
     reveal: true,
-    children: html`<div class="featured-work">${featuredCards}</div>
-    <a class="section-more" href="work.html">See all 17 projects <span aria-hidden="true">&rarr;</span></a>`,
+    children: html`<div class="featured-work">${featuredCards}</div>`,
   });
+
+  // -- 4b. WORK MARQUEE -------------------------------------------------------
+  // A moving wall of real shipped work under the three drag-to-compare cards —
+  // the "vertical marquee" motion from the reference, but with the actual
+  // after-screenshots, not stock mockups. Three columns scroll (alternating
+  // direction), pausing on hover; the whole marquee is decorative (aria-hidden)
+  // with a real "see all" link for navigation, so no focusable element is
+  // hidden. Reduced-motion gets a still wall (see styles.css). A curated 12
+  // keeps the image weight in check (honest performance).
+  const marqueeShots = projects.slice(0, 12);
+  const shot = (p) => html`<span class="showcase-shot">
+    <img src="assets/img/shots/${p.slug}-after-desktop.jpg" alt="" loading="lazy" decoding="async" width="2880" height="1800">
+  </span>`;
+  const marqueeCols = [[], [], []];
+  marqueeShots.forEach((p, i) => marqueeCols[i % 3].push(p));
+  // Each column's shots are duplicated so the -50% loop is seamless.
+  const marqueeColumn = (list, dir) => html`<div class="showcase-col showcase-col--${dir}">
+    ${list.map(shot)}${list.map(shot)}
+  </div>`;
+
+  const workMarquee = html`<section class="section showcase" aria-label="A selection of shipped work in motion">
+  <div class="container showcase-head">
+    <p class="eyebrow">Selected work</p>
+    <a class="section-more" href="work.html">See all 17 projects <span aria-hidden="true">&rarr;</span></a>
+  </div>
+  <div class="showcase-marquee" aria-hidden="true">
+    ${marqueeColumn(marqueeCols[0], "up")}
+    ${marqueeColumn(marqueeCols[1], "down")}
+    ${marqueeColumn(marqueeCols[2], "up")}
+  </div>
+</section>`;
 
   // -- 5. DIFFERENTIATOR BAND -------------------------------------------------
   // Craft thesis on the left; a real, verifiable spec list for the "Devy"
@@ -327,5 +357,5 @@ export default function home({ site, projects }) {
   </div>
 </section>`;
 
-  return html`${hero}${statBand}${whatIDo}${featuredWork}${differentiator}${testimonials}${closingCta}`;
+  return html`${hero}${statBand}${whatIDo}${featuredWork}${workMarquee}${differentiator}${testimonials}${closingCta}`;
 }
