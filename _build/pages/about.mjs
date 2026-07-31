@@ -53,7 +53,7 @@ const BACKGROUND = [
   {
     years: "2015 – 2022",
     region: "Dubai, UAE",
-    line: "Owned a consultancy's website end to end — design, hosting, cross-browser testing — plus corporate identity systems, marketing collateral, and CRM administration.",
+    line: "Ran a consultancy's website end to end — design, hosting, cross-browser testing — plus corporate identity systems, marketing collateral, and CRM administration.",
   },
   {
     years: "2019 – 2021",
@@ -152,7 +152,7 @@ export default function about({ site, cv }) {
     eyebrow: "How I got here",
     title: "20+ years, condensed.",
     intro:
-      "Small-business and agency web work in the UAE, a freelance e-commerce build, then platform and in-house WordPress work in the US — the kinds of projects, not the résumé.",
+      "Small-business and consultancy web work in the UAE, a freelance e-commerce build, then platform and in-house agency WordPress work in the US — the kinds of projects, not the résumé.",
     reveal: true,
     children: html`<ol class="experience-timeline">${backgroundItems}</ol>`,
   });
